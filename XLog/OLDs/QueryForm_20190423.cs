@@ -15,7 +15,7 @@ using System.Diagnostics;                   // 특정시간 응답대기
 
 namespace XLog
 {
-    public partial class QueryForm : Form
+    public partial class QueryForm_20190423 : Form
     {
         //소스 이름과 유저 이름, 패스워드를 입력함 (나중에 오라클 연결할 때 sql문 사용)
         //Data Source  = 본인의 아이피 주소:포트번호/orcl 이다!
@@ -31,7 +31,7 @@ namespace XLog
         private const int FETCH_SIZE_FOR_GRID = FETCH_SIZE * 2; // 성능을 위해, 초기 일부 데이타만 화면 갱신한다.
         private const int JUMP_TO_ROW = 20;
 
-        public QueryForm()
+        public QueryForm_20190423()
         {
             InitializeComponent();
             //MessageBox.Show("OKT-01: " + flowLayoutPanel1.Width);
@@ -52,26 +52,25 @@ namespace XLog
             panel2.Dock = DockStyle.Bottom;
 
             richTextBox1.Dock = DockStyle.Fill;
-            gdvGridResult.Dock = DockStyle.Fill;
+            dataGridView1.Dock = DockStyle.Fill;
 
             richTextBox1.Text = "select level from dual connect by level <= 10001";
             richTextBox1.Text = "with x as ( select level c1 from dual connect by level <= 10001) select c1, data from x, tb_clob";
 
-            //dataGridView2.Visible = false; // Just For Temp Copy
-
             // dataGridView1
-            //if (false)
-            //{
-            //    // MakeReadOnly
-            //    dataGridView1.AllowUserToAddRows = false;
-            //    dataGridView1.AllowUserToDeleteRows = false;
-            //    dataGridView1.ReadOnly = true;
-            //}
-            //else
+            dataGridView2.Visible = false; // Just For Temp Copy
+            if (false)
+            {
+                // MakeReadOnly
+                dataGridView1.AllowUserToAddRows = false;
+                dataGridView1.AllowUserToDeleteRows = false;
+                dataGridView1.ReadOnly = true;
+            }
+            else
             {                
                 // Tip 12 - DataGridView 레코드 색상 번갈아서 바꾸기
-                gdvGridResult.RowsDefaultCellStyle.BackColor = Color.White;
-                gdvGridResult.AlternatingRowsDefaultCellStyle.BackColor = Color.Aquamarine;
+                dataGridView1.RowsDefaultCellStyle.BackColor = Color.White;
+                dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.Aquamarine;
             }
 
             // toolStripProgressBar1
@@ -120,7 +119,7 @@ namespace XLog
             // 출처: https://and0329.tistory.com/entry/C-과-오라클-데이터베이스-연동-방법 
             try
             {
-                gdvGridResult.DataSource = dtEmpty; // (1) 결과창을 비워준다.
+                dataGridView1.DataSource = dtEmpty; // (1) 결과창을 비워준다.
                 Application.DoEvents();
 
                 //dt.DataSet.Clear();
@@ -159,7 +158,7 @@ namespace XLog
                     {
                         // [NOTE] 대량 데이타 출력 성능을 위한 더미 코드.
                         dt2 = dt.Copy();
-                        gdvGridResult.DataSource = dt2;
+                        dataGridView1.DataSource = dt2;
                     }
 
                     lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
@@ -175,7 +174,7 @@ namespace XLog
                 //lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TICK_DELTA + ")";
                 lbTime.Text = PUBLIC.TIME_CHECK() + " sec";
                 lbRow.Text = sPos + " rows";
-                gdvGridResult.DataSource = dt;
+                dataGridView1.DataSource = dt;
             }
             catch (Exception ex)
             {
@@ -239,32 +238,32 @@ namespace XLog
 
         private void btnLast_Click(object sender, EventArgs e)
         {
-            int jumpToRow = gdvGridResult.Rows.Count - 1 - 1;
+            int jumpToRow = dataGridView1.Rows.Count - 1 - 1;
 
-            gdvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
-            gdvGridResult.Rows[jumpToRow].Selected = true;
+            dataGridView1.FirstDisplayedScrollingRowIndex = jumpToRow;
+            dataGridView1.Rows[jumpToRow].Selected = true;
         }
 
         private void btnFirst_Click(object sender, EventArgs e)
         {
             int jumpToRow = 0;
 
-            gdvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
-            gdvGridResult.Rows[jumpToRow].Selected = true;
+            dataGridView1.FirstDisplayedScrollingRowIndex = jumpToRow;
+            dataGridView1.Rows[jumpToRow].Selected = true;
 
         }
         
         private void btnNext_Click(object sender, EventArgs e)
         {
-            int jumpToRow = gdvGridResult.FirstDisplayedScrollingRowIndex + JUMP_TO_ROW;
+            int jumpToRow = dataGridView1.FirstDisplayedScrollingRowIndex + JUMP_TO_ROW;
 
-            if ( jumpToRow > gdvGridResult.Rows.Count - 1 )
+            if ( jumpToRow > dataGridView1.Rows.Count - 1 )
             {
-                jumpToRow = gdvGridResult.Rows.Count - 1;
+                jumpToRow = dataGridView1.Rows.Count - 1;
             }
 
-            gdvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
-            gdvGridResult.Rows[jumpToRow].Selected = true;
+            dataGridView1.FirstDisplayedScrollingRowIndex = jumpToRow;
+            dataGridView1.Rows[jumpToRow].Selected = true;
 
             //int jumpToRow = 20;
             //if (dataGridView1.Rows.Count >= jumpToRow && jumpToRow >= 1)
@@ -276,43 +275,45 @@ namespace XLog
 
         private void btnPrev_Click(object sender, EventArgs e)
         {
-            int jumpToRow = gdvGridResult.FirstDisplayedScrollingRowIndex - JUMP_TO_ROW;
+            int jumpToRow = dataGridView1.FirstDisplayedScrollingRowIndex - JUMP_TO_ROW;
 
             if (jumpToRow < 0)
             {
                 jumpToRow = 0;
             }
 
-            gdvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
-            gdvGridResult.Rows[jumpToRow].Selected = true;
+            dataGridView1.FirstDisplayedScrollingRowIndex = jumpToRow;
+            dataGridView1.Rows[jumpToRow].Selected = true;
         }
 
         static int btnOpt_Click_Cnt = 0;
         private void btnOpt_Click(object sender, EventArgs e)
         {
+
+
             btnOpt_Click_Cnt++;
 
             if (btnOpt_Click_Cnt % 2 != 0)
             {
                 if (btnOpt_Click_Cnt == 1 )
                 {
-                    dgvTmp.DefaultCellStyle.ForeColor = gdvGridResult.DefaultCellStyle.ForeColor;
-                    dgvTmp.RowsDefaultCellStyle.BackColor = gdvGridResult.RowsDefaultCellStyle.BackColor;
-                    dgvTmp.GridColor = gdvGridResult.GridColor;
-                    dgvTmp.BorderStyle = gdvGridResult.BorderStyle;
+                    dataGridView2.DefaultCellStyle.ForeColor = dataGridView1.DefaultCellStyle.ForeColor;
+                    dataGridView2.RowsDefaultCellStyle.BackColor = dataGridView1.RowsDefaultCellStyle.BackColor;
+                    dataGridView2.GridColor = dataGridView1.GridColor;
+                    dataGridView2.BorderStyle = dataGridView1.BorderStyle;
                 }
 
-                gdvGridResult.DefaultCellStyle.ForeColor = Color.Coral;
-                gdvGridResult.RowsDefaultCellStyle.BackColor = Color.AliceBlue;
-                gdvGridResult.GridColor = Color.Blue;
-                gdvGridResult.BorderStyle = BorderStyle.Fixed3D;
+                dataGridView1.DefaultCellStyle.ForeColor = Color.Coral;
+                dataGridView1.RowsDefaultCellStyle.BackColor = Color.AliceBlue;
+                dataGridView1.GridColor = Color.Blue;
+                dataGridView1.BorderStyle = BorderStyle.Fixed3D;
             }
             else
             {
-                gdvGridResult.DefaultCellStyle.ForeColor = dgvTmp.DefaultCellStyle.ForeColor;
-                gdvGridResult.RowsDefaultCellStyle.BackColor = dgvTmp.RowsDefaultCellStyle.BackColor;
-                gdvGridResult.GridColor = dgvTmp.GridColor;
-                gdvGridResult.BorderStyle = dgvTmp.BorderStyle;
+                dataGridView1.DefaultCellStyle.ForeColor = dataGridView2.DefaultCellStyle.ForeColor;
+                dataGridView1.RowsDefaultCellStyle.BackColor = dataGridView2.RowsDefaultCellStyle.BackColor;
+                dataGridView1.GridColor = dataGridView2.GridColor;
+                dataGridView1.BorderStyle = dataGridView2.BorderStyle;
             }
         }
 

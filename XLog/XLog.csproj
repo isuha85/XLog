@@ -85,6 +85,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OLDs\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OLDs\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PUBLIC.cs" />
+    <Compile Include="OLDs\QueryForm_20190423.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OLDs\QueryForm_20190423.Designer.cs">
+      <DependentUpon>QueryForm_20190423.cs</DependentUpon>
+    </Compile>
     <Compile Include="QueryForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,6 +117,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>testDataSet.xsd</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="OLDs\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OLDs\QueryForm_20190423.resx">
+      <DependentUpon>QueryForm_20190423.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="QueryForm.resx">
       <DependentUpon>QueryForm.cs</DependentUpon>
     </EmbeddedResource>

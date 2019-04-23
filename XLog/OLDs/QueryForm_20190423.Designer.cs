@@ -1,6 +1,6 @@
 ﻿namespace XLog
 {
-    partial class QueryForm
+    partial class QueryForm_20190423
     {
         /// <summary>
         /// Required designer variable.
@@ -38,8 +38,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.dgvTmp = new System.Windows.Forms.DataGridView();
-            this.gdvGridResult = new System.Windows.Forms.DataGridView();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnGo = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
@@ -56,8 +56,8 @@
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTmp)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gdvGridResult)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.testDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.testDataSetBindingSource)).BeginInit();
@@ -134,31 +134,30 @@
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.dgvTmp);
-            this.panel2.Controls.Add(this.gdvGridResult);
+            this.panel2.Controls.Add(this.dataGridView2);
+            this.panel2.Controls.Add(this.dataGridView1);
             this.panel2.Location = new System.Drawing.Point(0, 106);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(527, 311);
             this.panel2.TabIndex = 2;
             // 
-            // dgvTmp
+            // dataGridView2
             // 
-            this.dgvTmp.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTmp.Location = new System.Drawing.Point(3, 113);
-            this.dgvTmp.Name = "dgvTmp";
-            this.dgvTmp.RowTemplate.Height = 30;
-            this.dgvTmp.Size = new System.Drawing.Size(40, 40);
-            this.dgvTmp.TabIndex = 2;
-            this.dgvTmp.Visible = false;
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Location = new System.Drawing.Point(109, 158);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.RowTemplate.Height = 30;
+            this.dataGridView2.Size = new System.Drawing.Size(240, 150);
+            this.dataGridView2.TabIndex = 2;
             // 
-            // gdvGridResult
+            // dataGridView1
             // 
-            this.gdvGridResult.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gdvGridResult.Location = new System.Drawing.Point(3, 7);
-            this.gdvGridResult.Name = "gdvGridResult";
-            this.gdvGridResult.RowTemplate.Height = 30;
-            this.gdvGridResult.Size = new System.Drawing.Size(100, 100);
-            this.gdvGridResult.TabIndex = 0;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(109, 5);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowTemplate.Height = 30;
+            this.dataGridView1.Size = new System.Drawing.Size(240, 150);
+            this.dataGridView1.TabIndex = 0;
             // 
             // flowLayoutPanel1
             // 
@@ -300,8 +299,8 @@
             this.statusStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTmp)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gdvGridResult)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.testDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.testDataSetBindingSource)).EndInit();
@@ -318,7 +317,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.DataGridView gdvGridResult;
+        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button btnLast;
         private System.Windows.Forms.Button btnGo;
@@ -329,7 +328,7 @@
         private System.Windows.Forms.Button btnFirst;
         private System.Windows.Forms.Button btnPrev;
         private System.Windows.Forms.Button btnOpt;
-        private System.Windows.Forms.DataGridView dgvTmp;
+        private System.Windows.Forms.DataGridView dataGridView2;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.ToolStripStatusLabel lbPos;
         private System.Windows.Forms.ToolStripStatusLabel lbTime;
