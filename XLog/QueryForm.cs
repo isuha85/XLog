@@ -52,26 +52,26 @@ namespace XLog
             panel2.Dock = DockStyle.Bottom;
 
             richTextBox1.Dock = DockStyle.Fill;
-            gdvGridResult.Dock = DockStyle.Fill;
+            dgvGridResult.Dock = DockStyle.Fill;
 
             richTextBox1.Text = "select level from dual connect by level <= 10001";
             richTextBox1.Text = "with x as ( select level c1 from dual connect by level <= 10001) select c1, data from x, tb_clob";
 
-            //dataGridView2.Visible = false; // Just For Temp Copy
-
-            // dataGridView1
+            //dgvTmp.Visible = false; // Just For Temp Copy
+                    
+            // dgvGridResult
             //if (false)
             //{
             //    // MakeReadOnly
-            //    dataGridView1.AllowUserToAddRows = false;
-            //    dataGridView1.AllowUserToDeleteRows = false;
-            //    dataGridView1.ReadOnly = true;
+            //    dgvGridResult.AllowUserToAddRows = false;
+            //    dgvGridResult.AllowUserToDeleteRows = false;
+            //    dgvGridResult.ReadOnly = true;
             //}
             //else
-            {                
+            {
                 // Tip 12 - DataGridView 레코드 색상 번갈아서 바꾸기
-                gdvGridResult.RowsDefaultCellStyle.BackColor = Color.White;
-                gdvGridResult.AlternatingRowsDefaultCellStyle.BackColor = Color.Aquamarine;
+                dgvGridResult.RowsDefaultCellStyle.BackColor = Color.White;
+                dgvGridResult.AlternatingRowsDefaultCellStyle.BackColor = Color.Aquamarine;
             }
 
             // toolStripProgressBar1
@@ -120,7 +120,7 @@ namespace XLog
             // 출처: https://and0329.tistory.com/entry/C-과-오라클-데이터베이스-연동-방법 
             try
             {
-                gdvGridResult.DataSource = dtEmpty; // (1) 결과창을 비워준다.
+                dgvGridResult.DataSource = dtEmpty; // (1) 결과창을 비워준다.
                 Application.DoEvents();
 
                 //dt.DataSet.Clear();
@@ -128,8 +128,8 @@ namespace XLog
                 //dt.dispose();
 
                 //adapter.Dispose();
-                //dataGridView1.SelectAll();
-                //dataGridView1.ClearSelection();
+                //dgvGridResult.SelectAll();
+                //dgvGridResult.ClearSelection();
 
                 adapter.SelectCommand = new OracleCommand(richTextBox1.Text, conn);
                 //adapter.SelectCommand = new OracleCommand("SELECT 1 AS NO FROM DUAL", conn);
@@ -159,7 +159,7 @@ namespace XLog
                     {
                         // [NOTE] 대량 데이타 출력 성능을 위한 더미 코드.
                         dt2 = dt.Copy();
-                        gdvGridResult.DataSource = dt2;
+                        dgvGridResult.DataSource = dt2;
                     }
 
                     lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
@@ -175,7 +175,7 @@ namespace XLog
                 //lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TICK_DELTA + ")";
                 lbTime.Text = PUBLIC.TIME_CHECK() + " sec";
                 lbRow.Text = sPos + " rows";
-                gdvGridResult.DataSource = dt;
+                dgvGridResult.DataSource = dt;
             }
             catch (Exception ex)
             {
@@ -222,7 +222,7 @@ namespace XLog
         {
             try
             {
-                //dataGridView1.Dispose();
+                //dgvGridResult.Dispose();
                 dt.Dispose();
                 adapter.Dispose();
                 conn.Close();
@@ -239,52 +239,52 @@ namespace XLog
 
         private void btnLast_Click(object sender, EventArgs e)
         {
-            int jumpToRow = gdvGridResult.Rows.Count - 1 - 1;
+            int jumpToRow = dgvGridResult.Rows.Count - 1 - 1;
 
-            gdvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
-            gdvGridResult.Rows[jumpToRow].Selected = true;
+            dgvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
+            dgvGridResult.Rows[jumpToRow].Selected = true;
         }
 
         private void btnFirst_Click(object sender, EventArgs e)
         {
             int jumpToRow = 0;
 
-            gdvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
-            gdvGridResult.Rows[jumpToRow].Selected = true;
+            dgvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
+            dgvGridResult.Rows[jumpToRow].Selected = true;
 
         }
         
         private void btnNext_Click(object sender, EventArgs e)
         {
-            int jumpToRow = gdvGridResult.FirstDisplayedScrollingRowIndex + JUMP_TO_ROW;
+            int jumpToRow = dgvGridResult.FirstDisplayedScrollingRowIndex + JUMP_TO_ROW;
 
-            if ( jumpToRow > gdvGridResult.Rows.Count - 1 )
+            if ( jumpToRow > dgvGridResult.Rows.Count - 1 )
             {
-                jumpToRow = gdvGridResult.Rows.Count - 1;
+                jumpToRow = dgvGridResult.Rows.Count - 1;
             }
 
-            gdvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
-            gdvGridResult.Rows[jumpToRow].Selected = true;
+            dgvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
+            dgvGridResult.Rows[jumpToRow].Selected = true;
 
             //int jumpToRow = 20;
-            //if (dataGridView1.Rows.Count >= jumpToRow && jumpToRow >= 1)
+            //if (dgvGridResult.Rows.Count >= jumpToRow && jumpToRow >= 1)
             //{
-            //    dataGridView1.FirstDisplayedScrollingRowIndex = jumpToRow;
-            //    dataGridView1.Rows[jumpToRow].Selected = true;
+            //    dgvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
+            //    dgvGridResult.Rows[jumpToRow].Selected = true;
             //}
         }
 
         private void btnPrev_Click(object sender, EventArgs e)
         {
-            int jumpToRow = gdvGridResult.FirstDisplayedScrollingRowIndex - JUMP_TO_ROW;
+            int jumpToRow = dgvGridResult.FirstDisplayedScrollingRowIndex - JUMP_TO_ROW;
 
             if (jumpToRow < 0)
             {
                 jumpToRow = 0;
             }
 
-            gdvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
-            gdvGridResult.Rows[jumpToRow].Selected = true;
+            dgvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
+            dgvGridResult.Rows[jumpToRow].Selected = true;
         }
 
         static int btnOpt_Click_Cnt = 0;
@@ -296,23 +296,23 @@ namespace XLog
             {
                 if (btnOpt_Click_Cnt == 1 )
                 {
-                    dgvTmp.DefaultCellStyle.ForeColor = gdvGridResult.DefaultCellStyle.ForeColor;
-                    dgvTmp.RowsDefaultCellStyle.BackColor = gdvGridResult.RowsDefaultCellStyle.BackColor;
-                    dgvTmp.GridColor = gdvGridResult.GridColor;
-                    dgvTmp.BorderStyle = gdvGridResult.BorderStyle;
+                    dgvTmp.DefaultCellStyle.ForeColor = dgvGridResult.DefaultCellStyle.ForeColor;
+                    dgvTmp.RowsDefaultCellStyle.BackColor = dgvGridResult.RowsDefaultCellStyle.BackColor;
+                    dgvTmp.GridColor = dgvGridResult.GridColor;
+                    dgvTmp.BorderStyle = dgvGridResult.BorderStyle;
                 }
 
-                gdvGridResult.DefaultCellStyle.ForeColor = Color.Coral;
-                gdvGridResult.RowsDefaultCellStyle.BackColor = Color.AliceBlue;
-                gdvGridResult.GridColor = Color.Blue;
-                gdvGridResult.BorderStyle = BorderStyle.Fixed3D;
+                dgvGridResult.DefaultCellStyle.ForeColor = Color.Coral;
+                dgvGridResult.RowsDefaultCellStyle.BackColor = Color.AliceBlue;
+                dgvGridResult.GridColor = Color.Blue;
+                dgvGridResult.BorderStyle = BorderStyle.Fixed3D;
             }
             else
             {
-                gdvGridResult.DefaultCellStyle.ForeColor = dgvTmp.DefaultCellStyle.ForeColor;
-                gdvGridResult.RowsDefaultCellStyle.BackColor = dgvTmp.RowsDefaultCellStyle.BackColor;
-                gdvGridResult.GridColor = dgvTmp.GridColor;
-                gdvGridResult.BorderStyle = dgvTmp.BorderStyle;
+                dgvGridResult.DefaultCellStyle.ForeColor = dgvTmp.DefaultCellStyle.ForeColor;
+                dgvGridResult.RowsDefaultCellStyle.BackColor = dgvTmp.RowsDefaultCellStyle.BackColor;
+                dgvGridResult.GridColor = dgvTmp.GridColor;
+                dgvGridResult.BorderStyle = dgvTmp.BorderStyle;
             }
         }
 
