@@ -45,11 +45,12 @@ namespace XLog
             int w = this.Width - margin_w;
             int h = this.Height / 2;
 
-            panel1.Size = new Size(w, h);
-            panel2.Size = new Size(w, h);
+            X.Panel1.Size = new Size(w, h);
+            X.Panel2.Size = new Size(w, h);
 
-            //panel1.Dock = DockStyle.Top;
-            panel2.Dock = DockStyle.Bottom;
+            //X.Panel1.Dock = DockStyle.Top;
+            //X.Panel2.Dock = DockStyle.Bottom;
+            X.Dock = DockStyle.Fill;
 
             richTextBox1.Dock = DockStyle.Fill;
             dgvGridResult.Dock = DockStyle.Fill;
@@ -94,8 +95,8 @@ namespace XLog
             int w = this.Width - margin_w;
             int h = this.Height / 2;
 
-            panel1.Size = new Size(w, h);
-            panel2.Size = new Size(w, h);
+            X.Panel1.Size = new Size(w, h);
+            X.Panel2.Size = new Size(w, h);
 
             // TODO: Why Not 
             w = this.Width - lbPos.Width - lbTime.Width - lbRow.Width - toolStripStatusLabel4.Width;
