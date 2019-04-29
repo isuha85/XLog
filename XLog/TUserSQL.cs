@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-
 using Oracle.ManagedDataAccess.Client;      // using System.Data.OracleClient;
 using System.Diagnostics;                   // 특정시간 응답대기
 
-
 namespace XLog
 {
-    public partial class QueryForm : Form
+    public partial class TUserSQL : UserControl
     {
         //소스 이름과 유저 이름, 패스워드를 입력함 (나중에 오라클 연결할 때 sql문 사용)
         //Data Source  = 본인의 아이피 주소:포트번호/orcl 이다!
@@ -31,13 +29,12 @@ namespace XLog
         private const int FETCH_SIZE_FOR_GRID = FETCH_SIZE * 2; // 성능을 위해, 초기 일부 데이타만 화면 갱신한다.
         private const int JUMP_TO_ROW = 20;
 
-        public QueryForm()
+        public TUserSQL()
         {
             InitializeComponent();
-            //MessageBox.Show("OKT-01: " + flowLayoutPanel1.Width);
         }
 
-        private void QueryForm_Load(object sender, EventArgs e)
+        private void TUserSQL_Load(object sender, EventArgs e)
         {
             //MessageBox.Show("OKT-02: " + flowLayoutPanel1.Width);
 
@@ -50,12 +47,12 @@ namespace XLog
 
             splitContainer1.Dock = DockStyle.Fill;
             tabControl1.Dock = DockStyle.Fill;
-            
+
             rtbSqlEdit.Text = "select level from dual connect by level <= 10001";
             rtbSqlEdit.Text = "with x as ( select level c1 from dual connect by level <= 10001) select c1, data from x, tb_clob";
 
             //dgvTmp.Visible = false; // Just For Temp Copy
-                    
+
             // dgvGridResult
             //if (false)
             //{
@@ -83,24 +80,48 @@ namespace XLog
                 toolStripStatusLabel4.Text = "";
             }
 
-        } // QueryForm_Load
+        } // Load
 
-        private void QueryForm_Resize(object sender, EventArgs e)
+        private void btnOpen_Click(object sender, EventArgs e)
         {
-            int margin_w = flowLayoutPanel1.Width;
-            int w = this.Width - margin_w;
-            int h = this.Height / 2;
+            try
+            {
+                if (conn != null)
+                {
+                    MessageBox.Show("(W) Already Connected.");
+                    return;
+                }
 
-            splitContainer1.Panel1.Size = new Size(w, h);
-            splitContainer1.Panel2.Size = new Size(w, h);
-
-            // TODO: Why Not 
-            w = this.Width - lbPos.Width - lbTime.Width - lbRow.Width - toolStripStatusLabel4.Width;
-            if ( w < 10 )  w = 10;
-            toolStripProgressBar1.Width = w;
-
+                conn = new OracleConnection(connStr);
+                conn.Open();
+                adapter = new OracleDataAdapter();
+                dt = new DataTable();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
-        
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //dgvGridResult.Dispose();
+                dt.Dispose();
+                adapter.Dispose();
+                conn.Close();
+
+                dt = null;
+                adapter = null;
+                conn = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
         private void btnGo_Click(object sender, EventArgs e)
         {
             PUBLIC.TIME_CHECK(System.DateTime.Now.Ticks); // 기준시간 등록
@@ -142,12 +163,12 @@ namespace XLog
                 int rc;
 
                 lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
-                while ( ( rc = adapter.Fill(sPos, FETCH_SIZE, dt) ) > 0 )
+                while ((rc = adapter.Fill(sPos, FETCH_SIZE, dt)) > 0)
                 {
                     //sPos += FETCH_SIZE;
                     sPos += rc;
 
-                    if (toolStripProgressBar1.Value <= toolStripProgressBar1.Maximum * 0.9 )
+                    if (toolStripProgressBar1.Value <= toolStripProgressBar1.Maximum * 0.9)
                     {
                         toolStripProgressBar1.PerformStep();
                     }
@@ -194,46 +215,11 @@ namespace XLog
                 toolStripStatusLabel4.Text = "Done";
             }
             //this.Cursor = Cursors.Default;
-        }
+        } // btnGO
 
-        private void btnOpen_Click(object sender, EventArgs e)
+        private void btnStop_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (conn != null)
-                {
-                    MessageBox.Show("(W) Already Connected.");
-                    return;
-                }
-
-                conn = new OracleConnection(connStr);
-                conn.Open();
-                adapter = new OracleDataAdapter();
-                dt = new DataTable();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                //dgvGridResult.Dispose();
-                dt.Dispose();
-                adapter.Dispose();
-                conn.Close();
-
-                dt = null;
-                adapter = null;
-                conn = null;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
+            bStop = true;
         }
 
         private void btnLast_Click(object sender, EventArgs e)
@@ -250,14 +236,13 @@ namespace XLog
 
             dgvResult.FirstDisplayedScrollingRowIndex = jumpToRow;
             dgvResult.Rows[jumpToRow].Selected = true;
-
         }
-        
+
         private void btnNext_Click(object sender, EventArgs e)
         {
             int jumpToRow = dgvResult.FirstDisplayedScrollingRowIndex + JUMP_TO_ROW;
 
-            if ( jumpToRow > dgvResult.Rows.Count - 1 )
+            if (jumpToRow > dgvResult.Rows.Count - 1)
             {
                 jumpToRow = dgvResult.Rows.Count - 1;
             }
@@ -293,7 +278,7 @@ namespace XLog
 
             if (btnOpt_Click_Cnt % 2 != 0)
             {
-                if (btnOpt_Click_Cnt == 1 )
+                if (btnOpt_Click_Cnt == 1)
                 {
                     dgvTmp.DefaultCellStyle.ForeColor = dgvResult.DefaultCellStyle.ForeColor;
                     dgvTmp.RowsDefaultCellStyle.BackColor = dgvResult.RowsDefaultCellStyle.BackColor;
@@ -313,11 +298,6 @@ namespace XLog
                 dgvResult.GridColor = dgvTmp.GridColor;
                 dgvResult.BorderStyle = dgvTmp.BorderStyle;
             }
-        }
-
-        private void btnStop_Click(object sender, EventArgs e)
-        {
-            bStop = true;
-        }
-    }
+        } // btnOpt
+    } // class TUserSQL
 }

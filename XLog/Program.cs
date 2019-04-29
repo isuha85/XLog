@@ -16,8 +16,11 @@ namespace XLog
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            //[NOTE] Starting Position ..
             //Application.Run(new MainForm());
-            Application.Run(new QueryForm());
+            //Application.Run(new QueryForm());
+            Application.Run(new SQLTool());
         }
     }
 }

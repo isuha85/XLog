@@ -271,8 +271,8 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
             this.splitContainer1.Panel2.Controls.Add(this.dgvTmp);
-            this.splitContainer1.Size = new System.Drawing.Size(637, 711);
-            this.splitContainer1.SplitterDistance = 355;
+            this.splitContainer1.Size = new System.Drawing.Size(600, 600);
+            this.splitContainer1.SplitterDistance = 300;
             this.splitContainer1.TabIndex = 4;
             // 
             // dgvTmp
@@ -290,7 +290,7 @@
             this.rtbSqlEdit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtbSqlEdit.Location = new System.Drawing.Point(0, 0);
             this.rtbSqlEdit.Name = "rtbSqlEdit";
-            this.rtbSqlEdit.Size = new System.Drawing.Size(635, 353);
+            this.rtbSqlEdit.Size = new System.Drawing.Size(598, 298);
             this.rtbSqlEdit.TabIndex = 1;
             this.rtbSqlEdit.Text = "11";
             // 

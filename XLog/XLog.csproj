@@ -85,6 +85,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SQLTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SQLTool.Designer.cs">
+      <DependentUpon>SQLTool.cs</DependentUpon>
+    </Compile>
     <Compile Include="OLDs\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,6 +123,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>testDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="TUserSQL.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TUserSQL.Designer.cs">
+      <DependentUpon>TUserSQL.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="OLDs\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -138,6 +150,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SQLTool.resx">
+      <DependentUpon>SQLTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TUserSQL.resx">
+      <DependentUpon>TUserSQL.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
