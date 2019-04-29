@@ -29,12 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
@@ -54,21 +48,36 @@
             this.testDataSet = new XLog.testDataSet();
             this.testDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.testDataSet1 = new XLog.testDataSet();
-            this.X = new System.Windows.Forms.SplitContainer();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.dgvTmp = new System.Windows.Forms.DataGridView();
-            this.dgvGridResult = new System.Windows.Forms.DataGridView();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.rtbSqlEdit = new System.Windows.Forms.RichTextBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tpResult = new System.Windows.Forms.TabPage();
+            this.tpOutput = new System.Windows.Forms.TabPage();
+            this.tpDbmsOutput = new System.Windows.Forms.TabPage();
+            this.tpStat = new System.Windows.Forms.TabPage();
+            this.dgvResult = new System.Windows.Forms.DataGridView();
+            this.rtbOutput = new System.Windows.Forms.RichTextBox();
+            this.rtbServerOutput = new System.Windows.Forms.RichTextBox();
+            this.dgvStat = new System.Windows.Forms.DataGridView();
+            this.tpPlan = new System.Windows.Forms.TabPage();
             this.statusStrip1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.testDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.testDataSetBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.testDataSet1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.X)).BeginInit();
-            this.X.Panel1.SuspendLayout();
-            this.X.Panel2.SuspendLayout();
-            this.X.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTmp)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvGridResult)).BeginInit();
+            this.tabControl1.SuspendLayout();
+            this.tpResult.SuspendLayout();
+            this.tpOutput.SuspendLayout();
+            this.tpDbmsOutput.SuspendLayout();
+            this.tpStat.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResult)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvStat)).BeginInit();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -247,107 +256,154 @@
             this.testDataSet1.DataSetName = "testDataSet";
             this.testDataSet1.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
-            // X
+            // splitContainer1
             // 
-            this.X.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.X.Location = new System.Drawing.Point(0, 0);
-            this.X.Name = "X";
-            this.X.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // X.Panel1
+            // splitContainer1.Panel1
             // 
-            this.X.Panel1.Controls.Add(this.richTextBox1);
+            this.splitContainer1.Panel1.Controls.Add(this.rtbSqlEdit);
             // 
-            // X.Panel2
+            // splitContainer1.Panel2
             // 
-            this.X.Panel2.Controls.Add(this.dgvGridResult);
-            this.X.Panel2.Controls.Add(this.dgvTmp);
-            this.X.Size = new System.Drawing.Size(400, 711);
-            this.X.SplitterDistance = 355;
-            this.X.TabIndex = 4;
+            this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
+            this.splitContainer1.Panel2.Controls.Add(this.dgvTmp);
+            this.splitContainer1.Size = new System.Drawing.Size(637, 711);
+            this.splitContainer1.SplitterDistance = 355;
+            this.splitContainer1.TabIndex = 4;
             // 
             // dgvTmp
             // 
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle16.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle16.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            dataGridViewCellStyle16.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle16.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle16.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvTmp.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle16;
             this.dgvTmp.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle17.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle17.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            dataGridViewCellStyle17.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvTmp.DefaultCellStyle = dataGridViewCellStyle17;
-            this.dgvTmp.Location = new System.Drawing.Point(3, 3);
+            this.dgvTmp.Location = new System.Drawing.Point(7, 267);
             this.dgvTmp.Name = "dgvTmp";
-            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle18.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle18.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            dataGridViewCellStyle18.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvTmp.RowHeadersDefaultCellStyle = dataGridViewCellStyle18;
             this.dgvTmp.RowTemplate.Height = 30;
             this.dgvTmp.Size = new System.Drawing.Size(40, 40);
             this.dgvTmp.TabIndex = 3;
             this.dgvTmp.Visible = false;
             // 
-            // dgvGridResult
+            // rtbSqlEdit
             // 
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvGridResult.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle13;
-            this.dgvGridResult.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvGridResult.DefaultCellStyle = dataGridViewCellStyle14;
-            this.dgvGridResult.Location = new System.Drawing.Point(3, 49);
-            this.dgvGridResult.Name = "dgvGridResult";
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle15.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle15.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            dataGridViewCellStyle15.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvGridResult.RowHeadersDefaultCellStyle = dataGridViewCellStyle15;
-            this.dgvGridResult.RowTemplate.Height = 30;
-            this.dgvGridResult.Size = new System.Drawing.Size(100, 100);
-            this.dgvGridResult.TabIndex = 4;
+            this.rtbSqlEdit.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbSqlEdit.Location = new System.Drawing.Point(0, 0);
+            this.rtbSqlEdit.Name = "rtbSqlEdit";
+            this.rtbSqlEdit.Size = new System.Drawing.Size(635, 353);
+            this.rtbSqlEdit.TabIndex = 1;
+            this.rtbSqlEdit.Text = "11";
             // 
-            // richTextBox1
+            // tabControl1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(3, 8);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(100, 96);
-            this.richTextBox1.TabIndex = 1;
-            this.richTextBox1.Text = "11";
+            this.tabControl1.Controls.Add(this.tpResult);
+            this.tabControl1.Controls.Add(this.tpOutput);
+            this.tabControl1.Controls.Add(this.tpDbmsOutput);
+            this.tabControl1.Controls.Add(this.tpStat);
+            this.tabControl1.Controls.Add(this.tpPlan);
+            this.tabControl1.Location = new System.Drawing.Point(3, 3);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(553, 197);
+            this.tabControl1.TabIndex = 5;
+            // 
+            // tpResult
+            // 
+            this.tpResult.Controls.Add(this.dgvResult);
+            this.tpResult.Location = new System.Drawing.Point(4, 31);
+            this.tpResult.Name = "tpResult";
+            this.tpResult.Padding = new System.Windows.Forms.Padding(3);
+            this.tpResult.Size = new System.Drawing.Size(545, 162);
+            this.tpResult.TabIndex = 0;
+            this.tpResult.Text = "Result";
+            this.tpResult.UseVisualStyleBackColor = true;
+            // 
+            // tpOutput
+            // 
+            this.tpOutput.Controls.Add(this.rtbOutput);
+            this.tpOutput.Location = new System.Drawing.Point(4, 31);
+            this.tpOutput.Name = "tpOutput";
+            this.tpOutput.Padding = new System.Windows.Forms.Padding(3);
+            this.tpOutput.Size = new System.Drawing.Size(545, 162);
+            this.tpOutput.TabIndex = 1;
+            this.tpOutput.Text = "Output";
+            this.tpOutput.UseVisualStyleBackColor = true;
+            // 
+            // tpDbmsOutput
+            // 
+            this.tpDbmsOutput.Controls.Add(this.rtbServerOutput);
+            this.tpDbmsOutput.Location = new System.Drawing.Point(4, 31);
+            this.tpDbmsOutput.Name = "tpDbmsOutput";
+            this.tpDbmsOutput.Size = new System.Drawing.Size(545, 162);
+            this.tpDbmsOutput.TabIndex = 2;
+            this.tpDbmsOutput.Text = "DBMS Output";
+            this.tpDbmsOutput.UseVisualStyleBackColor = true;
+            // 
+            // tpStat
+            // 
+            this.tpStat.Controls.Add(this.dgvStat);
+            this.tpStat.Location = new System.Drawing.Point(4, 31);
+            this.tpStat.Name = "tpStat";
+            this.tpStat.Size = new System.Drawing.Size(545, 162);
+            this.tpStat.TabIndex = 3;
+            this.tpStat.Text = "Statistics";
+            this.tpStat.UseVisualStyleBackColor = true;
+            // 
+            // dgvResult
+            // 
+            this.dgvResult.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvResult.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvResult.Location = new System.Drawing.Point(3, 3);
+            this.dgvResult.Name = "dgvResult";
+            this.dgvResult.RowTemplate.Height = 30;
+            this.dgvResult.Size = new System.Drawing.Size(539, 156);
+            this.dgvResult.TabIndex = 5;
+            // 
+            // rtbOutput
+            // 
+            this.rtbOutput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbOutput.Location = new System.Drawing.Point(3, 3);
+            this.rtbOutput.Name = "rtbOutput";
+            this.rtbOutput.Size = new System.Drawing.Size(539, 156);
+            this.rtbOutput.TabIndex = 2;
+            this.rtbOutput.Text = "";
+            // 
+            // rtbServerOutput
+            // 
+            this.rtbServerOutput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbServerOutput.Location = new System.Drawing.Point(0, 0);
+            this.rtbServerOutput.Name = "rtbServerOutput";
+            this.rtbServerOutput.Size = new System.Drawing.Size(545, 162);
+            this.rtbServerOutput.TabIndex = 3;
+            this.rtbServerOutput.Text = "";
+            // 
+            // dgvStat
+            // 
+            this.dgvStat.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvStat.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvStat.Location = new System.Drawing.Point(0, 0);
+            this.dgvStat.Name = "dgvStat";
+            this.dgvStat.RowTemplate.Height = 30;
+            this.dgvStat.Size = new System.Drawing.Size(545, 162);
+            this.dgvStat.TabIndex = 6;
+            // 
+            // tpPlan
+            // 
+            this.tpPlan.Location = new System.Drawing.Point(4, 31);
+            this.tpPlan.Name = "tpPlan";
+            this.tpPlan.Size = new System.Drawing.Size(545, 162);
+            this.tpPlan.TabIndex = 4;
+            this.tpPlan.Text = "Explain Plan";
+            this.tpPlan.UseVisualStyleBackColor = true;
             // 
             // QueryForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(778, 744);
-            this.Controls.Add(this.X);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
+            this.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "QueryForm";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.QueryForm_Load);
@@ -358,12 +414,18 @@
             ((System.ComponentModel.ISupportInitialize)(this.testDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.testDataSetBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.testDataSet1)).EndInit();
-            this.X.Panel1.ResumeLayout(false);
-            this.X.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.X)).EndInit();
-            this.X.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTmp)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvGridResult)).EndInit();
+            this.tabControl1.ResumeLayout(false);
+            this.tpResult.ResumeLayout(false);
+            this.tpOutput.ResumeLayout(false);
+            this.tpDbmsOutput.ResumeLayout(false);
+            this.tpStat.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResult)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvStat)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -389,9 +451,18 @@
         private System.Windows.Forms.ToolStripStatusLabel lbRow;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
         private System.Windows.Forms.Button btnStop;
-        private System.Windows.Forms.SplitContainer X;
+        private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.DataGridView dgvTmp;
-        private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.DataGridView dgvGridResult;
+        private System.Windows.Forms.RichTextBox rtbSqlEdit;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tpResult;
+        private System.Windows.Forms.TabPage tpOutput;
+        private System.Windows.Forms.TabPage tpDbmsOutput;
+        private System.Windows.Forms.TabPage tpStat;
+        private System.Windows.Forms.DataGridView dgvResult;
+        private System.Windows.Forms.RichTextBox rtbOutput;
+        private System.Windows.Forms.RichTextBox rtbServerOutput;
+        private System.Windows.Forms.DataGridView dgvStat;
+        private System.Windows.Forms.TabPage tpPlan;
     }
 }
