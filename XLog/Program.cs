@@ -18,9 +18,15 @@ namespace XLog
             Application.SetCompatibleTextRenderingDefault(false);
 
             //[NOTE] Starting Position ..
+            //Application.Run(new Form1()); return;
             //Application.Run(new MainForm());
             //Application.Run(new QueryForm());
             Application.Run(new SQLTool());
         }
+
+        /// 참고 URLs
+        /// + https://iconverticons.com/online/
+        ///     png 파일을 ico 으로 변환
+        /// + 
     }
 }

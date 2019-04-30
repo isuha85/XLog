@@ -67,6 +67,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>x128_01_main.png.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Oracle.ManagedDataAccess, Version=4.122.18.3, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <HintPath>..\packages\Oracle.ManagedDataAccess.18.6.0\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
@@ -98,16 +101,10 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="PUBLIC.cs" />
-    <Compile Include="OLDs\QueryForm_20190423.cs">
+    <Compile Include="OLDs\QueryForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OLDs\QueryForm_20190423.Designer.cs">
-      <DependentUpon>QueryForm_20190423.cs</DependentUpon>
-    </Compile>
-    <Compile Include="QueryForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="QueryForm.Designer.cs">
+    <Compile Include="OLDs\QueryForm.Designer.cs">
       <DependentUpon>QueryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
@@ -132,10 +129,7 @@
     <EmbeddedResource Include="OLDs\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="OLDs\QueryForm_20190423.resx">
-      <DependentUpon>QueryForm_20190423.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="QueryForm.resx">
+    <EmbeddedResource Include="OLDs\QueryForm.resx">
       <DependentUpon>QueryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
@@ -149,6 +143,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="SQLTool.resx">
       <DependentUpon>SQLTool.cs</DependentUpon>
@@ -192,6 +187,18 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\x16_01_add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\x16_01_close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\x128_01_main.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="x128_01_main.png.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
