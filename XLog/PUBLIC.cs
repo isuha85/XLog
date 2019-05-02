@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace XLog
 
             return Math.Truncate((double)(sTickNow - mTickStart) / 10000.0F) / 1000;
         }
-
-    }
+    
+    } // class PUBLIC
 
 }

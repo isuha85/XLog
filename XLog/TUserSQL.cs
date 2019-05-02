@@ -32,6 +32,11 @@ namespace XLog
         public TUserSQL()
         {
             InitializeComponent();
+
+            // TODO: 여전히 깜박임. ㅠㅠ
+            //this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
+            //this.SetStyle(System.Windows.Forms.ControlStyles.DoubleBuffer, true);
+            //this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, true);
         }
 
         private void TUserSQL_Load(object sender, EventArgs e)
