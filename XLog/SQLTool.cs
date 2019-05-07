@@ -29,7 +29,7 @@ namespace XLog
             // TODO: 여전히 깜박임. ㅠㅠ
             //this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
             //this.SetStyle(System.Windows.Forms.ControlStyles.DoubleBuffer, true);
-            this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, true);
+            //this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, true);
 
         }
 

@@ -49,18 +49,18 @@
             this.testDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.testDataSet1 = new XLog.testDataSet();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.dgvTmp = new System.Windows.Forms.DataGridView();
             this.rtbSqlEdit = new System.Windows.Forms.RichTextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpResult = new System.Windows.Forms.TabPage();
-            this.tpOutput = new System.Windows.Forms.TabPage();
-            this.tpDbmsOutput = new System.Windows.Forms.TabPage();
-            this.tpStat = new System.Windows.Forms.TabPage();
             this.dgvResult = new System.Windows.Forms.DataGridView();
+            this.tpOutput = new System.Windows.Forms.TabPage();
             this.rtbOutput = new System.Windows.Forms.RichTextBox();
+            this.tpDbmsOutput = new System.Windows.Forms.TabPage();
             this.rtbServerOutput = new System.Windows.Forms.RichTextBox();
+            this.tpStat = new System.Windows.Forms.TabPage();
             this.dgvStat = new System.Windows.Forms.DataGridView();
             this.tpPlan = new System.Windows.Forms.TabPage();
+            this.dgvTmp = new System.Windows.Forms.DataGridView();
             this.statusStrip1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.testDataSet)).BeginInit();
@@ -70,14 +70,14 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTmp)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tpResult.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResult)).BeginInit();
             this.tpOutput.SuspendLayout();
             this.tpDbmsOutput.SuspendLayout();
             this.tpStat.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvResult)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStat)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTmp)).BeginInit();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -197,7 +197,7 @@
             this.btnLast.Name = "btnLast";
             this.btnLast.Size = new System.Drawing.Size(80, 30);
             this.btnLast.TabIndex = 0;
-            this.btnLast.Text = "To Last";
+            this.btnLast.Text = "Last";
             this.btnLast.UseVisualStyleBackColor = true;
             this.btnLast.Click += new System.EventHandler(this.btnLast_Click);
             // 
@@ -207,7 +207,7 @@
             this.btnFirst.Name = "btnFirst";
             this.btnFirst.Size = new System.Drawing.Size(80, 30);
             this.btnFirst.TabIndex = 5;
-            this.btnFirst.Text = "To First";
+            this.btnFirst.Text = "First";
             this.btnFirst.UseVisualStyleBackColor = true;
             this.btnFirst.Click += new System.EventHandler(this.btnFirst_Click);
             // 
@@ -217,7 +217,7 @@
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(80, 30);
             this.btnNext.TabIndex = 4;
-            this.btnNext.Text = "To Next";
+            this.btnNext.Text = "Next";
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
@@ -227,7 +227,7 @@
             this.btnPrev.Name = "btnPrev";
             this.btnPrev.Size = new System.Drawing.Size(80, 30);
             this.btnPrev.TabIndex = 6;
-            this.btnPrev.Text = "To Prev";
+            this.btnPrev.Text = "Prev";
             this.btnPrev.UseVisualStyleBackColor = true;
             this.btnPrev.Click += new System.EventHandler(this.btnPrev_Click);
             // 
@@ -275,16 +275,6 @@
             this.splitContainer1.SplitterDistance = 300;
             this.splitContainer1.TabIndex = 4;
             // 
-            // dgvTmp
-            // 
-            this.dgvTmp.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTmp.Location = new System.Drawing.Point(7, 267);
-            this.dgvTmp.Name = "dgvTmp";
-            this.dgvTmp.RowTemplate.Height = 30;
-            this.dgvTmp.Size = new System.Drawing.Size(40, 40);
-            this.dgvTmp.TabIndex = 3;
-            this.dgvTmp.Visible = false;
-            // 
             // rtbSqlEdit
             // 
             this.rtbSqlEdit.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -318,37 +308,6 @@
             this.tpResult.Text = "Result";
             this.tpResult.UseVisualStyleBackColor = true;
             // 
-            // tpOutput
-            // 
-            this.tpOutput.Controls.Add(this.rtbOutput);
-            this.tpOutput.Location = new System.Drawing.Point(4, 31);
-            this.tpOutput.Name = "tpOutput";
-            this.tpOutput.Padding = new System.Windows.Forms.Padding(3);
-            this.tpOutput.Size = new System.Drawing.Size(545, 162);
-            this.tpOutput.TabIndex = 1;
-            this.tpOutput.Text = "Output";
-            this.tpOutput.UseVisualStyleBackColor = true;
-            // 
-            // tpDbmsOutput
-            // 
-            this.tpDbmsOutput.Controls.Add(this.rtbServerOutput);
-            this.tpDbmsOutput.Location = new System.Drawing.Point(4, 31);
-            this.tpDbmsOutput.Name = "tpDbmsOutput";
-            this.tpDbmsOutput.Size = new System.Drawing.Size(545, 162);
-            this.tpDbmsOutput.TabIndex = 2;
-            this.tpDbmsOutput.Text = "DBMS Output";
-            this.tpDbmsOutput.UseVisualStyleBackColor = true;
-            // 
-            // tpStat
-            // 
-            this.tpStat.Controls.Add(this.dgvStat);
-            this.tpStat.Location = new System.Drawing.Point(4, 31);
-            this.tpStat.Name = "tpStat";
-            this.tpStat.Size = new System.Drawing.Size(545, 162);
-            this.tpStat.TabIndex = 3;
-            this.tpStat.Text = "Statistics";
-            this.tpStat.UseVisualStyleBackColor = true;
-            // 
             // dgvResult
             // 
             this.dgvResult.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -359,23 +318,54 @@
             this.dgvResult.Size = new System.Drawing.Size(539, 156);
             this.dgvResult.TabIndex = 5;
             // 
+            // tpOutput
+            // 
+            this.tpOutput.Controls.Add(this.rtbOutput);
+            this.tpOutput.Location = new System.Drawing.Point(4, 28);
+            this.tpOutput.Name = "tpOutput";
+            this.tpOutput.Padding = new System.Windows.Forms.Padding(3);
+            this.tpOutput.Size = new System.Drawing.Size(545, 165);
+            this.tpOutput.TabIndex = 1;
+            this.tpOutput.Text = "Output";
+            this.tpOutput.UseVisualStyleBackColor = true;
+            // 
             // rtbOutput
             // 
             this.rtbOutput.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtbOutput.Location = new System.Drawing.Point(3, 3);
             this.rtbOutput.Name = "rtbOutput";
-            this.rtbOutput.Size = new System.Drawing.Size(539, 156);
+            this.rtbOutput.Size = new System.Drawing.Size(539, 159);
             this.rtbOutput.TabIndex = 2;
             this.rtbOutput.Text = "";
+            // 
+            // tpDbmsOutput
+            // 
+            this.tpDbmsOutput.Controls.Add(this.rtbServerOutput);
+            this.tpDbmsOutput.Location = new System.Drawing.Point(4, 28);
+            this.tpDbmsOutput.Name = "tpDbmsOutput";
+            this.tpDbmsOutput.Size = new System.Drawing.Size(545, 165);
+            this.tpDbmsOutput.TabIndex = 2;
+            this.tpDbmsOutput.Text = "DBMS Output";
+            this.tpDbmsOutput.UseVisualStyleBackColor = true;
             // 
             // rtbServerOutput
             // 
             this.rtbServerOutput.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtbServerOutput.Location = new System.Drawing.Point(0, 0);
             this.rtbServerOutput.Name = "rtbServerOutput";
-            this.rtbServerOutput.Size = new System.Drawing.Size(545, 162);
+            this.rtbServerOutput.Size = new System.Drawing.Size(545, 165);
             this.rtbServerOutput.TabIndex = 3;
             this.rtbServerOutput.Text = "";
+            // 
+            // tpStat
+            // 
+            this.tpStat.Controls.Add(this.dgvStat);
+            this.tpStat.Location = new System.Drawing.Point(4, 28);
+            this.tpStat.Name = "tpStat";
+            this.tpStat.Size = new System.Drawing.Size(545, 165);
+            this.tpStat.TabIndex = 3;
+            this.tpStat.Text = "Statistics";
+            this.tpStat.UseVisualStyleBackColor = true;
             // 
             // dgvStat
             // 
@@ -384,17 +374,27 @@
             this.dgvStat.Location = new System.Drawing.Point(0, 0);
             this.dgvStat.Name = "dgvStat";
             this.dgvStat.RowTemplate.Height = 30;
-            this.dgvStat.Size = new System.Drawing.Size(545, 162);
+            this.dgvStat.Size = new System.Drawing.Size(545, 165);
             this.dgvStat.TabIndex = 6;
             // 
             // tpPlan
             // 
-            this.tpPlan.Location = new System.Drawing.Point(4, 31);
+            this.tpPlan.Location = new System.Drawing.Point(4, 28);
             this.tpPlan.Name = "tpPlan";
-            this.tpPlan.Size = new System.Drawing.Size(545, 162);
+            this.tpPlan.Size = new System.Drawing.Size(545, 165);
             this.tpPlan.TabIndex = 4;
             this.tpPlan.Text = "Explain Plan";
             this.tpPlan.UseVisualStyleBackColor = true;
+            // 
+            // dgvTmp
+            // 
+            this.dgvTmp.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTmp.Location = new System.Drawing.Point(7, 267);
+            this.dgvTmp.Name = "dgvTmp";
+            this.dgvTmp.RowTemplate.Height = 30;
+            this.dgvTmp.Size = new System.Drawing.Size(40, 40);
+            this.dgvTmp.TabIndex = 3;
+            this.dgvTmp.Visible = false;
             // 
             // QueryForm
             // 
@@ -418,14 +418,14 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTmp)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tpResult.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResult)).EndInit();
             this.tpOutput.ResumeLayout(false);
             this.tpDbmsOutput.ResumeLayout(false);
             this.tpStat.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvResult)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStat)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTmp)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -19,6 +19,7 @@ namespace XLog
 
             //[NOTE] Starting Position ..
             //Application.Run(new Form1()); return;
+            Application.Run(new QueryForm2()); return;
 
             //Application.Run(new MainForm());
             //Application.Run(new QueryForm());
