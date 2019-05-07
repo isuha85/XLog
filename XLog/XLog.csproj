@@ -132,7 +132,7 @@
     <Compile Include="OLDs\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="PUBLIC.cs" />
+    <Compile Include="common\PUBLIC.cs" />
     <Compile Include="OLDs\QueryForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,11 +152,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>testDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="TUserSQL.cs">
+    <Compile Include="OLDs\TUserSQL.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TUserSQL.Designer.cs">
+    <Compile Include="OLDs\TUserSQL.Designer.cs">
       <DependentUpon>TUserSQL.cs</DependentUpon>
+    </Compile>
+    <Compile Include="common\SQLToolUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="common\SQLToolUserControl.Designer.cs">
+      <DependentUpon>SQLToolUserControl.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="OLDs\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -183,8 +189,11 @@
     <EmbeddedResource Include="SQLTool.resx">
       <DependentUpon>SQLTool.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TUserSQL.resx">
+    <EmbeddedResource Include="OLDs\TUserSQL.resx">
       <DependentUpon>TUserSQL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="common\SQLToolUserControl.resx">
+      <DependentUpon>SQLToolUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

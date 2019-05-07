@@ -46,7 +46,8 @@ namespace XLog
             string sTmp = "SQL" + nTabSeq + "    ";
             TabPage myTabPage = new TabPage(sTmp);
 
-            var myTabForm = new TUserSQL();
+            //var myTabForm = new TUserSQL();
+            var myTabForm = new TSQLToolUserControl();
 
             myTabForm.Show();
             //myTabForm.TopLevel = false;
