@@ -8,20 +8,46 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using Oracle.ManagedDataAccess.Client;      // using System.Data.OracleClient;
+
 using System.Diagnostics;                   // 특정시간 응답대기
+using System.Configuration;
+
+using System.Data.OleDb;                    // Any DB - oracle / SQL Server / tibero / ..
+using Tibero.DbAccess;                      // tibero
+using System.Data.SqlClient;                // SQL Server
+using Altibase.Data.AltibaseClient;         // altibase
+
+//using Oracle.DataAccessxx;                // Unmanaged 드라이버
+using Oracle.ManagedDataAccess.Client;      // Managed 드라이버 (32/64 bit에 무방), deprecated - using System.Data.OracleClient;
+using Oracle.ManagedDataAccess.Types;
+
+using System.Data.Common;
+
+/*
+ * #### SQL Server vs ORACLE | TIBERO | ALTIBASE
+ * 
+ * SqlConnection	| OleDbConnection	-> OracleConnection | OleDbConnectionTbr	| AltibaseConnection
+ * SqlCommand   	| OleDbCommand    	-> OracleCommand    | OleDbCommandTbr		| AltibaseCommand   
+ * SqlDbType    	|     				-> OracleDbType     | OleDbTypeTbr                              
+ * SqlException 	|     				-> OracleException  | Exception                                 
+ * SqlDataReader	| OleDbDataReader	-> OracleDataReader | OleDbDataReader		| AltibaseDataReader
+ * 
+ * 출처: https://yaraba.tistory.com/346 
+ * DOS> C:\WINDOWS\system32 > regsvr32 tbprov6.dll ( 파일이 N개임, Tibero 설치 pdf 참조할 것 
+ */
 
 namespace XLog
 {
     public partial class TSQLToolUserControl : UserControl
     {
-        //소스 이름과 유저 이름, 패스워드를 입력함 (나중에 오라클 연결할 때 sql문 사용)
-        //Data Source  = 본인의 아이피 주소:포트번호/orcl 이다!
-
         private string connStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON";
-        private OracleConnection conn = null;
-        private OracleDataAdapter adapter = null;
-        private DataTable dt = null;
+
+        //private OracleConnection conn = null;
+        //private OracleDataAdapter adapter = null;
+        private DbConnection conn = null;
+        private DbDataAdapter adapter = null;
+        XDb xDb = null;
+
         private DataTable dtEmpty = null;
         private bool bStop = false;
 
@@ -32,17 +58,10 @@ namespace XLog
         public TSQLToolUserControl()
         {
             InitializeComponent();
-
-            // TODO: 여전히 깜박임. ㅠㅠ
-            //this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
-            //this.SetStyle(System.Windows.Forms.ControlStyles.DoubleBuffer, true);
-            //this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, true);
         }
 
         private void SQLToolUserControl_Load(object sender, EventArgs e)
         {
-            //MessageBox.Show("OKT-02: " + flowLayoutPanel1.Width);
-
             int margin_w = flowLayoutPanel1.Width;
             int w = this.Width - margin_w;
             int h = this.Height / 2;
@@ -55,23 +74,11 @@ namespace XLog
 
             rtbSqlEdit.Text = "select level from dual connect by level <= 10001";
             rtbSqlEdit.Text = "with x as ( select level c1 from dual connect by level <= 10001) select c1, data from x, tb_clob";
+            rtbSqlEdit.Text = "select c1, data from ( select level c1 from dual connect by level <= 10001) x, tb_clob";
 
-            //dgvTmp.Visible = false; // Just For Temp Copy
-
-            // dgvGridResult
-            //if (false)
-            //{
-            //    // MakeReadOnly
-            //    dgvGridResult.AllowUserToAddRows = false;
-            //    dgvGridResult.AllowUserToDeleteRows = false;
-            //    dgvGridResult.ReadOnly = true;
-            //}
-            //else
-            {
-                // Tip 12 - DataGridView 레코드 색상 번갈아서 바꾸기
-                dgvResult.RowsDefaultCellStyle.BackColor = Color.White;
-                dgvResult.AlternatingRowsDefaultCellStyle.BackColor = Color.Aquamarine;
-            }
+            // Tip 12 - DataGridView 레코드 색상 번갈아서 바꾸기
+            dgvResult.RowsDefaultCellStyle.BackColor = Color.White;
+            dgvResult.AlternatingRowsDefaultCellStyle.BackColor = Color.Aquamarine;
 
             // toolStripProgressBar1
             {
@@ -84,23 +91,34 @@ namespace XLog
 
                 toolStripStatusLabel4.Text = "";
             }
-
         } // Load
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
             try
             {
+                if (xDb == null)
+                {
+                    xDb = new XDb(XDbConnType.OLEDB);
+                    xDb.mConnStr = "Provider=Altibase.OLEDB;Data Source=192.168.56.201;User ID=sys;Password=manager;Extended Properties='PORT=20300'"; // OK
+
+                    //xDb = new XDb(XDbConnType.ORACLE);
+                    //xDb.mConnStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON";
+
+                }
+
                 if (conn != null)
                 {
                     MessageBox.Show("(W) Already Connected.");
                     return;
                 }
 
-                conn = new OracleConnection(connStr);
+                //conn = new OracleConnection(connStr);
+                conn = xDb.XDbConnection();
                 conn.Open();
-                adapter = new OracleDataAdapter();
-                dt = new DataTable();
+
+                //adapter = new OracleDataAdapter();
+                adapter = xDb.XDbDataAdapter();
             }
             catch (Exception ex)
             {
@@ -113,11 +131,9 @@ namespace XLog
             try
             {
                 //dgvGridResult.Dispose();
-                dt.Dispose();
                 adapter.Dispose();
                 conn.Close();
 
-                dt = null;
                 adapter = null;
                 conn = null;
             }
@@ -145,19 +161,10 @@ namespace XLog
             {
                 dgvResult.DataSource = dtEmpty;     // (1) 결과창을 비워준다.
                 tabControl1.SelectedIndex = 0;      // (2) 결과탭을 보여준디.
-
                 Application.DoEvents();
 
-                //dt.DataSet.Clear();
-                //dt.clear();
-                //dt.dispose();
-
-                //adapter.Dispose();
-                //dgvGridResult.SelectAll();
-                //dgvGridResult.ClearSelection();
-
-                adapter.SelectCommand = new OracleCommand(rtbSqlEdit.Text, conn);
-                //adapter.SelectCommand = new OracleCommand("SELECT 1 AS NO FROM DUAL", conn);
+                //adapter.SelectCommand = new OracleCommand(rtbSqlEdit.Text, (OracleConnection)conn);
+                adapter.SelectCommand = xDb.XDbCommand(rtbSqlEdit.Text, conn);
 
                 DataTable dt = new DataTable();     // TODO: (BUGBUG) DataTable을 재사용하면, 컬럼명이 추가된다.
                 DataTable dt2 = new DataTable();    // 처음 결과 셋을 일부만 저장하여 보여주는 Fake 코드 (출력성능이슈)
@@ -254,13 +261,6 @@ namespace XLog
 
             dgvResult.FirstDisplayedScrollingRowIndex = jumpToRow;
             dgvResult.Rows[jumpToRow].Selected = true;
-
-            //int jumpToRow = 20;
-            //if (dgvGridResult.Rows.Count >= jumpToRow && jumpToRow >= 1)
-            //{
-            //    dgvGridResult.FirstDisplayedScrollingRowIndex = jumpToRow;
-            //    dgvGridResult.Rows[jumpToRow].Selected = true;
-            //}
         }
 
         private void btnPrev_Click(object sender, EventArgs e)

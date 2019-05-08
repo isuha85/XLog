@@ -386,14 +386,14 @@
             this.flowLayoutPanel1.Size = new System.Drawing.Size(86, 770);
             this.flowLayoutPanel1.TabIndex = 4;
             // 
-            // SQLToolUserControl
+            // TSQLToolUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
-            this.Name = "SQLToolUserControl";
+            this.Name = "TSQLToolUserControl";
             this.Size = new System.Drawing.Size(800, 800);
             this.Load += new System.EventHandler(this.SQLToolUserControl_Load);
             this.statusStrip1.ResumeLayout(false);

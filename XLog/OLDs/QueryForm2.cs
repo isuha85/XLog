@@ -344,7 +344,6 @@ namespace XLog
     ") WHERE rnum BETWEEN 1 AND 30", conn);
 
                 // [NOTE] Not OleDbDataReaderTbr But System.Data.OleDb.OleDbDataReader
-
                 OleDbDataReader reader = rcmd.ExecuteReader();
                 if (reader.HasRows)
                 {
