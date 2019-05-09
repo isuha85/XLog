@@ -75,7 +75,9 @@ namespace XLog
     {
         public string mConnStr { get; set; }
         public XDbConnType mConnType { get; set; } = XDbConnType.ORACLE;
+        //public bool AutoCommit { get; set; }
         public DbConnection mConnection = null;
+        public DbTransaction mSelectTransaction4alt = null;
 
         #region Abstract Functions
 
@@ -136,6 +138,10 @@ namespace XLog
             {
                 mConnection = new OracleConnection(sConnStr);
             }
+            else if (mConnType == XDbConnType.ALTIBASE)
+            {
+                mConnection = new AltibaseConnection(sConnStr);
+            }
             else if (mConnType == XDbConnType.MSSQL)
             {
                 mConnection = new SqlConnection(sConnStr);
@@ -155,6 +161,10 @@ namespace XLog
             if (mConnType == XDbConnType.ORACLE)
             {
                 sCommand = new OracleCommand();
+            }
+            else if (mConnType == XDbConnType.ALTIBASE)
+            {
+                sCommand = new AltibaseCommand();
             }
             else if (mConnType == XDbConnType.MSSQL)
             {
@@ -183,6 +193,27 @@ namespace XLog
                 sCommand.Connection = aConnection;
             }
 
+            if (mConnType == XDbConnType.ALTIBASE)
+            {
+                // TODO: 제거해야함 - Altibase 에서 LOB 조회를 위한 임시코드.
+                // (1) AutoCommit 에서 조회하면 오류 - {"LobLocator cannot span the transaction 332417."}
+                // (2) (BUGBUG) 그러하다면, 해당 쿼리 이전에 다른 TX가 있으면 어찌 할 것인가?
+
+                if (mSelectTransaction4alt == null)
+                {
+                    mSelectTransaction4alt = mConnection.BeginTransaction(); // [WHAT] mConnection.EnlistTransaction
+                    sCommand.Transaction = mSelectTransaction4alt;
+                }
+                else
+                {
+                    mSelectTransaction4alt.Rollback();
+                    //mSelectTransaction4alt.Commit();
+
+                    mSelectTransaction4alt = mConnection.BeginTransaction();
+                    //mSelectTransaction4alt.Connection.BeginTransaction(); // 이런식으로 작성하면, "개체의 현재상태가 유효하지 않습니다" 오류가 2번째 Rollback에서 발생
+                }
+            }
+
             return sCommand;
         }
 
@@ -201,6 +232,10 @@ namespace XLog
             if (mConnType == XDbConnType.ORACLE)
             {
                 sParameter = new OracleParameter(parameterName, parameterValue);
+            }
+            else if (mConnType == XDbConnType.ALTIBASE)
+            {
+                sParameter = new AltibaseParameter(parameterName, parameterValue);
             }
             else if (mConnType == XDbConnType.MSSQL)
             {
@@ -224,6 +259,10 @@ namespace XLog
             //if (mConnType == XDbConnType.ORACLE)
             //{
             //    sDataReader = new OracleDataReader();
+            //}
+            //else if (mConnType == XDbConnType.ALTIBASE)
+            //{
+            //    sDataReader = new AltibaseDataReader();
             //}
             //else if (mConnType == XDbConnType.MSSQL)
             //{
@@ -252,6 +291,10 @@ namespace XLog
             if (mConnType == XDbConnType.ORACLE)
             {
                 sDataAdapter = new OracleDataAdapter();
+            }
+            else if (mConnType == XDbConnType.ALTIBASE)
+            {
+                sDataAdapter = new AltibaseDataAdapter();
             }
             else if (mConnType == XDbConnType.MSSQL)
             {
@@ -303,6 +346,10 @@ namespace XLog
             //if (mConnType == XDbConnType.ORACLE)
             //{
             //    sTransaction = new OracleTransaction();
+            //}
+            //else if (mConnType == XDbConnType.ALTIBASE)
+            //{
+            //    sTransaction = new AltibaseTransaction();
             //}
             //else if (mConnType == XDbConnType.MSSQL)
             //{

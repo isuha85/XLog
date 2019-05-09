@@ -40,11 +40,10 @@ namespace XLog
 {
     public partial class TSQLToolUserControl : UserControl
     {
-        private string connStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON";
-
+        //private string connStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON";
         //private OracleConnection conn = null;
         //private OracleDataAdapter adapter = null;
-        private DbConnection conn = null;
+        private DbConnection conn = null;                       // Abstract 클래스 (System.Data.Common)
         private DbDataAdapter adapter = null;
         XDb xDb = null;
 
@@ -97,13 +96,25 @@ namespace XLog
         {
             try
             {
+                //System.Environment.SetEnvironmentVariable("ALTIBASE_PORT_NO", "20300", EnvironmentVariableTarget.Process);
+
                 if (xDb == null)
                 {
-                    xDb = new XDb(XDbConnType.OLEDB);
-                    xDb.mConnStr = "Provider=Altibase.OLEDB;Data Source=192.168.56.201;User ID=sys;Password=manager;Extended Properties='PORT=20300'"; // OK
+                    // ## 범용 OLEDB 타입 제약사항 
+                    // (1) ALTIBASE의 경우 CLOB 조회 불가
+
+                    //xDb = new XDb(XDbConnType.OLEDB);
+                    //xDb.mConnStr = "Provider=Altibase.OLEDB;Data Source=192.168.56.201;User ID=sys;Password=manager;Extended Properties='PORT=20300'"; // OK, But CLOB BUGBUG
+
+                    /*
+                     * TODO:
+                     * (1) ALTIBASE - if Autocommit then {"LobLocator cannot span the transaction 332417."}
+                     */
+                    xDb = new XDb(XDbConnType.ALTIBASE);
+                    xDb.mConnStr = "DSN=192.168.56.201;uid=sys;pwd=manager;NLS_USE=MS949;PORT=20300"; // OK
 
                     //xDb = new XDb(XDbConnType.ORACLE);
-                    //xDb.mConnStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON";
+                    //xDb.mConnStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON"; // OK
 
                 }
 
@@ -123,6 +134,7 @@ namespace XLog
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
+                conn = null;
             }
         }
 
