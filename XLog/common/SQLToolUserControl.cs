@@ -26,11 +26,23 @@ using System.Data.Common;
 /*
  * #### SQL Server vs ORACLE | TIBERO | ALTIBASE
  * 
- * SqlConnection	| OleDbConnection	-> OracleConnection | OleDbConnectionTbr	| AltibaseConnection
- * SqlCommand   	| OleDbCommand    	-> OracleCommand    | OleDbCommandTbr		| AltibaseCommand   
- * SqlDbType    	|     				-> OracleDbType     | OleDbTypeTbr                              
- * SqlException 	|     				-> OracleException  | Exception                                 
- * SqlDataReader	| OleDbDataReader	-> OracleDataReader | OleDbDataReader		| AltibaseDataReader
+ * SqlConnection	    | OleDbConnection	    -> OracleConnection     | OleDbConnectionTbr	| AltibaseConnection
+ * SqlCommand   	    | OleDbCommand    	    -> OracleCommand        | OleDbCommandTbr		| AltibaseCommand   
+ * SqlCommandBuilder    | OleDbCommandBuilder   -> OracleCommandBuilder | OleDbCommandBuilderTbr|
+ * SqlParameter         | OleDbParameter        -> OracleParameter      | OleDbParameterTbr     | AltibaseParameter
+ * SqlDataAdapter       | OleDbDataAdapter      -> OracleDataAdapter    | OleDbDataAdapterTbr   | AltibaseDataAdapter
+ * SqlDataReader	    | OleDbDataReader	    -> OracleDataReader     | OleDbDataReader		| AltibaseDataReader
+ * SqlTransaction       | OleDbTransaction      -> OracleTransaction    | OleDbTransaction      | AltibaseTransaction
+ * SqlDbType    	    | OleDbType			    -> OracleDbType         | OleDbTypeTbr          |                           
+ * SqlException 	    |     				    -> OracleException      | Exception      
+ *                      
+ * [OracleLob]
+ * ->
+ * OleDbTypeTbr.LongVarChar (CLOB대응) 
+ * OleDbTypeTbr.LongVarBinary (BLOB대응) 
+ * 
+ * [사용방법] reader에서 인은 후 GetString으로 인어들임 
+ *       ex) if (reader.Read()) { string clob = reader.GetString(0); .. }
  * 
  * 출처: https://yaraba.tistory.com/346 
  * DOS> C:\WINDOWS\system32 > regsvr32 tbprov6.dll ( 파일이 N개임, Tibero 설치 pdf 참조할 것 
@@ -50,9 +62,13 @@ namespace XLog
         private DataTable dtEmpty = null;
         private bool bStop = false;
 
-        private const int FETCH_SIZE = 1000;
-        private const int FETCH_SIZE_FOR_GRID = FETCH_SIZE * 2; // 성능을 위해, 초기 일부 데이타만 화면 갱신한다.
-        private const int JUMP_TO_ROW = 20;
+		//private int FETCH_SIZE = 1;
+		//private int FETCH_SIZE = 2;		// [TIBERO] {"TBR-02040 (24000): Invalid cursor state."}
+		//private int FETCH_SIZE = 10;
+		private int FETCH_SIZE = 100;       // [TIBERO] {"보호된 메모리를 읽거나 쓰려고 했습니다. 대부분 이러한 경우는 다른 메모리가 손상되었음을 나타냅니다."}
+		//private int FETCH_SIZE = 1000;
+
+		private int JUMP_TO_ROW = 20;
 
         public TSQLToolUserControl()
         {
@@ -71,12 +87,13 @@ namespace XLog
             splitContainer1.Dock = DockStyle.Fill;
             tabControl1.Dock = DockStyle.Fill;
 
-            rtbSqlEdit.Text = "select level from dual connect by level <= 10001";
-            rtbSqlEdit.Text = "with x as ( select level c1 from dual connect by level <= 10001) select c1, data from x, tb_clob";
-            rtbSqlEdit.Text = "select c1, data from ( select level c1 from dual connect by level <= 10001) x, tb_clob";
+            rtbSqlEdit.Text = "select level from dual connect by level <= 1001";
+			rtbSqlEdit.Text = "with x(c1) as ( select 1 c1 union all select c1 + 1 from x where c1 + 1 <= 1001 ) select c1, data from x, tb_clob option (maxrecursion 0)";
+			rtbSqlEdit.Text = "with x as ( select level c1 from dual connect by level <= 1001) select c1, data from x, tb_clob";
+            rtbSqlEdit.Text = "select c1, data from ( select level c1 from dual connect by level <= 1001) x, tb_clob";
 
-            // Tip 12 - DataGridView 레코드 색상 번갈아서 바꾸기
-            dgvResult.RowsDefaultCellStyle.BackColor = Color.White;
+			// Tip 12 - DataGridView 레코드 색상 번갈아서 바꾸기
+			dgvResult.RowsDefaultCellStyle.BackColor = Color.White;
             dgvResult.AlternatingRowsDefaultCellStyle.BackColor = Color.Aquamarine;
 
             // toolStripProgressBar1
@@ -96,32 +113,53 @@ namespace XLog
         {
             try
             {
-                //System.Environment.SetEnvironmentVariable("ALTIBASE_PORT_NO", "20300", EnvironmentVariableTarget.Process);
+				// [TIP] Win32에서 횐경변수는, 기본적으로 각각의 DLL단위로 다르게 설정된다.
+				//System.Environment.SetEnvironmentVariable("ALTIBASE_PORT_NO", "20300", EnvironmentVariableTarget.Process);
 
-                if (xDb == null)
+				if (conn != null)
+				{
+					MessageBox.Show("(W) Already Connected.");
+					return;
+				}
+
+				if (xDb == null)
                 {
-                    // ## 범용 OLEDB 타입 제약사항 
-                    // (1) ALTIBASE의 경우 CLOB 조회 불가
+					XDbConnType sXDBConnType = XDbConnType.OLEDB;
+					sXDBConnType = XDbConnType.TIBERO;				// LOB 조회 불가
+					sXDBConnType = XDbConnType.ALTIBASE;            // LOB 조회시, BeginTransaction 를 호출해야하는 문제.
+					sXDBConnType = XDbConnType.ORACLE;
+					//sXDBConnType = XDbConnType.MSSQL;
 
-                    //xDb = new XDb(XDbConnType.OLEDB);
-                    //xDb.mConnStr = "Provider=Altibase.OLEDB;Data Source=192.168.56.201;User ID=sys;Password=manager;Extended Properties='PORT=20300'"; // OK, But CLOB BUGBUG
-
-                    /*
-                     * TODO:
-                     * (1) ALTIBASE - if Autocommit then {"LobLocator cannot span the transaction 332417."}
-                     */
-                    xDb = new XDb(XDbConnType.ALTIBASE);
-                    xDb.mConnStr = "DSN=192.168.56.201;uid=sys;pwd=manager;NLS_USE=MS949;PORT=20300"; // OK
-
-                    //xDb = new XDb(XDbConnType.ORACLE);
-                    //xDb.mConnStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON"; // OK
-
-                }
-
-                if (conn != null)
-                {
-                    MessageBox.Show("(W) Already Connected.");
-                    return;
+					xDb = new XDb(sXDBConnType);
+					switch (sXDBConnType)
+					{
+						case XDbConnType.ORACLE:
+							xDb.mConnStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON"; // OK
+							break;
+						case XDbConnType.ALTIBASE:
+							// (1) if Autocommit then {"LobLocator cannot span the transaction 332417."}
+							xDb.mConnStr = "DSN=192.168.56.201;uid=sys;pwd=manager;NLS_USE=MS949;PORT=20300"; // OK
+							break;
+						case XDbConnType.TIBERO:
+							// (2) {"TBR-02040 (24000): Invalid cursor state."}
+							xDb.mConnStr = "Provider=tbprov.Tbprov.5;Data Source=tibero;User ID=sys;Password=tibero;";
+							FETCH_SIZE = 1;
+							break;
+						case XDbConnType.MSSQL:
+							xDb.mConnStr = "Server=192.168.56.201;Database=mydb;Uid=sa;Pwd=password12!";
+							break;
+						case XDbConnType.OLEDB:
+							// (1) ALTIBASE의 경우 CLOB 조회 불가
+							xDb.mConnStr = "Provider=tbprov.Tbprov;Data Source=tibero;User ID=sys;Password=tibero;"; 
+							//xDb.mConnStr = "Provider=Altibase.OLEDB;Data Source=192.168.56.201;User ID=sys;Password=manager;Extended Properties='PORT=20300'"; // OK, But CLOB BUGBUG
+							break;
+						default:
+							MessageBox.Show("[NEVER] " + sXDBConnType);
+							return; // TODO: C# 강제종료는 어떻게? 
+							break;
+					}
+					toolStripStatusLabel4.Text = "Connecting.. " + xDb.mConnType;
+                    Application.DoEvents();
                 }
 
                 //conn = new OracleConnection(connStr);
@@ -130,8 +168,11 @@ namespace XLog
 
                 //adapter = new OracleDataAdapter();
                 adapter = xDb.XDbDataAdapter();
-            }
-            catch (Exception ex)
+
+				toolStripStatusLabel4.Text = "Connected " + xDb.mConnType;
+				Application.DoEvents();
+			}
+			catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
                 conn = null;
@@ -187,7 +228,10 @@ namespace XLog
                 int rc;
 
                 lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
-                while ((rc = adapter.Fill(sPos, FETCH_SIZE, dt)) > 0)
+								
+				//adapter.MissingMappingAction = MissingMappingAction.Error;		// {"TableMapping.DataSetTable=''인 TableMapping이 없습니다."}
+				//adapter.MissingSchemaAction = MissingSchemaAction.AddWithKey;
+				while ((rc = adapter.Fill(sPos, FETCH_SIZE, dt)) > 0)
                 {
                     //sPos += FETCH_SIZE;
                     sPos += rc;
@@ -199,6 +243,7 @@ namespace XLog
 
                     //System.Threading.Thread.Sleep(100);
 
+                    //if ( (FETCH_SIZE > 1 && sPos == FETCH_SIZE) || (sPos == 100) )
                     if (sPos == FETCH_SIZE)
                     {
                         // [NOTE] 대량 데이타 출력 성능을 위한 더미 코드.
@@ -223,7 +268,6 @@ namespace XLog
             }
             catch (Exception ex)
             {
-                //MessageBox.Show(ex.ToString());
                 MessageBox.Show(ex.Message);
             }
 

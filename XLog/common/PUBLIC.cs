@@ -59,15 +59,15 @@ namespace XLog
 //{
     public enum XDbConnType
     {
-        ODBC    = 101,
-        OLEDB   = 102,
-        ORACLE  = 111,
-        ALTIBASE= 112,
-        TIBERO  = 113,
-        MSSQL   = 114,
-        MYSQL   = 115,
-        MONGODB = 121,
-        OTHER   = 999
+        ODBC		= 101,
+        OLEDB		= 102,
+        ORACLE		= 111,
+        ALTIBASE	= 112,
+        TIBERO		= 113,
+        MSSQL		= 114,
+        MYSQL		= 115,
+        MONGODB		= 121,
+        NONE		= 999
     }
 
     //public sealed class OleDbDataAdapter : DbDataAdapter, IDbDataAdapter, IDataAdapter, ICloneable
@@ -87,9 +87,8 @@ namespace XLog
         public abstract DbCommand XDbCommand(string commandText, DbConnection aConnection);
         public abstract DbCommand XDbCommand4StoredProcedure(string procName, DbConnection aConnection);
 
-        public abstract IDataReader XDbDataReader();
-
-        public abstract IDataParameter XDbParameter(string parameterName, object parameterValue);
+		public abstract IDataParameter XDbParameter(string parameterName, object parameterValue);
+		public abstract IDataReader XDbDataReader();
 
         // public OleDbDataAdapter(OleDbCommand selectCommand);
         // public OleDbDataAdapter(string selectCommandText, OleDbConnection selectConnection);
@@ -146,6 +145,10 @@ namespace XLog
             {
                 mConnection = new SqlConnection(sConnStr);
             }
+            else if (mConnType == XDbConnType.TIBERO)
+            {
+                mConnection = new OleDbConnectionTbr(sConnStr);
+            }
             else if (mConnType == XDbConnType.OLEDB)
             {
                 mConnection = new OleDbConnection(sConnStr);
@@ -170,6 +173,10 @@ namespace XLog
             {
                 sCommand = new SqlCommand();
             }
+            else if (mConnType == XDbConnType.TIBERO)
+            {
+                sCommand = new OleDbCommandTbr();
+            }
             else if (mConnType == XDbConnType.OLEDB)
             {
                 sCommand = new OleDbCommand();
@@ -193,7 +200,10 @@ namespace XLog
                 sCommand.Connection = aConnection;
             }
 
-            if (mConnType == XDbConnType.ALTIBASE)
+            if ( false
+				|| mConnType == XDbConnType.ALTIBASE
+                //|| mConnType == XDbConnType.TIBERO
+               )
             {
                 // TODO: 제거해야함 - Altibase 에서 LOB 조회를 위한 임시코드.
                 // (1) AutoCommit 에서 조회하면 오류 - {"LobLocator cannot span the transaction 332417."}
@@ -241,6 +251,10 @@ namespace XLog
             {
                 sParameter = new SqlParameter(parameterName, parameterValue);
             }
+            else if (mConnType == XDbConnType.TIBERO)
+            {
+                sParameter = new OleDbParameterTbr(parameterName, parameterValue);
+            }
             else if (mConnType == XDbConnType.OLEDB)
             {
                 sParameter = new OleDbParameter(parameterName, parameterValue);
@@ -267,6 +281,10 @@ namespace XLog
             //else if (mConnType == XDbConnType.MSSQL)
             //{
             //    sDataReader = new SqlDataReader();
+            //}
+            //else if (mConnType == XDbConnType.TIBERO)
+            //{
+            //    sDataReader = new OdbcDataReader(); // (X) OdbcDataReaderTbr
             //}
             //else if (mConnType == XDbConnType.OLEDB)
             //{
@@ -299,6 +317,10 @@ namespace XLog
             else if (mConnType == XDbConnType.MSSQL)
             {
                 sDataAdapter = new SqlDataAdapter();
+            }
+            else if (mConnType == XDbConnType.TIBERO)
+            {
+                sDataAdapter = new OleDbDataAdapterTbr();
             }
             else if (mConnType == XDbConnType.OLEDB)
             {
@@ -355,118 +377,15 @@ namespace XLog
             //{
             //    sTransaction = new SqlTransaction();
             //}
+            //else if (mConnType == XDbConnType.TIBERO)
+            //{
+            //    sTransaction = new OleDbTransaction(); // (X) OleDbTransactionTbr
+            //}
             //else if (mConnType == XDbConnType.OLEDB)
             //{
             //    sTransaction = new OleDbTransaction();
             //}
 
-            return sTransaction;
-/*
-            // Ex..
-                    {
-            ds = new DataSet("emp");
-            //아래 onj는 $ORACLE_HOME/network/admin에 있는 tnsnames.ora 파읷에 정의된 이름!
-            string conStr = "Provider=MSDAORA;data source=onj;User ID=scott;Password=tiger";
-
-            using (OleDbConnection connection = new OleDbConnection(conStr))
-            {
-                OleDbCommand command = new OleDbCommand();
-                OleDbTransaction tr = null;
-            }
-
-            try
-            {
-                connection.Open();
-                tr = connection.BeginTransaction();
-                command.Connection = connection;
-                command.Transaction = tr;
-
-                command.CommandText = "insert into emp (empno, ename)"
-                     + " values (5555, '3000길동')";
-                int i = command.ExecuteNonQuery();
-                Console.WriteLine(i + "건 Inserted!");
-
-                command.CommandText = "insert into emp (empno, ename)"
-                     + " values (6777, '3000길동')";
-                i = command.ExecuteNonQuery();
-
-                tr.Commit();
-
-                adapter = new OleDbDataAdapter("select * from emp", connection);
-                adapter.Fill(ds, "EMP");
-                dataGridView1.DataSource = ds.Tables["EMP"];
-
-                adapter.Fill(ds, "EMP");
-            }
-            catch (Exception ex)
-            {
-                tr.Rollback();
-                MessageBox.Show(ex.Message, "emp Table Loading Error");
-            }
-            finally
-            {
-                connection.Close();
-            }
-*/
-
-        }
+            return sTransaction;        }
     }
-
-
-    /*
-        //public abstract class Database
-        //{
-        //    public string connectionString;
-
-        //    #region Abstract Functions
-        //    public abstract IDbConnection CreateConnection();
-        //    public abstract IDbCommand CreateCommand();
-        //    public abstract IDbConnection CreateOpenConnection();
-        //    public abstract IDbCommand CreateCommand(string commandText, IDbConnection connection);
-        //    public abstract IDbCommand CreateStoredProcCommand(string procName, IDbConnection connection);
-        //    public abstract IDataParameter CreateParameter(string parameterName, object parameterValue);
-        //    #endregion
-        //}
-
-        public abstract class Database
-        {
-            public string connectionString;
-
-#region Abstract Functions
-            public abstract DbConnection CreateConnection();
-            public abstract DbCommand CreateCommand();
-            public abstract DbConnection CreateOpenConnection();
-            public abstract DbCommand CreateCommand(string commandText, IDbConnection connection);
-            public abstract DbCommand CreateStoredProcCommand(string procName, IDbConnection connection);
-            public abstract DataParameter CreateParameter(string parameterName, object parameterValue);
-#endregion
-        }
-
-        public abstract class XDbBase
-        {
-            // abstract C#키워드
-            public abstract int DbConnection();
-            public abstract int GetNext();
-
-            // 추상 클래스 (System.Data.Common)	 DbConnection
-            // DbCommand / DbDataReader / DbDataAdapter / DbParameter / DbTransaction
-        }
-
-        public class DerivedA : XDbBase
-        {
-            private int no = 1;
-
-            // override C#키워드
-            public override int GetFirst()
-            {
-                return no;
-            }
-
-            public override int GetNext()
-            {
-                return ++no;
-            }
-        }
-    */
-
 }
