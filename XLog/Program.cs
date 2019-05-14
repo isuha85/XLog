@@ -17,13 +17,13 @@ namespace XLog
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            //[NOTE] Starting Position ..
-            //Application.Run(new Form1()); return;
-            //Application.Run(new QueryForm2()); return;
+			//[NOTE] Starting Position ..
+			//Application.Run(new Form1()); return;
+			//Application.Run(new QueryForm2()); return;
 
-            //Application.Run(new MainForm());
-            //Application.Run(new QueryForm());
-            Application.Run(new SQLTool());
+			//Application.Run(new MainForm());
+			//Application.Run(new QueryForm());
+			Application.Run(new SQLTool());
         }
 
         /// 참고 URLs

@@ -5,11 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using System.Data;                      // 공통 인터페이스 , IDbConnection .. 등
-using System.Data.Common;               // 추상 클래스 , DbConnection .. 등
+using System.Windows.Forms;
+using System.Runtime.InteropServices;		// https://hot-key.tistory.com/4?category=1010793
 
-using System.Diagnostics;                   // 특정시간 응답대기
+using System.Data;							// 공통 인터페이스 , IDbConnection .. 등
+using System.Data.Common;					// 추상 클래스 , DbConnection .. 등
+
+using System.Diagnostics;                   // 특정시간 응답대기, Debug.Assert, Debug.WriteLine, ..
 using System.Configuration;
+
+using System.Text.RegularExpressions;
+using Sprache;
 
 using System.Data.OleDb;                    // Any DB - oracle / SQL Server / tibero / ..
 using Tibero.DbAccess;                      // tibero
@@ -25,7 +31,9 @@ namespace XLog
 {
     public class PUBLIC
     {
-        public static double TIME_DELTA { get; set; }
+		#region Common Function For TIME
+
+		public static double TIME_DELTA { get; set; }
         private static long mTickPrev { get; set; } = -1;
         private static long mTickStart { get; set; } = -1;
 
@@ -51,13 +59,186 @@ namespace XLog
 
             return Math.Truncate((double)(sTickNow - mTickStart) / 10000.0F) / 1000;
         }
-    
-    } // class PUBLIC
 
-//}
-//namespace XLog.Data
-//{
-    public enum XDbConnType
+		#endregion
+
+		#region Common Function For HotKeys
+
+		public const int HOTKEY_ID = 31197;		// Any number to use to identify the hotkey instance
+		public const int WM_HOTKEY = 0x0312;
+
+		public enum KeyModifiers
+		{
+			None = 0,
+			Alt = 1,
+			Control = 2,
+			Shift = 4,
+			Windows = 8
+		}
+		
+		[DllImport("user32.dll")]
+		public static extern bool RegisterHotKey(IntPtr hWnd, int id, KeyModifiers fsModifiers, Keys vk);
+		[DllImport("user32.dll")]
+		public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+		#endregion
+
+		#region Common Function For SQLTools
+
+		public enum SimpleStripCommentsType
+		{
+			SQL		= 1,
+			CXX		= 2,
+			CXX_SQL	= 4,
+			NONE	= 999
+		}
+
+		// For SQLTool
+
+		public static string SimpleStripComments(string code, SimpleStripCommentsType k = SimpleStripCommentsType.SQL)
+		{
+			string re = null;
+
+			switch (k)
+			{
+				case SimpleStripCommentsType.SQL:
+					re = @"(@(?:""[^""]*"")+|""(?:[^""\n\\]+|\\.)*""|'(?:[^'\n\\]+|\\.)*')|--*\n|/\*(?s:.*?)\*/";          // SQL
+					break;
+				case SimpleStripCommentsType.CXX:
+					re = @"(@(?:""[^""]*"")+|""(?:[^""\n\\]+|\\.)*""|'(?:[^'\n\\]+|\\.)*')|//.*\n|/\*(?s:.*?)\*/";          // C++
+					break;
+				case SimpleStripCommentsType.CXX_SQL:
+					re = @"(@(?:""[^""]*"")+|""(?:[^""\n\\]+|\\.)*""|'(?:[^'\n\\]+|\\.)*')|//.*\n|--.*\n|/\*(?s:.*?)\*/";   // SQL + C++
+					break;
+				default:
+					return "Not Implemented";
+					break;
+			}
+			return Regex.Replace(code, re, "$1");
+		}
+
+		/*
+		 * 1. Trim
+		 * 2. 사용자 SQL을 ';' 기준으로 분리
+		 */
+		public static string SimpleStripSQL(string code_)
+		{
+			char semicolon = ';';
+			int semicolon_pos = -1;
+
+			char single_quotes = '\'';
+			char[] comment_line_start = { '-', '-' };
+			char[] comment_line_end = { '\r', '\n' };
+			char[] comment_block_start = { '/', '*' };
+			char[] comment_block_end = { '*', '/' };
+			int single_quotes_start_pos = -1;
+			int comment_line_start_pos = -1;
+			int comment_block_start_pos = -1;
+
+			//char double_qutoes = '"';
+			//char backslash = '\\';
+			//int double_qutoes_start_pos = -1;
+			//int backslash_start_pos = -1;
+
+			string code = code_.Trim();
+			int len = code.Length;
+			semicolon_pos = code.IndexOf(";");
+
+			// ';' 이 없으면, 하나의 SQL 문장이다.
+			if (semicolon_pos == -1) return code;
+
+			// 맨마지막에만 ';' 이면, 제거하고 바로 리턴.
+			if (semicolon_pos == len -1)
+			{
+				return code.Substring(0, len - 1);
+			}
+
+			// 주석, 문자열에 속하지 않은 최초의 ';'을 어떻게 찾을 것인가?
+			// 범위가 len 대신 len - 1 인 것은, 2Byte 구분자 처리 코드를 간단하게 함.
+			int pos;
+			for (pos = 0; pos < len - 1; pos++)
+			{
+				// @ single_quotes
+				if ((single_quotes_start_pos == -1) &&
+					(code[pos] == single_quotes))
+				{
+					single_quotes_start_pos = pos;
+					continue;
+				}
+
+				if (single_quotes_start_pos != -1) // 구간시작
+				{
+					if (code[pos] == single_quotes)
+					{
+						single_quotes_start_pos = -1;
+					}
+
+					// 구간내의 다른 문자는 무시
+					continue;
+				}
+				
+				// @ -- 주석
+				if ((comment_line_start_pos == -1) &&
+					(code[pos] == comment_line_start[0] && code[pos+1] == comment_line_start[1]))
+				{
+					comment_line_start_pos = pos;
+					continue;
+				}
+
+				if (comment_line_start_pos != -1) // 구간시작
+				{
+					if (code[pos] == comment_line_end[1])
+					{
+						comment_line_start_pos = -1;
+					}
+
+					// 구간내의 다른 문자는 무시
+					continue;
+				}
+
+				// @ /* .. */ 주석
+				if ((comment_block_start_pos == -1) &&
+					(code[pos] == comment_block_start[0] && code[pos + 1] == comment_block_start[1]))
+				{
+					comment_block_start_pos = pos;
+					continue;
+				}
+
+				if (comment_block_start_pos != -1) // 구간시작
+				{
+					if (code[pos] == comment_block_end[0] && code[pos + 1] == comment_block_end[1])
+					{
+						comment_block_start_pos = -1;
+					}
+
+					// 구간내의 다른 문자는 무시
+					continue;
+				}
+
+				if (code[pos] == semicolon)
+				{
+					return code.Substring(0, pos);
+				}
+
+			} // for (int pos = 0; pos < len; pos++)
+
+			// 맨마지막에, ';' 이 있는 경우.
+			if (code[pos] == semicolon)
+			{
+				return code.Substring(0, pos);
+			}
+
+			return code;
+		}
+
+		#endregion
+
+	} // class PUBLIC
+
+	//}
+	//namespace XLog.Data
+	//{
+	public enum XDbConnType
     {
         ODBC		= 101,
         OLEDB		= 102,
@@ -388,4 +569,8 @@ namespace XLog
 
             return sTransaction;        }
     }
-}
+
+
+
+} // namespace XLog
+

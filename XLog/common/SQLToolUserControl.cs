@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using FastColoredTextBoxNS;
 
 using System.Diagnostics;                   // 특정시간 응답대기
 using System.Configuration;
@@ -87,17 +88,30 @@ namespace XLog
             splitContainer1.Dock = DockStyle.Fill;
             tabControl1.Dock = DockStyle.Fill;
 
-            rtbSqlEdit.Text = "select level from dual connect by level <= 1001";
-			rtbSqlEdit.Text = "with x(c1) as ( select 1 c1 union all select c1 + 1 from x where c1 + 1 <= 1001 ) select c1, data from x, tb_clob option (maxrecursion 0)";
-			rtbSqlEdit.Text = "with x as ( select level c1 from dual connect by level <= 1001) select c1, data from x, tb_clob";
-            rtbSqlEdit.Text = "select c1, data from ( select level c1 from dual connect by level <= 1001) x, tb_clob";
+			// rtbSqlEdit
+			{
+				fctb.Dock = DockStyle.Fill;
+				fctb.Language = Language.SQL;
+				fctb.AcceptsTab = true;
+				//fctb.WordWrap = false;
+				//fctb.ReadOnly = true;
+				//fctb.ShortcutsEnabled = true;
+				//fctb.IndentBackColor = Color.Gray;
+
+				fctb.Text = @"select level from dual connect by level <= 1001";
+				fctb.Text = @"with x(c1) as ( select 1 c1 union all select c1 + 1 from x where c1 + 1 <= 1001 ) select c1, data from x, tb_clob option (maxrecursion 0)";
+				fctb.Text = @"with x as ( select level c1 from dual connect by level <= 1001) select c1, data from x, tb_clob";
+				fctb.Text = @"select c1, data from ( select level c1 from dual connect by level <= 1001) x, tb_clob";
+			}
 
 			// Tip 12 - DataGridView 레코드 색상 번갈아서 바꾸기
-			dgvResult.RowsDefaultCellStyle.BackColor = Color.White;
-            dgvResult.AlternatingRowsDefaultCellStyle.BackColor = Color.Aquamarine;
+			{
+				dgvResult.RowsDefaultCellStyle.BackColor = Color.White;
+				dgvResult.AlternatingRowsDefaultCellStyle.BackColor = Color.Aquamarine;
+			}
 
-            // toolStripProgressBar1
-            {
+			// toolStripProgressBar1
+			{
                 toolStripProgressBar1.Style = ProgressBarStyle.Continuous;
                 //toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
                 toolStripProgressBar1.Minimum = 0;
@@ -217,7 +231,7 @@ namespace XLog
                 Application.DoEvents();
 
                 //adapter.SelectCommand = new OracleCommand(rtbSqlEdit.Text, (OracleConnection)conn);
-                adapter.SelectCommand = xDb.XDbCommand(rtbSqlEdit.Text, conn);
+                adapter.SelectCommand = xDb.XDbCommand(fctb.Text, conn);
 
                 DataTable dt = new DataTable();     // TODO: (BUGBUG) DataTable을 재사용하면, 컬럼명이 추가된다.
                 DataTable dt2 = new DataTable();    // 처음 결과 셋을 일부만 저장하여 보여주는 Fake 코드 (출력성능이슈)
@@ -360,5 +374,6 @@ namespace XLog
                 dgvResult.BorderStyle = dgvTmp.BorderStyle;
             }
         } // btnOpt
-    } // class SQLToolUserControl
+
+	} // class SQLToolUserControl
 }
