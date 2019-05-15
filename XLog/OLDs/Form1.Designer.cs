@@ -37,7 +37,9 @@
 			this.richTextBox3 = new System.Windows.Forms.RichTextBox();
 			this.textBox = new System.Windows.Forms.TextBox();
 			this.fctb = new FastColoredTextBoxNS.FastColoredTextBox();
+			this.fastColoredTextBox1 = new FastColoredTextBoxNS.FastColoredTextBox();
 			((System.ComponentModel.ISupportInitialize)(this.fctb)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.fastColoredTextBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// richTextBox1
@@ -122,11 +124,43 @@
 			this.fctb.Text = "select 1 from dual;";
 			this.fctb.Zoom = 100;
 			// 
+			// fastColoredTextBox1
+			// 
+			this.fastColoredTextBox1.AutoCompleteBracketsList = new char[] {
+        '(',
+        ')',
+        '{',
+        '}',
+        '[',
+        ']',
+        '\"',
+        '\"',
+        '\'',
+        '\''};
+			this.fastColoredTextBox1.AutoScrollMinSize = new System.Drawing.Size(263, 22);
+			this.fastColoredTextBox1.BackBrush = null;
+			this.fastColoredTextBox1.CharHeight = 22;
+			this.fastColoredTextBox1.CharWidth = 12;
+			this.fastColoredTextBox1.Cursor = System.Windows.Forms.Cursors.IBeam;
+			this.fastColoredTextBox1.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+			this.fastColoredTextBox1.Font = new System.Drawing.Font("Courier New", 9.75F);
+			this.fastColoredTextBox1.IsReplaceMode = false;
+			this.fastColoredTextBox1.Location = new System.Drawing.Point(360, 613);
+			this.fastColoredTextBox1.Name = "fastColoredTextBox1";
+			this.fastColoredTextBox1.Paddings = new System.Windows.Forms.Padding(0);
+			this.fastColoredTextBox1.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
+			this.fastColoredTextBox1.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("fastColoredTextBox1.ServiceColors")));
+			this.fastColoredTextBox1.Size = new System.Drawing.Size(150, 150);
+			this.fastColoredTextBox1.TabIndex = 7;
+			this.fastColoredTextBox1.Text = "fastColoredTextBox1";
+			this.fastColoredTextBox1.Zoom = 100;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1002, 712);
+			this.Controls.Add(this.fastColoredTextBox1);
 			this.Controls.Add(this.fctb);
 			this.Controls.Add(this.textBox);
 			this.Controls.Add(this.richTextBox3);
@@ -138,6 +172,7 @@
 			this.Text = "Form1";
 			this.Load += new System.EventHandler(this.Form1_Load);
 			((System.ComponentModel.ISupportInitialize)(this.fctb)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.fastColoredTextBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -152,5 +187,6 @@
 		private System.Windows.Forms.RichTextBox richTextBox3;
 		private System.Windows.Forms.TextBox textBox;
 		private FastColoredTextBoxNS.FastColoredTextBox fctb;
+		private FastColoredTextBoxNS.FastColoredTextBox fastColoredTextBox1;
 	}
 }

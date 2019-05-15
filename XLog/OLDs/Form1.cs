@@ -14,14 +14,15 @@ using System.Diagnostics;                   // Debug.Assert, Debug.WriteLine, ..
 using System.Text.RegularExpressions;
 using Sprache;
 
-//using Microsoft.Data.Schema.ScriptDom;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System.IO;
+//using System.Threading;
+//using System.Xml;
 
 namespace XLog
 {
     public partial class Form1 : Form
     {
+
+
 		public Form1()
         {
             InitializeComponent();
@@ -43,12 +44,6 @@ namespace XLog
 					{
 						if (Keys.L == key)
 						{
-							// Do Something..
-							string xx = richTextBox1.SelectedText;
-							string yy = richTextBox2.SelectedText;
-							richTextBox3.Text = yy;
-							fctb.Text = yy;
-							
 						}
 
 						if (Keys.K == key)
@@ -101,66 +96,12 @@ namespace XLog
 
 		private void richTextBox1_TextChanged(object sender, EventArgs e)
 		{
-
 		}
+
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			//var formatter = new Formatter(fctb.Text);
-			//richTextBox2.Text = formatter.Format();
-			var parser = new TSql150Parser(false);
-
-			IList<ParseError> Errors;
-			TSqlFragment result = parser.Parse(
-			//IScriptFragment result = parser.Parse(
-				new StringReader("Select col from T1 where 1 = 1 group by 1;" +
-					"select col2 from T2;" +
-					"select col1 from tbl1 where id in (select id from tbl);"),
-					out Errors);
-
-			var Script = result as TSqlScript;
-
-			foreach (var ts in Script.Batches)
-			{
-				Console.WriteLine("new batch");
-
-				foreach (var st in ts.Statements)
-				{
-					IterateStatement(st);
-				}
-			}
 		}
 
-		static void IterateStatement(TSqlStatement statement)
-		{
-			Console.WriteLine("New Statement");
-
-			if (statement is SelectStatement)
-			{
-				//PrintStatement(statement);
-			}
-		}
-		
-
-		public static TSqlScript ParseScript(string script, out IList<string> errorsList)
-		{
-			IList<ParseError> parseErrors;
-			TSql100Parser tsqlParser = new TSql100Parser(true);
-			TSqlFragment fragment;
-			using (StringReader stringReader = new StringReader(script))
-			{
-				fragment = (TSqlFragment)tsqlParser.Parse(stringReader, out parseErrors);
-			}
-			errorsList = new List<string>();
-			if (parseErrors.Count > 0)
-			{
-				var retMessage = string.Empty;
-				foreach (var error in parseErrors)
-				{
-					//retMessage += error.Identifier + " - " + error.Message + " - position: " + error.Offset + "; ";
-				}
-			}
-			return (TSqlScript)fragment;
-		}
 	}
 }

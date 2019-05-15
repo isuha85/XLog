@@ -10,6 +10,12 @@ using System.Windows.Forms;
 
 using FastColoredTextBoxNS;
 
+// https://qiita.com/motuo/items/5ffe1134d99ddf2e7b2d
+//using PoorMansTSqlFormatterLib.Tokenizers;
+//using PoorMansTSqlFormatterRedux.Tokenizers;		// .Net Core 호환 버전
+//using PoorMansTSqlFormatterRedux.Parsers;
+//using PoorMansTSqlFormatterRedux.Formatters;
+
 using System.Diagnostics;                   // 특정시간 응답대기
 using System.Configuration;
 
@@ -23,6 +29,7 @@ using Oracle.ManagedDataAccess.Client;      // Managed 드라이버 (32/64 bit�
 using Oracle.ManagedDataAccess.Types;
 
 using System.Data.Common;
+
 
 /*
  * #### SQL Server vs ORACLE | TIBERO | ALTIBASE
@@ -123,7 +130,162 @@ namespace XLog
             }
         } // Load
 
-        private void btnOpen_Click(object sender, EventArgs e)
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			Keys key = keyData & ~(Keys.Shift | Keys.Control);
+
+			switch (key)
+			{
+				case Keys.F:
+					if ((keyData & Keys.Control) != 0)
+					{
+						if ((keyData & Keys.Shift) != 0)
+						{
+							// TODO: 특정 선택 영역만 "포맷팅" 하는 기능 필요
+							var code = fctb.Text;
+
+							// TODO: 공통설정화면으로 처리.
+							var _formatterOptions = new PoorMansTSqlFormatterRedux.Formatters.TSqlStandardFormatterOptions
+							{
+								KeywordStandardization = true,
+								IndentString = "\t",
+								SpacesPerTab = 4,
+								MaxLineWidth = 999,
+								NewStatementLineBreaks = 2,
+								NewClauseLineBreaks = 1,
+								TrailingCommas = true,
+								SpaceAfterExpandedComma = false,
+								ExpandBetweenConditions = true,
+								ExpandBooleanExpressions = true,
+								ExpandCaseStatements = true,
+								ExpandCommaLists = true,
+								BreakJoinOnSections = false,
+								UppercaseKeywords = true,
+								ExpandInLists = true
+							};
+
+							//var tokenizer = new PoorMansTSqlFormatterLib.Tokenizers.TSqlStandardTokenizer();
+							var tokenizer = new PoorMansTSqlFormatterRedux.Tokenizers.TSqlStandardTokenizer();
+							var parser = new PoorMansTSqlFormatterRedux.Parsers.TSqlStandardParser();
+							var formatter = new PoorMansTSqlFormatterRedux.Formatters.TSqlStandardFormatter(_formatterOptions);
+
+							var tokenizedSQL = tokenizer.TokenizeSQL(code);
+							var parsedSQL = parser.ParseSQL(tokenizedSQL);
+							fctb.Text = formatter.FormatSQLTree(parsedSQL);
+						}
+
+						return true;
+					}
+					break;
+				case Keys.L:
+					if ((keyData & Keys.Control) != 0)
+					{
+						doGo(fctb.SelectedText);
+						return true;
+					}
+					break;
+				case Keys.K:
+					if ((keyData & Keys.Control) != 0)
+					{
+						doGo(fctb.SelectedText);
+						return true;
+					}
+					break;
+			}
+
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+		private void doGo(string sql_)
+		{
+			PUBLIC.TIME_CHECK(System.DateTime.Now.Ticks); // 기준시간 등록
+
+			lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
+			//eTick = System.DateTime.Now.Ticks;
+			//dTickSec = (double)(eTick - sTick) / 10000000.0F;
+			//lbTime.Text = dTickSec + " sec";
+
+			//this.Cursor = Cursors.WaitCursor;
+			toolStripStatusLabel4.Text = "Running ..";
+			lbRow.Text = "0 rows";
+
+			// 출처: https://and0329.tistory.com/entry/C-과-오라클-데이터베이스-연동-방법 
+			try
+			{
+				dgvResult.DataSource = dtEmpty;     // (1) 결과창을 비워준다.
+				tabControl1.SelectedIndex = 0;      // (2) 결과탭을 보여준디.
+				Application.DoEvents();
+
+				//adapter.SelectCommand = new OracleCommand(rtbSqlEdit.Text, (OracleConnection)conn);
+				adapter.SelectCommand = xDb.XDbCommand(sql_, conn);
+
+				DataTable dt = new DataTable();     // TODO: (BUGBUG) DataTable을 재사용하면, 컬럼명이 추가된다.
+				DataTable dt2 = new DataTable();    // 처음 결과 셋을 일부만 저장하여 보여주는 Fake 코드 (출력성능이슈)
+
+				//adapter.Fill(dt);
+				//adapter.Fill(0, 10, dt);
+				int sPos = 0;
+				int rc;
+
+				lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
+
+				//adapter.MissingMappingAction = MissingMappingAction.Error;		// {"TableMapping.DataSetTable=''인 TableMapping이 없습니다."}
+				//adapter.MissingSchemaAction = MissingSchemaAction.AddWithKey;
+				while ((rc = adapter.Fill(sPos, FETCH_SIZE, dt)) > 0)
+				{
+					//sPos += FETCH_SIZE;
+					sPos += rc;
+
+					if (toolStripProgressBar1.Value <= toolStripProgressBar1.Maximum * 0.9)
+					{
+						toolStripProgressBar1.PerformStep();
+					}
+
+					//System.Threading.Thread.Sleep(100);
+
+					//if ( (FETCH_SIZE > 1 && sPos == FETCH_SIZE) || (sPos == 100) )
+					if (sPos == FETCH_SIZE)
+					{
+						// [NOTE] 대량 데이타 출력 성능을 위한 더미 코드.
+						dt2 = dt.Copy();
+						dgvResult.DataSource = dt2;
+					}
+
+					lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
+					lbRow.Text = sPos + "+" + " rows";
+					Application.DoEvents();         //TODO: [NOTE] 필수적임, DoEvents 삽입
+
+					if (bStop)
+					{
+						break;
+					}
+				} // while
+
+				//lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TICK_DELTA + ")";
+				lbTime.Text = PUBLIC.TIME_CHECK() + " sec";
+				lbRow.Text = sPos + " rows";
+				dgvResult.DataSource = dt;
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
+
+			toolStripProgressBar1.Value = 0;
+
+			if (bStop)
+			{
+				bStop = false;
+				toolStripStatusLabel4.Text = "Stop";
+			}
+			else
+			{
+				toolStripStatusLabel4.Text = "Done";
+			}
+			//this.Cursor = Cursors.Default;
+		} // doGo
+
+		private void btnOpen_Click(object sender, EventArgs e)
         {
             try
             {
@@ -212,92 +374,8 @@ namespace XLog
 
         private void btnGo_Click(object sender, EventArgs e)
         {
-            PUBLIC.TIME_CHECK(System.DateTime.Now.Ticks); // 기준시간 등록
-
-            lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
-            //eTick = System.DateTime.Now.Ticks;
-            //dTickSec = (double)(eTick - sTick) / 10000000.0F;
-            //lbTime.Text = dTickSec + " sec";
-
-            //this.Cursor = Cursors.WaitCursor;
-            toolStripStatusLabel4.Text = "Running ..";
-            lbRow.Text = "0 rows";
-
-            // 출처: https://and0329.tistory.com/entry/C-과-오라클-데이터베이스-연동-방법 
-            try
-            {
-                dgvResult.DataSource = dtEmpty;     // (1) 결과창을 비워준다.
-                tabControl1.SelectedIndex = 0;      // (2) 결과탭을 보여준디.
-                Application.DoEvents();
-
-                //adapter.SelectCommand = new OracleCommand(rtbSqlEdit.Text, (OracleConnection)conn);
-                adapter.SelectCommand = xDb.XDbCommand(fctb.Text, conn);
-
-                DataTable dt = new DataTable();     // TODO: (BUGBUG) DataTable을 재사용하면, 컬럼명이 추가된다.
-                DataTable dt2 = new DataTable();    // 처음 결과 셋을 일부만 저장하여 보여주는 Fake 코드 (출력성능이슈)
-
-                //adapter.Fill(dt);
-                //adapter.Fill(0, 10, dt);
-                int sPos = 0;
-                int rc;
-
-                lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
-								
-				//adapter.MissingMappingAction = MissingMappingAction.Error;		// {"TableMapping.DataSetTable=''인 TableMapping이 없습니다."}
-				//adapter.MissingSchemaAction = MissingSchemaAction.AddWithKey;
-				while ((rc = adapter.Fill(sPos, FETCH_SIZE, dt)) > 0)
-                {
-                    //sPos += FETCH_SIZE;
-                    sPos += rc;
-
-                    if (toolStripProgressBar1.Value <= toolStripProgressBar1.Maximum * 0.9)
-                    {
-                        toolStripProgressBar1.PerformStep();
-                    }
-
-                    //System.Threading.Thread.Sleep(100);
-
-                    //if ( (FETCH_SIZE > 1 && sPos == FETCH_SIZE) || (sPos == 100) )
-                    if (sPos == FETCH_SIZE)
-                    {
-                        // [NOTE] 대량 데이타 출력 성능을 위한 더미 코드.
-                        dt2 = dt.Copy();
-                        dgvResult.DataSource = dt2;
-                    }
-
-                    lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
-                    lbRow.Text = sPos + "+" + " rows";
-                    Application.DoEvents();         //TODO: [NOTE] 필수적임, DoEvents 삽입
-
-                    if (bStop)
-                    {
-                        break;
-                    }
-                } // while
-
-                //lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TICK_DELTA + ")";
-                lbTime.Text = PUBLIC.TIME_CHECK() + " sec";
-                lbRow.Text = sPos + " rows";
-                dgvResult.DataSource = dt;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-            toolStripProgressBar1.Value = 0;
-
-            if (bStop)
-            {
-                bStop = false;
-                toolStripStatusLabel4.Text = "Stop";
-            }
-            else
-            {
-                toolStripStatusLabel4.Text = "Done";
-            }
-            //this.Cursor = Cursors.Default;
-        } // btnGO
+			doGo(fctb.Text);
+        }
 
         private void btnStop_Click(object sender, EventArgs e)
         {

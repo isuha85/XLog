@@ -366,11 +366,21 @@ namespace XLog
             return sCommand;
         }
 
-        public override DbCommand XDbCommand(string commandText, DbConnection aConnection = null)
+        public override DbCommand XDbCommand(string commandText_, DbConnection aConnection = null)
         {
             DbCommand sCommand = XDbCommand();
+			string commandText = commandText_.Trim();
 
-            sCommand.CommandText = commandText;
+			// 맨마지막에만 ';' 이면, 제거
+			{
+				int len = commandText.Length;
+				if (commandText.IndexOf(";") == len - 1)
+				{
+					commandText = commandText.Substring(0, len - 1);
+				}
+			}
+
+			sCommand.CommandText = commandText;
             sCommand.CommandType = CommandType.Text;
             if (aConnection == null)
             {
