@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLog", "XLog\XLog.csproj", "{91C8C43E-7EC9-4E93-ABC9-41AA32698DE8}"
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "XLogSetup", "XLogSetup\XLogSetup.wixproj", "{0F106137-D7B5-426A-A0B8-8B34606E7B16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,14 @@ Global
 		{91C8C43E-7EC9-4E93-ABC9-41AA32698DE8}.Release|x64.Build.0 = Release|x64
 		{91C8C43E-7EC9-4E93-ABC9-41AA32698DE8}.Release|x86.ActiveCfg = Release|x86
 		{91C8C43E-7EC9-4E93-ABC9-41AA32698DE8}.Release|x86.Build.0 = Release|x86
+		{0F106137-D7B5-426A-A0B8-8B34606E7B16}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{0F106137-D7B5-426A-A0B8-8B34606E7B16}.Debug|x64.ActiveCfg = Debug|x86
+		{0F106137-D7B5-426A-A0B8-8B34606E7B16}.Debug|x86.ActiveCfg = Debug|x86
+		{0F106137-D7B5-426A-A0B8-8B34606E7B16}.Debug|x86.Build.0 = Debug|x86
+		{0F106137-D7B5-426A-A0B8-8B34606E7B16}.Release|Any CPU.ActiveCfg = Release|x86
+		{0F106137-D7B5-426A-A0B8-8B34606E7B16}.Release|x64.ActiveCfg = Release|x86
+		{0F106137-D7B5-426A-A0B8-8B34606E7B16}.Release|x86.ActiveCfg = Release|x86
+		{0F106137-D7B5-426A-A0B8-8B34606E7B16}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
