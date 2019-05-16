@@ -109,6 +109,18 @@ namespace XLog
 				fctb.Text = @"with x(c1) as ( select 1 c1 union all select c1 + 1 from x where c1 + 1 <= 1001 ) select c1, data from x, tb_clob option (maxrecursion 0)";
 				fctb.Text = @"with x as ( select level c1 from dual connect by level <= 1001) select c1, data from x, tb_clob";
 				fctb.Text = @"select c1, data from ( select level c1 from dual connect by level <= 1001) x, tb_clob";
+
+				string myStr = null;
+				myStr = "" +
+					" -- 1;\r\n" +
+					//" // 1; \r\n" +
+					"select /* ; */ 1 from dual" +
+					";"
+					;
+				myStr += "\r\nselect 2 from dual;  ";
+				myStr += "\n\nselect 3 from dual;  ";
+				//myStr = "select 1 from dual;";
+				fctb.Text = myStr;
 			}
 
 			// Tip 12 - DataGridView 레코드 색상 번갈아서 바꾸기
@@ -180,14 +192,31 @@ namespace XLog
 				case Keys.L:
 					if ((keyData & Keys.Control) != 0)
 					{
-						doGo(fctb.SelectedText);
+						var sql = fctb.SelectedText;
+						doGo(sql);
 						return true;
 					}
 					break;
 				case Keys.K:
 					if ((keyData & Keys.Control) != 0)
 					{
-						doGo(fctb.SelectedText);
+						// [NOTE] FCTB 는 TextBox 를 확장했음에도, GetLineFromCharIndex() 등은 없다.
+						{
+							//TextBox textBox1 = new TextBox();
+							//int line = textBox1.GetLineFromCharIndex(textBox1.SelectionStart);
+							//Point point = textBox1.GetPositionFromCharIndex(textBox1.SelectionStart);
+							//int column = textBox1.SelectionStart - textBox1.GetFirstCharIndexFromLine(line);
+						}
+
+						//var lineRange = fctb.GetLine(1);
+						var point = fctb.PositionToPoint(fctb.SelectionStart);
+						var line = fctb.YtoLineIndex(point.Y);
+						//var len = fctb.GetLineLength(line);
+
+						var sql = GetSqlFromLine(fctb.Text, line);
+						MessageBox.Show(sql);
+						doGo(sql);
+
 						return true;
 					}
 					break;
@@ -195,6 +224,132 @@ namespace XLog
 
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
+		
+		#region Common Function for SQLTool
+
+		/*
+		 * 1. Trim
+		 * 2. 사용자 SQL을 ';' 기준으로 분리
+		 */
+		private string GetSqlFromLine(string code_, int line_)
+		{
+			char semicolon = ';';
+			int semicolon_pos = -1;
+
+			char single_quotes = '\'';
+			char[] comment_line_start = { '-', '-' };
+			char[] comment_line_end = { '\r', '\n' };
+			char[] comment_block_start = { '/', '*' };
+			char[] comment_block_end = { '*', '/' };
+			int single_quotes_start_pos = -1;
+			int comment_line_start_pos = -1;
+			int comment_block_start_pos = -1;
+
+			string code = code_.Trim();
+			int len = code.Length;
+			semicolon_pos = code.IndexOf(";");
+
+			// ';' 이 없으면, 하나의 SQL 문장이다.
+			if (semicolon_pos == -1) return code;
+
+			// 맨마지막에만 ';' 이면, 제거하고 바로 리턴.
+			if (semicolon_pos == len - 1)
+			{
+				return code.Substring(0, len - 1);
+			}
+
+			// 주석, 문자열에 속하지 않은 최초의 ';'을 어떻게 찾을 것인가?
+			// 범위가 len 대신 len - 1 인 것은, 2Byte 구분자 처리 코드를 간단하게 함.
+			int pos;
+			int pos_start = 0;
+			int line = 0;
+			for (pos = 0; pos < len - 1; pos++)
+			{
+				if (code[pos] == '\n')
+				{
+					line++;
+				}
+
+				// @ single_quotes
+				if ((single_quotes_start_pos == -1) &&
+					(code[pos] == single_quotes))
+				{
+					single_quotes_start_pos = pos;
+					continue;
+				}
+
+				if (single_quotes_start_pos != -1) // 구간시작
+				{
+					if (code[pos] == single_quotes)
+					{
+						single_quotes_start_pos = -1;
+					}
+
+					// 구간내의 다른 문자는 무시
+					continue;
+				}
+
+				// @ -- 주석
+				if ((comment_line_start_pos == -1) &&
+					(code[pos] == comment_line_start[0] && code[pos + 1] == comment_line_start[1]))
+				{
+					comment_line_start_pos = pos;
+					continue;
+				}
+
+				if (comment_line_start_pos != -1) // 구간시작
+				{
+					if (code[pos] == comment_line_end[1])
+					{
+						comment_line_start_pos = -1;
+					}
+
+					// 구간내의 다른 문자는 무시
+					continue;
+				}
+
+				// @ /* .. */ 주석
+				if ((comment_block_start_pos == -1) &&
+					(code[pos] == comment_block_start[0] && code[pos + 1] == comment_block_start[1]))
+				{
+					comment_block_start_pos = pos;
+					continue;
+				}
+
+				if (comment_block_start_pos != -1) // 구간시작
+				{
+					if (code[pos] == comment_block_end[0] && code[pos + 1] == comment_block_end[1])
+					{
+						comment_block_start_pos = -1;
+					}
+
+					// 구간내의 다른 문자는 무시
+					continue;
+				}
+
+				if (code[pos] == semicolon)
+				{
+					if ( line_ > line )
+					{
+						pos_start = pos + 1;
+						continue;
+					}
+
+					return code.Substring(pos_start, pos - pos_start);
+				}
+
+			} // for (int pos = 0; pos < len; pos++)
+
+			// 맨마지막에, ';' 이 있는 경우.
+			if (code[pos] == semicolon)
+			{
+				return code.Substring(pos_start, pos - pos_start);
+			}
+
+			return code;
+		}
+				
+		#endregion
 
 		private void doGo(string sql_)
 		{
