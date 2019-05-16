@@ -162,6 +162,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="common\SQLTool_Alt_C.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="common\SQLTool_Alt_C.Designer.cs">
+      <DependentUpon>SQLTool_Alt_C.cs</DependentUpon>
+    </Compile>
     <Compile Include="OLDs\QueryForm2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -212,6 +218,9 @@
     <Compile Include="common\SQLToolUserControl.Designer.cs">
       <DependentUpon>SQLToolUserControl.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="common\SQLTool_Alt_C.resx">
+      <DependentUpon>SQLTool_Alt_C.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OLDs\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

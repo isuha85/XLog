@@ -67,7 +67,6 @@ namespace XLog
         private DbDataAdapter adapter = null;
         XDb xDb = null;
 
-        private DataTable dtEmpty = null;
         private bool bStop = false;
 
 		//private int FETCH_SIZE = 1;
@@ -144,52 +143,51 @@ namespace XLog
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
-			Keys key = keyData & ~(Keys.Shift | Keys.Control);
+			Keys key = keyData & ~(Keys.Alt | Keys.Shift | Keys.Control);
 
 			switch (key)
 			{
 				case Keys.F:
-					if ((keyData & Keys.Control) != 0)
+					if ((keyData & Keys.Alt) != 0) break; ;
+					if ( ((keyData & Keys.Control) != 0) && ((keyData & Keys.Shift) != 0) )
 					{
-						if ((keyData & Keys.Shift) != 0)
+						// TODO: 특정 선택 영역만 "포맷팅" 하는 기능 필요
+						var code = fctb.Text;
+
+						// TODO: 공통설정화면으로 처리.
+						var _formatterOptions = new PoorMansTSqlFormatterRedux.Formatters.TSqlStandardFormatterOptions
 						{
-							// TODO: 특정 선택 영역만 "포맷팅" 하는 기능 필요
-							var code = fctb.Text;
+							KeywordStandardization = true,
+							IndentString = "\t",
+							SpacesPerTab = 4,
+							MaxLineWidth = 999,
+							NewStatementLineBreaks = 2,
+							NewClauseLineBreaks = 1,
+							TrailingCommas = true,
+							SpaceAfterExpandedComma = false,
+							ExpandBetweenConditions = true,
+							ExpandBooleanExpressions = true,
+							ExpandCaseStatements = true,
+							ExpandCommaLists = true,
+							BreakJoinOnSections = false,
+							UppercaseKeywords = true,
+							ExpandInLists = true
+						};
 
-							// TODO: 공통설정화면으로 처리.
-							var _formatterOptions = new PoorMansTSqlFormatterRedux.Formatters.TSqlStandardFormatterOptions
-							{
-								KeywordStandardization = true,
-								IndentString = "\t",
-								SpacesPerTab = 4,
-								MaxLineWidth = 999,
-								NewStatementLineBreaks = 2,
-								NewClauseLineBreaks = 1,
-								TrailingCommas = true,
-								SpaceAfterExpandedComma = false,
-								ExpandBetweenConditions = true,
-								ExpandBooleanExpressions = true,
-								ExpandCaseStatements = true,
-								ExpandCommaLists = true,
-								BreakJoinOnSections = false,
-								UppercaseKeywords = true,
-								ExpandInLists = true
-							};
+						//var tokenizer = new PoorMansTSqlFormatterLib.Tokenizers.TSqlStandardTokenizer();
+						var tokenizer = new PoorMansTSqlFormatterRedux.Tokenizers.TSqlStandardTokenizer();
+						var parser = new PoorMansTSqlFormatterRedux.Parsers.TSqlStandardParser();
+						var formatter = new PoorMansTSqlFormatterRedux.Formatters.TSqlStandardFormatter(_formatterOptions);
 
-							//var tokenizer = new PoorMansTSqlFormatterLib.Tokenizers.TSqlStandardTokenizer();
-							var tokenizer = new PoorMansTSqlFormatterRedux.Tokenizers.TSqlStandardTokenizer();
-							var parser = new PoorMansTSqlFormatterRedux.Parsers.TSqlStandardParser();
-							var formatter = new PoorMansTSqlFormatterRedux.Formatters.TSqlStandardFormatter(_formatterOptions);
-
-							var tokenizedSQL = tokenizer.TokenizeSQL(code);
-							var parsedSQL = parser.ParseSQL(tokenizedSQL);
-							fctb.Text = formatter.FormatSQLTree(parsedSQL);
-						}
+						var tokenizedSQL = tokenizer.TokenizeSQL(code);
+						var parsedSQL = parser.ParseSQL(tokenizedSQL);
+						fctb.Text = formatter.FormatSQLTree(parsedSQL);
 
 						return true;
 					}
 					break;
 				case Keys.L:
+					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Alt) != 0) ) break; ;
 					if ((keyData & Keys.Control) != 0)
 					{
 						var sql = fctb.SelectedText;
@@ -198,6 +196,7 @@ namespace XLog
 					}
 					break;
 				case Keys.K:
+					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Alt) != 0)) break; ;
 					if ((keyData & Keys.Control) != 0)
 					{
 						// [NOTE] FCTB 는 TextBox 를 확장했음에도, GetLineFromCharIndex() 등은 없다.
@@ -208,15 +207,70 @@ namespace XLog
 							//int column = textBox1.SelectionStart - textBox1.GetFirstCharIndexFromLine(line);
 						}
 
-						//var lineRange = fctb.GetLine(1);
 						var point = fctb.PositionToPoint(fctb.SelectionStart);
 						var line = fctb.YtoLineIndex(point.Y);
+						//var lineText = fctb.GetLineText(line);
+						//var lineRange = fctb.GetLine(line);
 						//var len = fctb.GetLineLength(line);
 
 						var sql = GetSqlFromLine(fctb.Text, line);
-						MessageBox.Show(sql);
 						doGo(sql);
 
+						return true;
+					}
+					break;
+				case Keys.C:
+					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Control) != 0)) break; ;
+					if ((keyData & Keys.Alt) != 0)
+					{
+						try
+						{
+							var form = new SQLTool_Alt_C();
+							string sql = null;
+							string name = null;
+
+							if (fctb.SelectionLength != 0)
+							{
+								name = fctb.SelectedText;
+							}
+							else
+							{
+								char[] anyOf = { ' ', '\t', '\r', '\n', ';', '"', '\'' };
+								int pos_start = -1;
+								int pos_end = -1;
+
+								pos_end = fctb.Text.IndexOfAny(anyOf, fctb.SelectionStart);
+								if (pos_end == -1)
+								{
+									pos_end = fctb.Text.Length;
+								}
+
+								pos_start = fctb.Text.LastIndexOfAny(anyOf, 
+									(fctb.SelectionStart>0)? fctb.SelectionStart - 1 : 0
+									);
+								//if (pos_start == -1) pos_start = -1;	// 의미상으로는 필요한 코드이다.
+
+								name = fctb.Text.Substring(pos_start + 1, pos_end - pos_start - 1);
+							}
+							//MessageBox.Show("[" + name + "]");
+
+							sql = "select * from tb_clob";
+							sql = "select * from ";
+							sql += name + " ";
+							sql += "where rownum <= 1";
+
+							adapter.SelectCommand = xDb.XDbCommand(sql, conn);
+
+							DataTable dt = new DataTable();
+							adapter.Fill(dt);
+
+							form.SetDataTable(dt);
+							form.Show();
+						}
+						catch (Exception ex)
+						{
+							MessageBox.Show(ex.Message);
+						}
 						return true;
 					}
 					break;
@@ -367,7 +421,7 @@ namespace XLog
 			// 출처: https://and0329.tistory.com/entry/C-과-오라클-데이터베이스-연동-방법 
 			try
 			{
-				dgvResult.DataSource = dtEmpty;     // (1) 결과창을 비워준다.
+				dgvResult.DataSource = null;     // (1) 결과창을 비워준다.
 				tabControl1.SelectedIndex = 0;      // (2) 결과탭을 보여준디.
 				Application.DoEvents();
 
