@@ -6,10 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Windows.Forms;
+//using System.Windows;
 using System.Runtime.InteropServices;		// https://hot-key.tistory.com/4?category=1010793
 
 using System.Data;							// 공통 인터페이스 , IDbConnection .. 등
-using System.Data.Common;					// 추상 클래스 , DbConnection .. 등
+using System.Data.Common;                   // 추상 클래스 , DbConnection .. 등
 
 using System.Diagnostics;                   // 특정시간 응답대기, Debug.Assert, Debug.WriteLine, ..
 using System.Configuration;
@@ -26,10 +27,48 @@ using Altibase.Data.AltibaseClient;         // altibase
 using Oracle.ManagedDataAccess.Client;      // Managed 드라이버 (32/64 bit에 무방), deprecated - using System.Data.OracleClient;
 using Oracle.ManagedDataAccess.Types;
 
-
 namespace XLog
 {
-    public class PUBLIC
+	#region dlopen for Win32 (MFC)
+
+	public class Win32
+	{
+		//HWND FindWindowA( LPCSTR lpClassName, LPCSTR lpWindowName );
+		[DllImport("user32.dll")]
+		public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+		[DllImport("user32.dll")]
+		public static extern IntPtr GetForegroundWindow();
+
+		//int GetWindowTextA(HWND hWnd, LPSTR lpString, int nMaxCount);
+		[DllImport("user32.dll")]
+		public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+		// BOOL SetWindowPos(HWND hWnd, LPRECT lpRect);
+		[DllImport("user32.dll")]
+		public static extern bool SetWindowPos(IntPtr hWnd, ref Rect lpRect);
+
+		//BOOL GetWindowRect( HWND hWnd /* handle to window */, LPRECT lpRect /* window coordinates */ );
+		[DllImport("user32.dll")]
+		public static extern bool GetwindowRect(IntPtr hWnd, out Rect lpRect);
+
+		// BOOL EnumWindows(WNDENUMPROC lpEnumFunc, LPARMAM IParam)
+		// typedef BOOL (CALLBACK* WNDENUMPROC)(HWND, LPARAM);
+
+		// 출처: https://kspil.tistory.com/8 [필스의 프로그래밍세상]
+		[StructLayout(LayoutKind.Explicit)]
+		public struct Rect
+		{
+			[FieldOffset(0)] public int top;
+			[FieldOffset(4)] public int left;
+			[FieldOffset(8)] public int bottom;
+			[FieldOffset(12)] public int right;
+		}
+	}
+	
+	#endregion
+
+	public class PUBLIC
     {
 		#region Common Function For TIME
 
@@ -68,7 +107,21 @@ namespace XLog
 
 	} // class PUBLIC
 
+	#region Global Configure / Default Values
+
+	public class Defaults
+	{
+		public const string Version = "0.1 (2019.05.23)";
+
+		public const int Timeout = 60;
+		public const string TimeFormat = "YYYY/MM/DD HH24:MI:SS";
+		public const string DateFormat = "YYYY/MM/DD";
+		public const string NullText = "(NULL)";
+
+		//public const string SQL_ALT_C_ORA = "";
+	}
 	
+	#endregion
 
 	#region XDb
 

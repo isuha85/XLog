@@ -38,6 +38,7 @@
 			this.lbRow = new System.Windows.Forms.ToolStripStatusLabel();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.fctb = new FastColoredTextBoxNS.FastColoredTextBox();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tpResult = new System.Windows.Forms.TabPage();
 			this.dgvResult = new System.Windows.Forms.DataGridView();
@@ -59,13 +60,13 @@
 			this.btnStop = new System.Windows.Forms.Button();
 			this.btnGo = new System.Windows.Forms.Button();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-			this.fctb = new FastColoredTextBoxNS.FastColoredTextBox();
 			this.statusStrip1.SuspendLayout();
 			this.panel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.fctb)).BeginInit();
 			this.tabControl1.SuspendLayout();
 			this.tpResult.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dgvResult)).BeginInit();
@@ -75,7 +76,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.dgvStat)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dgvTmp)).BeginInit();
 			this.flowLayoutPanel1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.fctb)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// statusStrip1
@@ -158,6 +158,42 @@
 			this.splitContainer1.Size = new System.Drawing.Size(714, 770);
 			this.splitContainer1.SplitterDistance = 200;
 			this.splitContainer1.TabIndex = 6;
+			// 
+			// fctb
+			// 
+			this.fctb.AutoCompleteBracketsList = new char[] {
+        '(',
+        ')',
+        '{',
+        '}',
+        '[',
+        ']',
+        '\"',
+        '\"',
+        '\'',
+        '\''};
+			this.fctb.AutoIndentCharsPatterns = "";
+			this.fctb.AutoScrollMinSize = new System.Drawing.Size(263, 22);
+			this.fctb.BackBrush = null;
+			this.fctb.CharHeight = 22;
+			this.fctb.CharWidth = 12;
+			this.fctb.CommentPrefix = "--";
+			this.fctb.Cursor = System.Windows.Forms.Cursors.IBeam;
+			this.fctb.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+			this.fctb.IsReplaceMode = false;
+			this.fctb.Language = FastColoredTextBoxNS.Language.SQL;
+			this.fctb.LeftBracket = '(';
+			this.fctb.Location = new System.Drawing.Point(0, 0);
+			this.fctb.Name = "fctb";
+			this.fctb.Paddings = new System.Windows.Forms.Padding(0);
+			this.fctb.RightBracket = ')';
+			this.fctb.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
+			this.fctb.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("fctb.ServiceColors")));
+			this.fctb.Size = new System.Drawing.Size(150, 150);
+			this.fctb.TabIndex = 3;
+			this.fctb.Text = "fastColoredTextBox2";
+			this.fctb.Zoom = 100;
+			this.fctb.SelectionChangedDelayed += new System.EventHandler(this.fctb_SelectionChangedDelayed);
 			// 
 			// tabControl1
 			// 
@@ -380,38 +416,6 @@
 			this.flowLayoutPanel1.Size = new System.Drawing.Size(86, 770);
 			this.flowLayoutPanel1.TabIndex = 4;
 			// 
-			// fctb
-			// 
-			this.fctb.AutoCompleteBracketsList = new char[] {
-        '(',
-        ')',
-        '{',
-        '}',
-        '[',
-        ']',
-        '\"',
-        '\"',
-        '\'',
-        '\''};
-			this.fctb.AutoScrollMinSize = new System.Drawing.Size(263, 22);
-			this.fctb.BackBrush = null;
-			this.fctb.CharHeight = 22;
-			this.fctb.CharWidth = 12;
-			this.fctb.Cursor = System.Windows.Forms.Cursors.IBeam;
-			this.fctb.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-			this.fctb.Font = new System.Drawing.Font("Courier New", 9.75F);
-			this.fctb.IsReplaceMode = false;
-			this.fctb.Language = FastColoredTextBoxNS.Language.SQL;
-			this.fctb.Location = new System.Drawing.Point(0, 0);
-			this.fctb.Name = "fctb";
-			this.fctb.Paddings = new System.Windows.Forms.Padding(0);
-			this.fctb.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
-			this.fctb.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("fctb.ServiceColors")));
-			this.fctb.Size = new System.Drawing.Size(150, 150);
-			this.fctb.TabIndex = 3;
-			this.fctb.Text = "fastColoredTextBox2";
-			this.fctb.Zoom = 100;
-			// 
 			// TSQLToolUserControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
@@ -429,6 +433,7 @@
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.fctb)).EndInit();
 			this.tabControl1.ResumeLayout(false);
 			this.tpResult.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.dgvResult)).EndInit();
@@ -438,7 +443,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.dgvStat)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.dgvTmp)).EndInit();
 			this.flowLayoutPanel1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.fctb)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

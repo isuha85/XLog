@@ -18,6 +18,10 @@ namespace XLog
 		public static bool checked_showPK { get; set; } = false;
 		public static bool checked_showComment { get; set; } = false;
 
+		public static Point preLocation { get; set; } = new Point(-1,-1);
+		public static int preHeight { get; set; } = -1;
+		public static int preWidth { get; set; } = -1;
+
 		//private DataTable datatable;
 
 		public SQLTool_Alt_C()
@@ -27,11 +31,23 @@ namespace XLog
 			cbShowComment.Visible = false;
 			cbShowPK.Visible = false;
 
+			dgvResult.BackgroundColor = Color.White;
+
 			cbInsertComma.Checked = checked_insertComma;
 			cbLowerCase.Checked = checked_lowerCase;
 
+			if (preLocation.X == -1)
 			{
-				dgvResult.BackgroundColor = Color.White;
+				//form.StartPosition = FormStartPosition.CenterParent;
+				StartPosition = FormStartPosition.CenterScreen;
+				//SQLTool_Alt_C.preLocation = form.Location;
+			}
+			else
+			{
+				StartPosition = FormStartPosition.Manual;
+				Location = preLocation;
+				Height = preHeight;
+				Width = preWidth;
 			}
 		}
 
@@ -89,6 +105,13 @@ namespace XLog
 		private void cbShowComment_CheckedChanged(object sender, EventArgs e)
 		{
 
+		}
+
+		private void SQLTool_Alt_C_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			SQLTool_Alt_C.preLocation = this.Location;
+			SQLTool_Alt_C.preHeight = this.Height;
+			SQLTool_Alt_C.preWidth = this.Width;
 		}
 	}
 	

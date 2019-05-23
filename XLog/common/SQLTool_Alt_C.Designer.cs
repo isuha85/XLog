@@ -169,6 +169,7 @@
 			this.Controls.Add(this.flowLayoutPanel1);
 			this.Name = "SQLTool_Alt_C";
 			this.Text = "SQLTool_Alt_C";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SQLTool_Alt_C_FormClosing);
 			this.flowLayoutPanel1.ResumeLayout(false);
 			this.flowLayoutPanel1T.ResumeLayout(false);
 			this.flowLayoutPanel1T.PerformLayout();

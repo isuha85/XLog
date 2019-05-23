@@ -29,6 +29,7 @@ using Oracle.ManagedDataAccess.Client;      // Managed 드라이버 (32/64 bit�
 using Oracle.ManagedDataAccess.Types;
 
 using System.Data.Common;
+using System.Text.RegularExpressions;
 
 
 /*
@@ -82,7 +83,7 @@ namespace XLog
             InitializeComponent();
         }
 
-        private void SQLToolUserControl_Load(object sender, EventArgs e)
+		private void SQLToolUserControl_Load(object sender, EventArgs e)
         {
             int margin_w = flowLayoutPanel1.Width;
             int w = this.Width - margin_w;
@@ -103,6 +104,7 @@ namespace XLog
 				//fctb.ReadOnly = true;
 				//fctb.ShortcutsEnabled = true;
 				//fctb.IndentBackColor = Color.Gray;
+				fctb.SelectionHighlightingForLineBreaksEnabled = true;
 
 				fctb.Text = @"select level from dual connect by level <= 1001";
 				fctb.Text = @"with x(c1) as ( select 1 c1 union all select c1 + 1 from x where c1 + 1 <= 1001 ) select c1, data from x, tb_clob option (maxrecursion 0)";
@@ -225,9 +227,21 @@ namespace XLog
 					{
 						try
 						{
-							var form = new SQLTool_Alt_C();
 							string sql = null;
 							string name = null;
+							var form = new SQLTool_Alt_C();
+
+							if (false) 
+							{
+								IntPtr hWnd = Win32.FindWindow(null, "SQL Tool");   // 부모 Form 찾기
+								var pForm = Control.FromHandle(hWnd);
+
+								int x = pForm.Location.X + pForm.Width - form.Width;
+								int y = pForm.Location.Y + pForm.Height - form.Height;
+
+								form.StartPosition = FormStartPosition.Manual;
+								form.Location = new Point(x, y);
+							}
 
 							if (fctb.SelectionLength != 0)
 							{
@@ -531,7 +545,7 @@ namespace XLog
 							FETCH_SIZE = 1;
 							break;
 						case XDbConnType.MSSQL:
-							xDb.mConnStr = "Server=192.168.56.201;Database=mydb;Uid=sa;Pwd=password12!";
+							xDb.mConnStr = "Server=192.168.56.201;Database=master;Uid=sa;Pwd=password12!";
 							break;
 						case XDbConnType.OLEDB:
 							// (1) ALTIBASE의 경우 CLOB 조회 불가
@@ -662,5 +676,41 @@ namespace XLog
             }
         } // btnOpt
 
+
+		private Style sameWordsStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Gray)));
+		DateTime lastNavigatedDateTime = DateTime.Now;
+
+		private void fctb_SelectionChangedDelayed(object sender, EventArgs e)
+		{
+			// TODO: 라이센스확인요, FCTB의 테스트 샘플 코드 사용함 - PowerfulCSharpEditor.cs 
+			var tb = sender as FastColoredTextBox;
+			//remember last visit time
+			if (tb.Selection.IsEmpty && tb.Selection.Start.iLine < tb.LinesCount)
+			{
+				if (lastNavigatedDateTime != tb[tb.Selection.Start.iLine].LastVisit)
+				{
+					tb[tb.Selection.Start.iLine].LastVisit = DateTime.Now;
+					lastNavigatedDateTime = tb[tb.Selection.Start.iLine].LastVisit;
+				}
+			}
+
+			//highlight same words
+			tb.VisibleRange.ClearStyle(sameWordsStyle);
+			if (!tb.Selection.IsEmpty)
+				return;//user selected diapason
+
+			//get fragment around caret
+			var fragment = tb.Selection.GetFragment(@"\w");
+			string text = fragment.Text;
+			if (text.Length == 0)
+				return;
+
+			//highlight same words
+			Range[] ranges = tb.VisibleRange.GetRanges("\\b" + text + "\\b").ToArray();
+
+			if (ranges.Length > 1)
+				foreach (var r in ranges)
+					r.SetStyle(sameWordsStyle);
+		}
 	} // class SQLToolUserControl
 }
