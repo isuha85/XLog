@@ -50,7 +50,7 @@ namespace XLog
 			cbShowComment.Visible = false;
 			cbShowPK.Visible = false;
 
-			dgvResult.BackgroundColor = Color.White;
+			dataGrdiView.BackgroundColor = Color.White;
 
 			cbInsertComma.Checked = checked_insertComma;
 			cbLowerCase.Checked = checked_lowerCase;
@@ -255,7 +255,8 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 
 					DataTable dataTable = new DataTable();
 					adapter.Fill(dataTable);
-					dgvResult.DataSource = dataTable; // 화면에 연결
+					dataGrdiView.DataSource = dataTable; // 화면에 연결
+					this.Text = user + "." + tname;
 				}
 			}
 			catch ( Exception ex )

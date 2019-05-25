@@ -38,12 +38,12 @@
 			this.cbShowPK = new System.Windows.Forms.CheckBox();
 			this.cbShowComment = new System.Windows.Forms.CheckBox();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.dgvResult = new System.Windows.Forms.DataGridView();
+			this.dataGrdiView = new System.Windows.Forms.DataGridView();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.flowLayoutPanel1T.SuspendLayout();
 			this.flowLayoutPanel1B.SuspendLayout();
 			this.panel1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.dgvResult)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.dataGrdiView)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// flowLayoutPanel1
@@ -51,6 +51,7 @@
 			this.flowLayoutPanel1.Controls.Add(this.flowLayoutPanel1T);
 			this.flowLayoutPanel1.Controls.Add(this.flowLayoutPanel1B);
 			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
 			this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
 			this.flowLayoutPanel1.Size = new System.Drawing.Size(800, 76);
@@ -96,7 +97,8 @@
 			// cbInsertComma
 			// 
 			this.cbInsertComma.AutoSize = true;
-			this.cbInsertComma.Location = new System.Drawing.Point(3, 3);
+			this.cbInsertComma.Location = new System.Drawing.Point(6, 3);
+			this.cbInsertComma.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
 			this.cbInsertComma.Name = "cbInsertComma";
 			this.cbInsertComma.Size = new System.Drawing.Size(147, 22);
 			this.cbInsertComma.TabIndex = 4;
@@ -108,7 +110,7 @@
 			// cbLowerCase
 			// 
 			this.cbLowerCase.AutoSize = true;
-			this.cbLowerCase.Location = new System.Drawing.Point(156, 3);
+			this.cbLowerCase.Location = new System.Drawing.Point(159, 3);
 			this.cbLowerCase.Name = "cbLowerCase";
 			this.cbLowerCase.Size = new System.Drawing.Size(132, 22);
 			this.cbLowerCase.TabIndex = 5;
@@ -120,7 +122,7 @@
 			// cbShowPK
 			// 
 			this.cbShowPK.AutoSize = true;
-			this.cbShowPK.Location = new System.Drawing.Point(294, 3);
+			this.cbShowPK.Location = new System.Drawing.Point(297, 3);
 			this.cbShowPK.Name = "cbShowPK";
 			this.cbShowPK.Size = new System.Drawing.Size(108, 22);
 			this.cbShowPK.TabIndex = 6;
@@ -132,7 +134,7 @@
 			// cbShowComment
 			// 
 			this.cbShowComment.AutoSize = true;
-			this.cbShowComment.Location = new System.Drawing.Point(408, 3);
+			this.cbShowComment.Location = new System.Drawing.Point(411, 3);
 			this.cbShowComment.Name = "cbShowComment";
 			this.cbShowComment.Size = new System.Drawing.Size(164, 22);
 			this.cbShowComment.TabIndex = 7;
@@ -143,22 +145,22 @@
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.dgvResult);
+			this.panel1.Controls.Add(this.dataGrdiView);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(0, 76);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(800, 374);
 			this.panel1.TabIndex = 6;
 			// 
-			// dgvResult
+			// dataGrdiView
 			// 
-			this.dgvResult.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dgvResult.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.dgvResult.Location = new System.Drawing.Point(0, 0);
-			this.dgvResult.Name = "dgvResult";
-			this.dgvResult.RowTemplate.Height = 30;
-			this.dgvResult.Size = new System.Drawing.Size(800, 374);
-			this.dgvResult.TabIndex = 6;
+			this.dataGrdiView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.dataGrdiView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dataGrdiView.Location = new System.Drawing.Point(0, 0);
+			this.dataGrdiView.Name = "dataGrdiView";
+			this.dataGrdiView.RowTemplate.Height = 30;
+			this.dataGrdiView.Size = new System.Drawing.Size(800, 374);
+			this.dataGrdiView.TabIndex = 6;
 			// 
 			// SQLTool_Alt_C
 			// 
@@ -176,7 +178,7 @@
 			this.flowLayoutPanel1B.ResumeLayout(false);
 			this.flowLayoutPanel1B.PerformLayout();
 			this.panel1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.dgvResult)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.dataGrdiView)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -193,6 +195,6 @@
 		private System.Windows.Forms.CheckBox cbShowPK;
 		private System.Windows.Forms.CheckBox cbShowComment;
 		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.DataGridView dgvResult;
+		private System.Windows.Forms.DataGridView dataGrdiView;
 	}
 }

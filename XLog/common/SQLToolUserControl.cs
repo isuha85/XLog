@@ -98,19 +98,19 @@ namespace XLog
 
 			// rtbSqlEdit
 			{
-				fctb.Dock = DockStyle.Fill;
-				fctb.Language = Language.SQL;
-				fctb.AcceptsTab = true;
+				tb.Dock = DockStyle.Fill;
+				tb.Language = Language.SQL;
+				tb.AcceptsTab = true;
 				//fctb.WordWrap = false;
 				//fctb.ReadOnly = true;
 				//fctb.ShortcutsEnabled = true;
 				//fctb.IndentBackColor = Color.Gray;
-				fctb.SelectionHighlightingForLineBreaksEnabled = true;
+				tb.SelectionHighlightingForLineBreaksEnabled = true;
 
-				fctb.Text = @"select level from dual connect by level <= 1001";
-				fctb.Text = @"with x(c1) as ( select 1 c1 union all select c1 + 1 from x where c1 + 1 <= 1001 ) select c1, data from x, tb_clob option (maxrecursion 0)";
-				fctb.Text = @"with x as ( select level c1 from dual connect by level <= 1001) select c1, data from x, tb_clob";
-				fctb.Text = @"select c1, data from ( select level c1 from dual connect by level <= 1001) x, tb_clob";
+				tb.Text = @"select level from dual connect by level <= 1001";
+				tb.Text = @"with x(c1) as ( select 1 c1 union all select c1 + 1 from x where c1 + 1 <= 1001 ) select c1, data from x, tb_clob option (maxrecursion 0)";
+				tb.Text = @"with x as ( select level c1 from dual connect by level <= 1001) select c1, data from x, tb_clob";
+				tb.Text = @"select c1, data from ( select level c1 from dual connect by level <= 1001) x, tb_clob";
 
 				string myStr = null;
 				myStr = "" +
@@ -122,13 +122,13 @@ namespace XLog
 				myStr += "\r\nselect 2 from dual;  ";
 				myStr += "\n\nselect 3 from dual;  ";
 				//myStr = "select 1 from dual;";
-				fctb.Text = myStr;
+				tb.Text = myStr;
 			}
 
 			// Tip 12 - DataGridView 레코드 색상 번갈아서 바꾸기
 			{
-				dgvResult.RowsDefaultCellStyle.BackColor = Color.White;
-				dgvResult.AlternatingRowsDefaultCellStyle.BackColor = Color.Aquamarine;
+				dataGridView.RowsDefaultCellStyle.BackColor = Color.White;
+				dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.Aquamarine;
 			}
 
 			// toolStripProgressBar1
@@ -155,7 +155,7 @@ namespace XLog
 					if ( ((keyData & Keys.Control) != 0) && ((keyData & Keys.Shift) != 0) )
 					{
 						// TODO: 특정 선택 영역만 "포맷팅" 하는 기능 필요
-						var code = fctb.Text;
+						var code = tb.Text;
 
 						// TODO: 공통설정화면으로 처리.
 						var _formatterOptions = new PoorMansTSqlFormatterRedux.Formatters.TSqlStandardFormatterOptions
@@ -184,7 +184,7 @@ namespace XLog
 
 						var tokenizedSQL = tokenizer.TokenizeSQL(code);
 						var parsedSQL = parser.ParseSQL(tokenizedSQL);
-						fctb.Text = formatter.FormatSQLTree(parsedSQL);
+						tb.Text = formatter.FormatSQLTree(parsedSQL);
 
 						return true;
 					}
@@ -193,7 +193,7 @@ namespace XLog
 					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Alt) != 0) ) break; ;
 					if ((keyData & Keys.Control) != 0)
 					{
-						var sql = fctb.SelectedText;
+						var sql = tb.SelectedText;
 						doGo(sql);
 						return true;
 					}
@@ -210,13 +210,13 @@ namespace XLog
 							//int column = textBox1.SelectionStart - textBox1.GetFirstCharIndexFromLine(line);
 						}
 
-						var point = fctb.PositionToPoint(fctb.SelectionStart);
-						var line = fctb.YtoLineIndex(point.Y);
+						var point = tb.PositionToPoint(tb.SelectionStart);
+						var line = tb.YtoLineIndex(point.Y);
 						//var lineText = fctb.GetLineText(line);
 						//var lineRange = fctb.GetLine(line);
 						//var len = fctb.GetLineLength(line);
 
-						var sql = GetSqlFromLine(fctb.Text, line);
+						var sql = GetSqlFromLine(tb.Text, line);
 						doGo(sql);
 
 						return true;
@@ -229,9 +229,9 @@ namespace XLog
 						string selectedText = null;
 						var form = new SQLTool_Alt_C();
 
-						if (fctb.SelectionLength != 0)
+						if (tb.SelectionLength != 0)
 						{
-							selectedText = fctb.SelectedText;
+							selectedText = tb.SelectedText;
 						}
 						else
 						{
@@ -239,18 +239,18 @@ namespace XLog
 							int pos_start = -1;
 							int pos_end = -1;
 
-							pos_end = fctb.Text.IndexOfAny(anyOf, fctb.SelectionStart);
+							pos_end = tb.Text.IndexOfAny(anyOf, tb.SelectionStart);
 							if (pos_end == -1)
 							{
-								pos_end = fctb.Text.Length;
+								pos_end = tb.Text.Length;
 							}
 
-							pos_start = fctb.Text.LastIndexOfAny(anyOf,
-								(fctb.SelectionStart > 0) ? fctb.SelectionStart - 1 : 0
+							pos_start = tb.Text.LastIndexOfAny(anyOf,
+								(tb.SelectionStart > 0) ? tb.SelectionStart - 1 : 0
 								);
 							//if (pos_start == -1) pos_start = -1;	// 의미상으로는 필요한 코드이다.
 
-							selectedText = fctb.Text.Substring(pos_start + 1, pos_end - pos_start - 1);
+							selectedText = tb.Text.Substring(pos_start + 1, pos_end - pos_start - 1);
 						}
 
 						if (selectedText.Length != 0)
@@ -409,7 +409,7 @@ namespace XLog
 			// 출처: https://and0329.tistory.com/entry/C-과-오라클-데이터베이스-연동-방법 
 			try
 			{
-				dgvResult.DataSource = null;     // (1) 결과창을 비워준다.
+				dataGridView.DataSource = null;     // (1) 결과창을 비워준다.
 				tabControl1.SelectedIndex = 0;      // (2) 결과탭을 보여준디.
 				Application.DoEvents();
 
@@ -445,7 +445,7 @@ namespace XLog
 					{
 						// [NOTE] 대량 데이타 출력 성능을 위한 더미 코드.
 						dt2 = dt.Copy();
-						dgvResult.DataSource = dt2;
+						dataGridView.DataSource = dt2;
 					}
 
 					lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
@@ -461,7 +461,7 @@ namespace XLog
 				//lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TICK_DELTA + ")";
 				lbTime.Text = PUBLIC.TIME_CHECK() + " sec";
 				lbRow.Text = sPos + " rows";
-				dgvResult.DataSource = dt;
+				dataGridView.DataSource = dt;
 			}
 			catch (Exception ex)
 			{
@@ -571,7 +571,7 @@ namespace XLog
 
         private void btnGo_Click(object sender, EventArgs e)
         {
-			doGo(fctb.Text);
+			doGo(tb.Text);
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -581,44 +581,44 @@ namespace XLog
 
         private void btnLast_Click(object sender, EventArgs e)
         {
-            int jumpToRow = dgvResult.Rows.Count - 1 - 1;
+            int jumpToRow = dataGridView.Rows.Count - 1 - 1;
 
-            dgvResult.FirstDisplayedScrollingRowIndex = jumpToRow;
-            dgvResult.Rows[jumpToRow].Selected = true;
+            dataGridView.FirstDisplayedScrollingRowIndex = jumpToRow;
+            dataGridView.Rows[jumpToRow].Selected = true;
         }
 
         private void btnFirst_Click(object sender, EventArgs e)
         {
             int jumpToRow = 0;
 
-            dgvResult.FirstDisplayedScrollingRowIndex = jumpToRow;
-            dgvResult.Rows[jumpToRow].Selected = true;
+            dataGridView.FirstDisplayedScrollingRowIndex = jumpToRow;
+            dataGridView.Rows[jumpToRow].Selected = true;
         }
 
         private void btnNext_Click(object sender, EventArgs e)
         {
-            int jumpToRow = dgvResult.FirstDisplayedScrollingRowIndex + JUMP_TO_ROW;
+            int jumpToRow = dataGridView.FirstDisplayedScrollingRowIndex + JUMP_TO_ROW;
 
-            if (jumpToRow > dgvResult.Rows.Count - 1)
+            if (jumpToRow > dataGridView.Rows.Count - 1)
             {
-                jumpToRow = dgvResult.Rows.Count - 1;
+                jumpToRow = dataGridView.Rows.Count - 1;
             }
 
-            dgvResult.FirstDisplayedScrollingRowIndex = jumpToRow;
-            dgvResult.Rows[jumpToRow].Selected = true;
+            dataGridView.FirstDisplayedScrollingRowIndex = jumpToRow;
+            dataGridView.Rows[jumpToRow].Selected = true;
         }
 
         private void btnPrev_Click(object sender, EventArgs e)
         {
-            int jumpToRow = dgvResult.FirstDisplayedScrollingRowIndex - JUMP_TO_ROW;
+            int jumpToRow = dataGridView.FirstDisplayedScrollingRowIndex - JUMP_TO_ROW;
 
             if (jumpToRow < 0)
             {
                 jumpToRow = 0;
             }
 
-            dgvResult.FirstDisplayedScrollingRowIndex = jumpToRow;
-            dgvResult.Rows[jumpToRow].Selected = true;
+            dataGridView.FirstDisplayedScrollingRowIndex = jumpToRow;
+            dataGridView.Rows[jumpToRow].Selected = true;
         }
 
         static int btnOpt_Click_Cnt = 0;
@@ -630,23 +630,23 @@ namespace XLog
             {
                 if (btnOpt_Click_Cnt == 1)
                 {
-                    dgvTmp.DefaultCellStyle.ForeColor = dgvResult.DefaultCellStyle.ForeColor;
-                    dgvTmp.RowsDefaultCellStyle.BackColor = dgvResult.RowsDefaultCellStyle.BackColor;
-                    dgvTmp.GridColor = dgvResult.GridColor;
-                    dgvTmp.BorderStyle = dgvResult.BorderStyle;
+                    dgvTmp.DefaultCellStyle.ForeColor = dataGridView.DefaultCellStyle.ForeColor;
+                    dgvTmp.RowsDefaultCellStyle.BackColor = dataGridView.RowsDefaultCellStyle.BackColor;
+                    dgvTmp.GridColor = dataGridView.GridColor;
+                    dgvTmp.BorderStyle = dataGridView.BorderStyle;
                 }
 
-                dgvResult.DefaultCellStyle.ForeColor = Color.Coral;
-                dgvResult.RowsDefaultCellStyle.BackColor = Color.AliceBlue;
-                dgvResult.GridColor = Color.Blue;
-                dgvResult.BorderStyle = BorderStyle.Fixed3D;
+                dataGridView.DefaultCellStyle.ForeColor = Color.Coral;
+                dataGridView.RowsDefaultCellStyle.BackColor = Color.AliceBlue;
+                dataGridView.GridColor = Color.Blue;
+                dataGridView.BorderStyle = BorderStyle.Fixed3D;
             }
             else
             {
-                dgvResult.DefaultCellStyle.ForeColor = dgvTmp.DefaultCellStyle.ForeColor;
-                dgvResult.RowsDefaultCellStyle.BackColor = dgvTmp.RowsDefaultCellStyle.BackColor;
-                dgvResult.GridColor = dgvTmp.GridColor;
-                dgvResult.BorderStyle = dgvTmp.BorderStyle;
+                dataGridView.DefaultCellStyle.ForeColor = dgvTmp.DefaultCellStyle.ForeColor;
+                dataGridView.RowsDefaultCellStyle.BackColor = dgvTmp.RowsDefaultCellStyle.BackColor;
+                dataGridView.GridColor = dgvTmp.GridColor;
+                dataGridView.BorderStyle = dgvTmp.BorderStyle;
             }
         } // btnOpt
 
@@ -654,7 +654,7 @@ namespace XLog
 		private Style sameWordsStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Gray)));
 		DateTime lastNavigatedDateTime = DateTime.Now;
 
-		private void fctb_SelectionChangedDelayed(object sender, EventArgs e)
+		private void tb_SelectionChangedDelayed(object sender, EventArgs e)
 		{
 			// TODO: 라이센스확인요, FCTB의 테스트 샘플 코드 사용함 - PowerfulCSharpEditor.cs 
 			var tb = sender as FastColoredTextBox;
