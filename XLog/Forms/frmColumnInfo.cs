@@ -1,4 +1,6 @@
-﻿using System;
+﻿using XLog.Controls;
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -6,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 using System.Runtime.InteropServices;       // https://hot-key.tistory.com/4?category=1010793
@@ -59,7 +62,7 @@ namespace XLog
 			{
 				//form.StartPosition = FormStartPosition.CenterParent;
 				StartPosition = FormStartPosition.CenterScreen;
-				//SQLTool_Alt_C.preLocation = form.Location;
+				//frmColumnInfo.preLocation = form.Location;
 			}
 			else
 			{
@@ -75,7 +78,10 @@ namespace XLog
 			if ( conn != null )
 			{
 				SetDataTable(selectedText, conn);
-				Show();
+				if ( dataGrdiView.RowCount > 0 )
+				{
+					Show();
+				}
 			}
 		}
 
@@ -149,7 +155,7 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 				}
 
 				// CASE-1 : 해당 USER에서 검색
-				//if (object_type == null)
+				if (object_type == null)
 				{
 					cmd.Parameters.Clear();
 					cmd.CommandText =
@@ -215,6 +221,17 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 					}
 					else
 					{
+						var _ParentForm = (Form)Thread.GetData(Thread.GetNamedDataSlot("ParentForm"));
+
+						// 1안 - 범용적일듯
+						using (new CenterWinDialog(_ParentForm))
+						{
+							MessageBox.Show("\"" + selectedText + "\" does not exist");
+						}
+
+						// 2안 - MessageBoxEx 에 국한됨.
+						//MessageBoxEx.Show(_ParentForm, "\"" + selectedText + "\" does not exist");
+
 						return; // 해당 객체가 없는 것임
 					}
 				}
@@ -327,7 +344,7 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 
 		}
 
-		private void SQLTool_Alt_C_FormClosing(object sender, FormClosingEventArgs e)
+		private void frmColumnInfo_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			frmColumnInfo.preLocation = this.Location;
 			frmColumnInfo.preHeight = this.Height;

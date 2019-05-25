@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 using FastColoredTextBoxNS;
@@ -256,6 +257,10 @@ namespace XLog
 						if (selectedText.Length != 0)
 						{
 							//MessageBox.Show("[" + selectedText + "]");
+
+							// [NOTE] 오류처리 편의상, 호출자를 알기위하여, Thread Local Storage (TLS) 변수를 사용했다
+							Thread.SetData(Thread.GetNamedDataSlot("ParentForm"), this.ParentForm); // TLS 변수 내이밍을 _XX 로 할까?
+
 							form.ShowMain(selectedText, conn);
 						}
 

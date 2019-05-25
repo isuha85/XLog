@@ -170,8 +170,8 @@
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.flowLayoutPanel1);
 			this.Name = "frmColumnInfo";
-			this.Text = "SQLTool_Alt_C";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SQLTool_Alt_C_FormClosing);
+			this.Text = "frmColumnInfo";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmColumnInfo_FormClosing);
 			this.flowLayoutPanel1.ResumeLayout(false);
 			this.flowLayoutPanel1T.ResumeLayout(false);
 			this.flowLayoutPanel1T.PerformLayout();
