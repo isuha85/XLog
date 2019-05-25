@@ -178,17 +178,17 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\SQLTool_Alt_C.cs">
+    <Compile Include="Forms\frmColumnInfo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SQLTool_Alt_C.Designer.cs">
-      <DependentUpon>SQLTool_Alt_C.cs</DependentUpon>
+    <Compile Include="Forms\frmColumnInfo.Designer.cs">
+      <DependentUpon>frmColumnInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SQLTool.cs">
+    <Compile Include="Forms\frmSQLTool.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SQLTool.Designer.cs">
-      <DependentUpon>SQLTool.cs</DependentUpon>
+    <Compile Include="Forms\frmSQLTool.Designer.cs">
+      <DependentUpon>frmSQLTool.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Form1.cs">
       <SubType>Form</SubType>
@@ -196,12 +196,12 @@
     <Compile Include="Forms\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\PUBLIC.cs" />
-    <Compile Include="Forms\MainForm.cs">
+    <Compile Include="PUBLIC.cs" />
+    <Compile Include="Forms\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="Forms\frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -210,20 +210,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>testDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="Controls\SQLToolUserControl.cs">
+    <Compile Include="Controls\SQLToolControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\SQLToolUserControl.Designer.cs">
-      <DependentUpon>SQLToolUserControl.cs</DependentUpon>
+    <Compile Include="Controls\SQLToolControl.Designer.cs">
+      <DependentUpon>SQLToolControl.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Forms\SQLTool_Alt_C.resx">
-      <DependentUpon>SQLTool_Alt_C.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frmColumnInfo.resx">
+      <DependentUpon>frmColumnInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -235,11 +235,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Forms\SQLTool.resx">
-      <DependentUpon>SQLTool.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frmSQLTool.resx">
+      <DependentUpon>frmSQLTool.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SQLToolUserControl.resx">
-      <DependentUpon>SQLToolUserControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\SQLToolControl.resx">
+      <DependentUpon>SQLToolControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
