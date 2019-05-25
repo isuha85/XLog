@@ -12,7 +12,7 @@ namespace XLog
 {
     public partial class MainForm : Form
     {
-        QueryForm QueryF;
+        SQLTool QueryF;
 
         public MainForm()
         {
@@ -21,7 +21,7 @@ namespace XLog
 
         private void queryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            QueryF = new QueryForm(); //폼2 객체 선언
+            QueryF = new SQLTool(); //폼2 객체 선언
             QueryF.MdiParent = this;
 
             QueryF.StartPosition = FormStartPosition.Manual;

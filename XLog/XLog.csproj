@@ -184,12 +184,6 @@
     <Compile Include="common\SQLTool_Alt_C.Designer.cs">
       <DependentUpon>SQLTool_Alt_C.cs</DependentUpon>
     </Compile>
-    <Compile Include="OLDs\QueryForm2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OLDs\QueryForm2.Designer.cs">
-      <DependentUpon>QueryForm2.cs</DependentUpon>
-    </Compile>
     <Compile Include="SQLTool.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -203,12 +197,6 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="common\PUBLIC.cs" />
-    <Compile Include="OLDs\QueryForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OLDs\QueryForm.Designer.cs">
-      <DependentUpon>QueryForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -222,12 +210,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>testDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="OLDs\TUserSQL.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OLDs\TUserSQL.Designer.cs">
-      <DependentUpon>TUserSQL.cs</DependentUpon>
-    </Compile>
     <Compile Include="common\SQLToolUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -239,12 +221,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OLDs\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OLDs\QueryForm2.resx">
-      <DependentUpon>QueryForm2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OLDs\QueryForm.resx">
-      <DependentUpon>QueryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -261,9 +237,6 @@
     </Compile>
     <EmbeddedResource Include="SQLTool.resx">
       <DependentUpon>SQLTool.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OLDs\TUserSQL.resx">
-      <DependentUpon>TUserSQL.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="common\SQLToolUserControl.resx">
       <DependentUpon>SQLToolUserControl.cs</DependentUpon>
