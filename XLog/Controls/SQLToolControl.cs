@@ -60,7 +60,7 @@ using MySql.Data.MySqlClient;
 
 namespace XLog
 {
-    public partial class TSQLToolUserControl : UserControl
+    public partial class SQLToolControl : UserControl
     {
         //private string connStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON";
         //private OracleConnection conn = null;
@@ -79,7 +79,7 @@ namespace XLog
 
 		private int JUMP_TO_ROW = 20;
 
-        public TSQLToolUserControl()
+        public SQLToolControl()
         {
             InitializeComponent();
         }
@@ -227,7 +227,7 @@ namespace XLog
 					if ((keyData & Keys.Alt) != 0)
 					{
 						string selectedText = null;
-						var form = new SQLTool_Alt_C();
+						var form = new frmColumnInfo();
 
 						if (tb.SelectionLength != 0)
 						{

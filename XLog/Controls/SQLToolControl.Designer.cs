@@ -1,6 +1,6 @@
 ﻿namespace XLog
 {
-    partial class TSQLToolUserControl
+    partial class SQLToolControl
     {
         /// <summary> 
         /// 필수 디자이너 변수입니다.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TSQLToolUserControl));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SQLToolControl));
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
@@ -180,7 +180,6 @@
 			this.tb.CommentPrefix = "--";
 			this.tb.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.tb.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-			this.tb.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.tb.IsReplaceMode = false;
 			this.tb.Language = FastColoredTextBoxNS.Language.SQL;
 			this.tb.LeftBracket = '(';
@@ -417,14 +416,14 @@
 			this.flowLayoutPanel1.Size = new System.Drawing.Size(86, 770);
 			this.flowLayoutPanel1.TabIndex = 4;
 			// 
-			// TSQLToolUserControl
+			// SQLToolControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.flowLayoutPanel1);
 			this.Controls.Add(this.statusStrip1);
-			this.Name = "TSQLToolUserControl";
+			this.Name = "SQLToolControl";
 			this.Size = new System.Drawing.Size(800, 800);
 			this.Load += new System.EventHandler(this.SQLToolUserControl_Load);
 			this.statusStrip1.ResumeLayout(false);

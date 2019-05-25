@@ -29,7 +29,7 @@ using Oracle.ManagedDataAccess.Types;
 
 namespace XLog
 {
-	public partial class SQLTool_Alt_C : Form
+	public partial class frmColumnInfo : Form
 	{
 		// TODO: 휘발성으로, 재구동이후에는 유지되지 않는다. 설정파일 개념이 요구됨
 		public static bool checked_insertComma { get; set; } = false;
@@ -43,7 +43,7 @@ namespace XLog
 
 		//private DataTable datatable;
 
-		public SQLTool_Alt_C()
+		public frmColumnInfo()
 		{
 			InitializeComponent();
 
@@ -329,9 +329,9 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 
 		private void SQLTool_Alt_C_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			SQLTool_Alt_C.preLocation = this.Location;
-			SQLTool_Alt_C.preHeight = this.Height;
-			SQLTool_Alt_C.preWidth = this.Width;
+			frmColumnInfo.preLocation = this.Location;
+			frmColumnInfo.preHeight = this.Height;
+			frmColumnInfo.preWidth = this.Width;
 		}
 	}
 	

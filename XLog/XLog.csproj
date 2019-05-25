@@ -72,7 +72,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>x128_01_main.png.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -205,11 +206,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="testDataSet.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>testDataSet.xsd</DependentUpon>
-    </Compile>
     <Compile Include="Controls\SQLToolControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -251,17 +247,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="testDataSet.xsc">
-      <DependentUpon>testDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="testDataSet.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>testDataSet.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="testDataSet.xss">
-      <DependentUpon>testDataSet.xsd</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -288,10 +273,11 @@
     <None Include="Resources\x128_01_main.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="x128_01_main.png.ico" />
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
+    <Folder Include="Help\" />
+    <Folder Include="Tester\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

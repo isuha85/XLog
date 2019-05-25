@@ -1,6 +1,6 @@
 ﻿namespace XLog
 {
-	partial class SQLTool_Alt_C
+	partial class frmColumnInfo
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -162,14 +162,14 @@
 			this.dataGrdiView.Size = new System.Drawing.Size(800, 374);
 			this.dataGrdiView.TabIndex = 6;
 			// 
-			// SQLTool_Alt_C
+			// frmColumnInfo
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.flowLayoutPanel1);
-			this.Name = "SQLTool_Alt_C";
+			this.Name = "frmColumnInfo";
 			this.Text = "SQLTool_Alt_C";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SQLTool_Alt_C_FormClosing);
 			this.flowLayoutPanel1.ResumeLayout(false);

@@ -16,11 +16,11 @@ using System.Runtime.InteropServices; //  Do not forget this namespace or else D
 
 namespace XLog
 {
-    public partial class SQLTool : Form
+    public partial class frmSQLTool : Form
     {
         private int nTabSeq = 0;
 
-        public SQLTool()
+        public frmSQLTool()
         {
             InitializeComponent();
 
@@ -47,7 +47,7 @@ namespace XLog
             TabPage myTabPage = new TabPage(sTmp);
 
             //var myTabForm = new TUserSQL();
-            var myTabForm = new TSQLToolUserControl();
+            var myTabForm = new SQLToolControl();
 
             myTabForm.Show();
             //myTabForm.TopLevel = false;
