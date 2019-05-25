@@ -178,16 +178,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\SQLTool_Alt_C.cs">
+    <Compile Include="Forms\SQLTool_Alt_C.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls\SQLTool_Alt_C.Designer.cs">
+    <Compile Include="Forms\SQLTool_Alt_C.Designer.cs">
       <DependentUpon>SQLTool_Alt_C.cs</DependentUpon>
     </Compile>
-    <Compile Include="SQLTool.cs">
+    <Compile Include="Forms\SQLTool.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SQLTool.Designer.cs">
+    <Compile Include="Forms\SQLTool.Designer.cs">
       <DependentUpon>SQLTool.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Form1.cs">
@@ -197,10 +197,10 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\PUBLIC.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
@@ -216,13 +216,13 @@
     <Compile Include="Controls\SQLToolUserControl.Designer.cs">
       <DependentUpon>SQLToolUserControl.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Controls\SQLTool_Alt_C.resx">
+    <EmbeddedResource Include="Forms\SQLTool_Alt_C.resx">
       <DependentUpon>SQLTool_Alt_C.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -235,7 +235,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="SQLTool.resx">
+    <EmbeddedResource Include="Forms\SQLTool.resx">
       <DependentUpon>SQLTool.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SQLToolUserControl.resx">
