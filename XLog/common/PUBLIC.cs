@@ -4,12 +4,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.Windows.Forms;
-//using System.Windows;
-using System.Runtime.InteropServices;		// https://hot-key.tistory.com/4?category=1010793
 
-using System.Data;							// 공통 인터페이스 , IDbConnection .. 등
+using System.Runtime.InteropServices;       // https://hot-key.tistory.com/4?category=1010793
+using System.Data;                          // 공통 인터페이스 , IDbConnection .. 등
 using System.Data.Common;                   // 추상 클래스 , DbConnection .. 등
 
 using System.Diagnostics;                   // 특정시간 응답대기, Debug.Assert, Debug.WriteLine, ..
@@ -147,9 +145,12 @@ namespace XLog
         public DbConnection mConnection = null;
         public DbTransaction mSelectTransaction4alt = null;
 
-        #region Abstract Functions
+		public string mUserName = null;
+		public string mSchemaName = null; // ORACLE의 경우 USER와 SCHEMA가 동일한 구조
 
-        public abstract DbConnection XDbConnection(string aConnStr);
+		#region Abstract Functions
+
+		public abstract DbConnection XDbConnection(string aConnStr);
 
         public abstract DbCommand XDbCommand(); // internal
         public abstract DbCommand XDbCommand(string commandText, DbConnection aConnection);
@@ -166,96 +167,96 @@ namespace XLog
 
         public abstract DbTransaction XDbTransaction();
 
-        #endregion
-    }
+		#endregion
+	}
 
-    public class XDb : XDbBase
-    {
-        public XDb()
-        {
-            //this.mConnType = XDbConnType.ORACLE;
-        }
+	public class XDb : XDbBase
+	{
+		public XDb()
+		{
+			//this.mConnType = XDbConnType.ORACLE;
+		}
 
-        public XDb(XDbConnType connType_)
-        {
-            this.mConnType = connType_;
-        }
+		public XDb(XDbConnType connType_)
+		{
+			this.mConnType = connType_;
+		}
 
-        public override DbConnection XDbConnection(string aConnStr = null)
-        {
-            if (mConnection != null)
-            {
-                // TODO: 임시코드, 종료처리할지, 오류낼지.
-                mConnection.Close();
-                mConnection = null;
-            }
+		public override DbConnection XDbConnection(string connStr_ = null)
+		{
+			if (mConnection != null)
+			{
+				// TODO: 임시코드, 종료처리할지, 오류낼지.
+				mConnection.Close();
+				mConnection = null;
+			}
 
-            string sConnStr = null;
+			string connStr = null;
 
-            if (aConnStr == null)
-            {
-                sConnStr = mConnStr;
-            }
-            else
-            {
-                sConnStr = aConnStr;
-            }
-                       
-            if (mConnType == XDbConnType.ORACLE)
-            {
-                mConnection = new OracleConnection(sConnStr);
-            }
-            else if (mConnType == XDbConnType.ALTIBASE)
-            {
-                mConnection = new AltibaseConnection(sConnStr);
-            }
-            else if (mConnType == XDbConnType.MSSQL)
-            {
-                mConnection = new SqlConnection(sConnStr);
-            }
-            else if (mConnType == XDbConnType.TIBERO)
-            {
-                mConnection = new OleDbConnectionTbr(sConnStr);
-            }
-            else if (mConnType == XDbConnType.OLEDB)
-            {
-                mConnection = new OleDbConnection(sConnStr);
-            }
+			if (connStr_ == null)
+			{
+				connStr = mConnStr;
+			}
+			else
+			{
+				connStr = connStr_;
+			}
 
-            return mConnection;
-        }
+			if (mConnType == XDbConnType.ORACLE)
+			{
+				mConnection = new OracleConnection(connStr);
+			}
+			else if (mConnType == XDbConnType.ALTIBASE)
+			{
+				mConnection = new AltibaseConnection(connStr);
+			}
+			else if (mConnType == XDbConnType.MSSQL)
+			{
+				mConnection = new SqlConnection(connStr);
+			}
+			else if (mConnType == XDbConnType.TIBERO)
+			{
+				mConnection = new OleDbConnectionTbr(connStr);
+			}
+			else if (mConnType == XDbConnType.OLEDB)
+			{
+				mConnection = new OleDbConnection(connStr);
+			}
 
-        public override DbCommand XDbCommand()
-        {
-            DbCommand sCommand = null;
+			return mConnection;
+		}
 
-            if (mConnType == XDbConnType.ORACLE)
-            {
-                sCommand = new OracleCommand();
-            }
-            else if (mConnType == XDbConnType.ALTIBASE)
-            {
-                sCommand = new AltibaseCommand();
-            }
-            else if (mConnType == XDbConnType.MSSQL)
-            {
-                sCommand = new SqlCommand();
-            }
-            else if (mConnType == XDbConnType.TIBERO)
-            {
-                sCommand = new OleDbCommandTbr();
-            }
-            else if (mConnType == XDbConnType.OLEDB)
-            {
-                sCommand = new OleDbCommand();
-            }
+		public override DbCommand XDbCommand()
+		{
+			DbCommand sCommand = null;
 
-            return sCommand;
-        }
+			if (mConnType == XDbConnType.ORACLE)
+			{
+				sCommand = new OracleCommand();
+			}
+			else if (mConnType == XDbConnType.ALTIBASE)
+			{
+				sCommand = new AltibaseCommand();
+			}
+			else if (mConnType == XDbConnType.MSSQL)
+			{
+				sCommand = new SqlCommand();
+			}
+			else if (mConnType == XDbConnType.TIBERO)
+			{
+				sCommand = new OleDbCommandTbr();
+			}
+			else if (mConnType == XDbConnType.OLEDB)
+			{
+				sCommand = new OleDbCommand();
+			}
 
-        public override DbCommand XDbCommand(string commandText_, DbConnection aConnection = null)
-        {
-            DbCommand sCommand = XDbCommand();
+			return sCommand;
+		}
+
+		public override DbCommand XDbCommand(string commandText_, DbConnection aConnection = null)
+		{
+			DbCommand sCommand = XDbCommand();
 			string commandText = commandText_.Trim();
 
 			// 맨마지막에만 ';' 이면, 제거
@@ -268,206 +269,206 @@ namespace XLog
 			}
 
 			sCommand.CommandText = commandText;
-            sCommand.CommandType = CommandType.Text;
-            if (aConnection == null)
-            {
-                sCommand.Connection = mConnection;
-            }
-            else
-            {
-                sCommand.Connection = aConnection;
-            }
+			sCommand.CommandType = CommandType.Text;
+			if (aConnection == null)
+			{
+				sCommand.Connection = mConnection;
+			}
+			else
+			{
+				sCommand.Connection = aConnection;
+			}
 
-            if ( false
+			if (false
 				|| mConnType == XDbConnType.ALTIBASE
-                //|| mConnType == XDbConnType.TIBERO
-               )
-            {
-                // TODO: 제거해야함 - Altibase 에서 LOB 조회를 위한 임시코드.
-                // (1) AutoCommit 에서 조회하면 오류 - {"LobLocator cannot span the transaction 332417."}
-                // (2) (BUGBUG) 그러하다면, 해당 쿼리 이전에 다른 TX가 있으면 어찌 할 것인가?
+			   //|| mConnType == XDbConnType.TIBERO
+			   )
+			{
+				// TODO: 제거해야함 - Altibase 에서 LOB 조회를 위한 임시코드.
+				// (1) AutoCommit 에서 조회하면 오류 - {"LobLocator cannot span the transaction 332417."}
+				// (2) (BUGBUG) 그러하다면, 해당 쿼리 이전에 다른 TX가 있으면 어찌 할 것인가?
 
-                if (mSelectTransaction4alt == null)
-                {
-                    mSelectTransaction4alt = mConnection.BeginTransaction(); // [WHAT] mConnection.EnlistTransaction
-                    sCommand.Transaction = mSelectTransaction4alt;
-                }
-                else
-                {
-                    mSelectTransaction4alt.Rollback();
-                    //mSelectTransaction4alt.Commit();
+				if (mSelectTransaction4alt == null)
+				{
+					mSelectTransaction4alt = mConnection.BeginTransaction(); // [WHAT] mConnection.EnlistTransaction
+					sCommand.Transaction = mSelectTransaction4alt;
+				}
+				else
+				{
+					mSelectTransaction4alt.Rollback();
+					//mSelectTransaction4alt.Commit();
 
-                    mSelectTransaction4alt = mConnection.BeginTransaction();
-                    //mSelectTransaction4alt.Connection.BeginTransaction(); // 이런식으로 작성하면, "개체의 현재상태가 유효하지 않습니다" 오류가 2번째 Rollback에서 발생
-                }
-            }
+					mSelectTransaction4alt = mConnection.BeginTransaction();
+					//mSelectTransaction4alt.Connection.BeginTransaction(); // 이런식으로 작성하면, "개체의 현재상태가 유효하지 않습니다" 오류가 2번째 Rollback에서 발생
+				}
+			}
 
-            return sCommand;
-        }
+			return sCommand;
+		}
 
-        public override DbCommand XDbCommand4StoredProcedure(string procName, DbConnection aConnection = null)
-        {
-            DbCommand sCommand = XDbCommand(procName, aConnection);
-            sCommand.CommandType = CommandType.StoredProcedure;
+		public override DbCommand XDbCommand4StoredProcedure(string procName, DbConnection aConnection = null)
+		{
+			DbCommand sCommand = XDbCommand(procName, aConnection);
+			sCommand.CommandType = CommandType.StoredProcedure;
 
-            return sCommand;
-        }
+			return sCommand;
+		}
 
-        public override IDataParameter XDbParameter(string parameterName, object parameterValue)
-        {
-            IDataParameter sParameter = null;
+		public override IDataParameter XDbParameter(string parameterName, object parameterValue)
+		{
+			IDataParameter sParameter = null;
 
-            if (mConnType == XDbConnType.ORACLE)
-            {
-                sParameter = new OracleParameter(parameterName, parameterValue);
-            }
-            else if (mConnType == XDbConnType.ALTIBASE)
-            {
-                sParameter = new AltibaseParameter(parameterName, parameterValue);
-            }
-            else if (mConnType == XDbConnType.MSSQL)
-            {
-                sParameter = new SqlParameter(parameterName, parameterValue);
-            }
-            else if (mConnType == XDbConnType.TIBERO)
-            {
-                sParameter = new OleDbParameterTbr(parameterName, parameterValue);
-            }
-            else if (mConnType == XDbConnType.OLEDB)
-            {
-                sParameter = new OleDbParameter(parameterName, parameterValue);
-            }
+			if (mConnType == XDbConnType.ORACLE)
+			{
+				sParameter = new OracleParameter(parameterName, parameterValue);
+			}
+			else if (mConnType == XDbConnType.ALTIBASE)
+			{
+				sParameter = new AltibaseParameter(parameterName, parameterValue);
+			}
+			else if (mConnType == XDbConnType.MSSQL)
+			{
+				sParameter = new SqlParameter(parameterName, parameterValue);
+			}
+			else if (mConnType == XDbConnType.TIBERO)
+			{
+				sParameter = new OleDbParameterTbr(parameterName, parameterValue);
+			}
+			else if (mConnType == XDbConnType.OLEDB)
+			{
+				sParameter = new OleDbParameter(parameterName, parameterValue);
+			}
 
-            return sParameter;
-        }
+			return sParameter;
+		}
 
-        // not implemented, think more ..
-        public override IDataReader XDbDataReader()
-        {
-            IDataReader sDataReader = null;
+		// not implemented, think more ..
+		public override IDataReader XDbDataReader()
+		{
+			IDataReader sDataReader = null;
 
-            //TODO: Do Something
+			//TODO: Do Something
 
-            //if (mConnType == XDbConnType.ORACLE)
-            //{
-            //    sDataReader = new OracleDataReader();
-            //}
-            //else if (mConnType == XDbConnType.ALTIBASE)
-            //{
-            //    sDataReader = new AltibaseDataReader();
-            //}
-            //else if (mConnType == XDbConnType.MSSQL)
-            //{
-            //    sDataReader = new SqlDataReader();
-            //}
-            //else if (mConnType == XDbConnType.TIBERO)
-            //{
-            //    sDataReader = new OdbcDataReader(); // (X) OdbcDataReaderTbr
-            //}
-            //else if (mConnType == XDbConnType.OLEDB)
-            //{
-            //    sDataReader = new OdbcDataReader();
-            //}
+			//if (mConnType == XDbConnType.ORACLE)
+			//{
+			//    sDataReader = new OracleDataReader();
+			//}
+			//else if (mConnType == XDbConnType.ALTIBASE)
+			//{
+			//    sDataReader = new AltibaseDataReader();
+			//}
+			//else if (mConnType == XDbConnType.MSSQL)
+			//{
+			//    sDataReader = new SqlDataReader();
+			//}
+			//else if (mConnType == XDbConnType.TIBERO)
+			//{
+			//    sDataReader = new OdbcDataReader(); // (X) OdbcDataReaderTbr
+			//}
+			//else if (mConnType == XDbConnType.OLEDB)
+			//{
+			//    sDataReader = new OdbcDataReader();
+			//}
 
-            //OleDbDataReader reader = rcmd.ExecuteReader();
-            //if (reader.HasRows)
-            //{
-            //    DataTable rettbl = new DataTable();
-            //    rettbl.Load(reader);
-            //}
-            //reader.Close();
+			//OleDbDataReader reader = rcmd.ExecuteReader();
+			//if (reader.HasRows)
+			//{
+			//    DataTable rettbl = new DataTable();
+			//    rettbl.Load(reader);
+			//}
+			//reader.Close();
 
-            return sDataReader;
-        }
+			return sDataReader;
+		}
 
-        public override DbDataAdapter XDbDataAdapter()
-        {
-            DbDataAdapter sDataAdapter = null;
+		public override DbDataAdapter XDbDataAdapter()
+		{
+			DbDataAdapter sDataAdapter = null;
 
-            if (mConnType == XDbConnType.ORACLE)
-            {
-                sDataAdapter = new OracleDataAdapter();
-            }
-            else if (mConnType == XDbConnType.ALTIBASE)
-            {
-                sDataAdapter = new AltibaseDataAdapter();
-            }
-            else if (mConnType == XDbConnType.MSSQL)
-            {
-                sDataAdapter = new SqlDataAdapter();
-            }
-            else if (mConnType == XDbConnType.TIBERO)
-            {
-                sDataAdapter = new OleDbDataAdapterTbr();
-            }
-            else if (mConnType == XDbConnType.OLEDB)
-            {
-                sDataAdapter = new OleDbDataAdapter();
-            }
-            
-            return sDataAdapter;
-        }
+			if (mConnType == XDbConnType.ORACLE)
+			{
+				sDataAdapter = new OracleDataAdapter();
+			}
+			else if (mConnType == XDbConnType.ALTIBASE)
+			{
+				sDataAdapter = new AltibaseDataAdapter();
+			}
+			else if (mConnType == XDbConnType.MSSQL)
+			{
+				sDataAdapter = new SqlDataAdapter();
+			}
+			else if (mConnType == XDbConnType.TIBERO)
+			{
+				sDataAdapter = new OleDbDataAdapterTbr();
+			}
+			else if (mConnType == XDbConnType.OLEDB)
+			{
+				sDataAdapter = new OleDbDataAdapter();
+			}
+
+			return sDataAdapter;
+		}
+
+		public override DbDataAdapter XDbDataAdapter(DbCommand aSelectCommand)
+		{
+			DbDataAdapter sDataAdapter = XDbDataAdapter();
+
+			sDataAdapter.SelectCommand = aSelectCommand;
+
+			return sDataAdapter;
+		}
+
+		public override DbDataAdapter XDbDataAdapter(string aSelectCommandText, DbConnection aConnection)
+		{
+			DbDataAdapter sDataAdapter = XDbDataAdapter();
+
+			sDataAdapter.SelectCommand.CommandText = aSelectCommandText;
+			sDataAdapter.SelectCommand.CommandType = CommandType.Text;
+			if (aConnection == null)
+			{
+				sDataAdapter.SelectCommand.Connection = mConnection;
+			}
+			else
+			{
+				sDataAdapter.SelectCommand.Connection = aConnection;
+			}
+
+			return sDataAdapter;
+		}
 
 
-        public override DbDataAdapter XDbDataAdapter(DbCommand aSelectCommand)
-        {
-            DbDataAdapter sDataAdapter = XDbDataAdapter();
+		public override DbTransaction XDbTransaction()
+		{
+			DbTransaction sTransaction = null;
 
-            sDataAdapter.SelectCommand = aSelectCommand;
+			//TODO: Do Something
 
-            return sDataAdapter;
-        }
+			//if (mConnType == XDbConnType.ORACLE)
+			//{
+			//    sTransaction = new OracleTransaction();
+			//}
+			//else if (mConnType == XDbConnType.ALTIBASE)
+			//{
+			//    sTransaction = new AltibaseTransaction();
+			//}
+			//else if (mConnType == XDbConnType.MSSQL)
+			//{
+			//    sTransaction = new SqlTransaction();
+			//}
+			//else if (mConnType == XDbConnType.TIBERO)
+			//{
+			//    sTransaction = new OleDbTransaction(); // (X) OleDbTransactionTbr
+			//}
+			//else if (mConnType == XDbConnType.OLEDB)
+			//{
+			//    sTransaction = new OleDbTransaction();
+			//}
 
-        public override DbDataAdapter XDbDataAdapter(string aSelectCommandText, DbConnection aConnection)
-        {
-            DbDataAdapter sDataAdapter = XDbDataAdapter();
-
-            sDataAdapter.SelectCommand.CommandText = aSelectCommandText;
-            sDataAdapter.SelectCommand.CommandType = CommandType.Text;
-            if (aConnection == null)
-            {
-                sDataAdapter.SelectCommand.Connection = mConnection;
-            }
-            else
-            {
-                sDataAdapter.SelectCommand.Connection = aConnection;
-            }
-
-            return sDataAdapter;
-        }
+			return sTransaction;
+		}
 
 
-        public override DbTransaction XDbTransaction()
-        {
-            DbTransaction sTransaction = null;
-
-            //TODO: Do Something
-
-            //if (mConnType == XDbConnType.ORACLE)
-            //{
-            //    sTransaction = new OracleTransaction();
-            //}
-            //else if (mConnType == XDbConnType.ALTIBASE)
-            //{
-            //    sTransaction = new AltibaseTransaction();
-            //}
-            //else if (mConnType == XDbConnType.MSSQL)
-            //{
-            //    sTransaction = new SqlTransaction();
-            //}
-            //else if (mConnType == XDbConnType.TIBERO)
-            //{
-            //    sTransaction = new OleDbTransaction(); // (X) OleDbTransactionTbr
-            //}
-            //else if (mConnType == XDbConnType.OLEDB)
-            //{
-            //    sTransaction = new OleDbTransaction();
-            //}
-
-            return sTransaction;        }
-    }
-
-	#endregion //XDb
-
+		#endregion //XDb
+	}
 } // namespace XLog
 

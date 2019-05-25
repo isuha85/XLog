@@ -30,6 +30,7 @@ using Oracle.ManagedDataAccess.Types;
 
 using System.Data.Common;
 using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
 
 
 /*
@@ -225,66 +226,39 @@ namespace XLog
 					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Control) != 0)) break; ;
 					if ((keyData & Keys.Alt) != 0)
 					{
-						try
+						string selectedText = null;
+						var form = new SQLTool_Alt_C();
+
+						if (fctb.SelectionLength != 0)
 						{
-							string sql = null;
-							string name = null;
-							var form = new SQLTool_Alt_C();
-
-							if (false) 
-							{
-								IntPtr hWnd = Win32.FindWindow(null, "SQL Tool");   // 부모 Form 찾기
-								var pForm = Control.FromHandle(hWnd);
-
-								int x = pForm.Location.X + pForm.Width - form.Width;
-								int y = pForm.Location.Y + pForm.Height - form.Height;
-
-								form.StartPosition = FormStartPosition.Manual;
-								form.Location = new Point(x, y);
-							}
-
-							if (fctb.SelectionLength != 0)
-							{
-								name = fctb.SelectedText;
-							}
-							else
-							{
-								char[] anyOf = { ' ', '\t', '\r', '\n', ';', '"', '\'' };
-								int pos_start = -1;
-								int pos_end = -1;
-
-								pos_end = fctb.Text.IndexOfAny(anyOf, fctb.SelectionStart);
-								if (pos_end == -1)
-								{
-									pos_end = fctb.Text.Length;
-								}
-
-								pos_start = fctb.Text.LastIndexOfAny(anyOf, 
-									(fctb.SelectionStart>0)? fctb.SelectionStart - 1 : 0
-									);
-								//if (pos_start == -1) pos_start = -1;	// 의미상으로는 필요한 코드이다.
-
-								name = fctb.Text.Substring(pos_start + 1, pos_end - pos_start - 1);
-							}
-							//MessageBox.Show("[" + name + "]");
-
-							sql = "select * from tb_clob";
-							sql = "select * from ";
-							sql += name + " ";
-							sql += "where rownum <= 1";
-
-							adapter.SelectCommand = xDb.XDbCommand(sql, conn);
-
-							DataTable dt = new DataTable();
-							adapter.Fill(dt);
-
-							form.SetDataTable(dt);
-							form.Show();
+							selectedText = fctb.SelectedText;
 						}
-						catch (Exception ex)
+						else
 						{
-							MessageBox.Show(ex.Message);
+							char[] anyOf = { ' ', '\t', '\r', '\n', ';', '"', '\'' };
+							int pos_start = -1;
+							int pos_end = -1;
+
+							pos_end = fctb.Text.IndexOfAny(anyOf, fctb.SelectionStart);
+							if (pos_end == -1)
+							{
+								pos_end = fctb.Text.Length;
+							}
+
+							pos_start = fctb.Text.LastIndexOfAny(anyOf,
+								(fctb.SelectionStart > 0) ? fctb.SelectionStart - 1 : 0
+								);
+							//if (pos_start == -1) pos_start = -1;	// 의미상으로는 필요한 코드이다.
+
+							selectedText = fctb.Text.Substring(pos_start + 1, pos_end - pos_start - 1);
 						}
+
+						if (selectedText.Length != 0)
+						{
+							//MessageBox.Show("[" + selectedText + "]");
+							form.ShowMain(selectedText, conn);
+						}
+
 						return true;
 					}
 					break;
@@ -313,7 +287,7 @@ namespace XLog
 			int comment_line_start_pos = -1;
 			int comment_block_start_pos = -1;
 
-			string code = code_.Trim();
+			string code = code_.Trim() + ";"; // 마지막 ';' 이 없는 경우에 대응
 			int len = code.Length;
 			semicolon_pos = code.IndexOf(";");
 
