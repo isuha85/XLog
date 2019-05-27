@@ -97,7 +97,7 @@ namespace XLog
             splitContainer1.Dock = DockStyle.Fill;
             tabControl1.Dock = DockStyle.Fill;
 
-			// rtbSqlEdit
+			// FCTB
 			{
 				tb.Dock = DockStyle.Fill;
 				tb.Language = Language.SQL;
@@ -126,10 +126,12 @@ namespace XLog
 				tb.Text = myStr;
 			}
 
-			// Tip 12 - DataGridView 레코드 색상 번갈아서 바꾸기
+			// DataGridView 레코드 색상 번갈아서 바꾸기
 			{
 				dataGridView.RowsDefaultCellStyle.BackColor = Color.White;
 				dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.Aquamarine;
+
+				//dataGridView.DataError += new DataGridViewDataErrorEventHandler(dataGridView_DataError);
 			}
 
 			// toolStripProgressBar1
@@ -450,7 +452,7 @@ namespace XLog
 					{
 						// [NOTE] 대량 데이타 출력 성능을 위한 더미 코드.
 						dt2 = dt.Copy();
-						dataGridView.DataSource = dt2;
+						dataGridView.DataSource = XDb.ConvertDataTable(dt2);
 					}
 
 					lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
@@ -466,11 +468,13 @@ namespace XLog
 				//lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TICK_DELTA + ")";
 				lbTime.Text = PUBLIC.TIME_CHECK() + " sec";
 				lbRow.Text = sPos + " rows";
-				dataGridView.DataSource = dt;
+
+				// TODO: RAW 타입에 대해서 DataGridView 에서 Error
+				dataGridView.DataSource = XDb.ConvertDataTable(dt);
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				MessageBoxEx.Show(this.ParentForm, ex.Message);
 			}
 
 			toolStripProgressBar1.Value = 0;
@@ -691,5 +695,17 @@ namespace XLog
 				foreach (var r in ranges)
 					r.SetStyle(sameWordsStyle);
 		}
+		
+		private void dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
+		{
+			dataGridView_DataError_(sender, e);
+		}
+		[System.Diagnostics.Conditional("DEBUG")]
+		private void dataGridView_DataError_(object sender, DataGridViewDataErrorEventArgs e)
+		{
+			MessageBoxEx.Show(this.ParentForm, e.ToString());
+			Debug.Assert(false);
+		}
+
 	} // class SQLToolUserControl
 }

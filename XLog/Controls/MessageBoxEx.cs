@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 using System.Runtime.InteropServices;
 
-namespace XLog.Controls
+namespace XLog
 {
 	/// [From] https://stackoverflow.com/questions/1732443/center-messagebox-in-parent-form
 	public partial class MessageBoxEx //: UserControl
@@ -97,6 +97,7 @@ namespace XLog.Controls
 			return MessageBox.Show(owner, text, caption, buttons, icon,
 								   defButton, options);
 		}
+
 
 		public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
 

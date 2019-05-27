@@ -177,9 +177,9 @@ namespace XLog
 			//this.mConnType = XDbConnType.ORACLE;
 		}
 
-		public XDb(XDbConnType connType_)
+		public XDb(XDbConnType type)
 		{
-			this.mConnType = connType_;
+			this.mConnType = type;
 		}
 
 		public override DbConnection XDbConnection(string connStr_ = null)
@@ -228,30 +228,37 @@ namespace XLog
 
 		public override DbCommand XDbCommand()
 		{
-			DbCommand sCommand = null;
+			DbCommand cmd = null;
 
 			if (mConnType == XDbConnType.ORACLE)
 			{
-				sCommand = new OracleCommand();
+				cmd = new OracleCommand();
 			}
 			else if (mConnType == XDbConnType.ALTIBASE)
 			{
-				sCommand = new AltibaseCommand();
+				cmd = new AltibaseCommand();
 			}
 			else if (mConnType == XDbConnType.MSSQL)
 			{
-				sCommand = new SqlCommand();
+				cmd = new SqlCommand();
 			}
 			else if (mConnType == XDbConnType.TIBERO)
 			{
-				sCommand = new OleDbCommandTbr();
+				cmd = new OleDbCommandTbr();
 			}
 			else if (mConnType == XDbConnType.OLEDB)
 			{
-				sCommand = new OleDbCommand();
+				cmd = new OleDbCommand();
 			}
 
-			return sCommand;
+			if (cmd is OracleCommand cmd_)
+			{
+				//TODO: 설정으로 처리 ( 현재는 용도는 없다 )
+				//cmd_.InitialLOBFetchSize = 4000;
+				cmd_.InitialLONGFetchSize = 4000;
+			}
+
+			return cmd;
 		}
 
 		public override DbCommand XDbCommand(string commandText_, DbConnection aConnection = null)
@@ -467,8 +474,80 @@ namespace XLog
 			return sTransaction;
 		}
 
+		/*
+		 * ## Copy DataTable for DataGridView 
+		 * 
+		 *	(1) typeof(Byte[])) : RAW ( ORACLE )
+		 *	(2) .. 
+		 *	
+		 *	TODO: 함수위치를 XDb가 아닌 PUBLIC 으로 가야하나 ?? 
+		 */
+		public static DataTable ConvertDataTable(DataTable data)
+		{
+			bool find = false;
+
+			for (int ic = 0; ic < data.Columns.Count; ic++)
+			{
+				if (data.Columns[ic].DataType == typeof(Byte[]))
+				{
+					find = true;
+					break;
+				}
+			}
+
+			if ( ! find )
+			{
+				return data; // TODO: 참조 리턴이 가능할까? 성능/메모리 2배 소요됨.
+			}
+
+			DataTable newData = new DataTable();
+			Type dataType;
+
+			for (int ic = 0; ic < data.Columns.Count; ic++)
+			{
+				dataType = data.Columns[ic].DataType;
+				if (dataType == typeof(Byte[]))
+				{
+					dataType = typeof(String);
+				}
+				newData.Columns.Add(data.Columns[ic].ColumnName, dataType);
+			}
+
+			for (int ir = 0; ir < data.Rows.Count; ir++)
+			{
+				DataRow row = newData.NewRow();
+
+				for (int ic = 0; ic < data.Columns.Count; ic++)
+				{
+					dataType = data.Columns[ic].DataType;
+
+					if (!DBNull.Value.Equals(data.Rows[ir][ic]))
+					{
+						if (dataType == typeof(Byte[])) // WHEN ORACLE 'RAW' TYPE
+						{
+							Byte[] bytes = (Byte[])data.Rows[ir][ic];
+							//row[ic] = System.Text.Encoding.UTF8.GetString(bytes);
+							//row[ic] = Convert.ToBase64String(bytes);
+							row[ic] = BitConverter.ToString(bytes).Replace("-", ""); // 16진수
+						}
+						else
+						{
+							row[ic] = data.Rows[ir][ic];
+						}
+					}
+					else
+					{
+						row[ic] = data.Rows[ir][ic];
+					}				
+				}
+				newData.Rows.Add(row);
+			}
+			
+			return newData;
+		}
 
 		#endregion //XDb
 	}
+
 } // namespace XLog
 

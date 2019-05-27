@@ -1,6 +1,4 @@
-﻿using XLog.Controls;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -50,13 +48,14 @@ namespace XLog
 		{
 			InitializeComponent();
 
-			cbShowComment.Visible = false;
+			//cbShowComment.Visible = false;
 			cbShowPK.Visible = false;
 
 			dataGrdiView.BackgroundColor = Color.White;
 
 			cbInsertComma.Checked = checked_insertComma;
 			cbLowerCase.Checked = checked_lowerCase;
+			cbShowComment.Checked = checked_showComment;
 
 			if (preLocation.X == -1)
 			{
@@ -149,9 +148,9 @@ namespace XLog
 RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 				if (dataReader != null)
 				{
-					dataReader.Close();
-					dataReader.Dispose();
-					dataReader = null;
+					//dataReader.Close();
+					//dataReader.Dispose();
+					dataReader = null; // null 처리시, GC가 처리대상이 됨
 				}
 
 				// CASE-1 : 해당 USER에서 검색
@@ -226,7 +225,7 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 						// 1안 - 범용적일듯
 						using (new CenterWinDialog(_ParentForm))
 						{
-							MessageBox.Show("\"" + selectedText + "\" does not exist");
+							MessageBox.Show("Object \"" + selectedText + "\" does not exist");
 						}
 
 						// 2안 - MessageBoxEx 에 국한됨.
@@ -236,27 +235,45 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 					}
 				}
 
-				if ( object_type == "VIEW" )
-				{
-					return; // 미구현
-				}
-				else
+				//if ( object_type == "VIEW" )
+				//{
+				//	return; // 미구현
+				//}
+				//else
 				{
 					// 아니면 테이블이라고 가정하자
 					cmd.Parameters.Clear();
-					cmd.CommandText = 
-		@"select " +
-		"		col.column_name \"Name\"," +
-		"		data_type, decode(char_used, 'C', char_length, data_length) data_length, data_precision, data_scale, " +
-		"		decode(col.nullable, 'N', 'Not Null', NULL) \"Nullable\", " +
-		"		data_default \"Default\", " +
-		"		char_used, " +
-		"		'' \"Comments\" " +
-		"  from sys.all_tab_columns col " +
-		" where col.owner = :v_user and col.table_name = :v_tname " +
-		" order by column_id ";
+					cmd.CommandText =
+@"SELECT "
++ "       COL.COLUMN_NAME \"NAME\", \n"
++ "       CASE  \n"
++ "        WHEN DATA_SCALE = 0 THEN DATA_TYPE||'('||DATA_PRECISION||')' \n"
++ "        WHEN DATA_SCALE != 0 AND DATA_TYPE IN ( 'NUMBER' ) THEN DATA_TYPE||'('||DATA_PRECISION||','||DATA_SCALE||')' \n"
++ "        WHEN DATA_TYPE IN ( 'FLOAT' ) THEN DATA_TYPE||'('||DATA_PRECISION||')' \n"
++ "        WHEN DATA_TYPE IN ( 'TIMESTAMP' ) THEN DATA_TYPE||'('||DATA_SCALE||')' \n"
++ "        WHEN DATA_TYPE IN ( 'CHAR','VARCHAR2', 'NCHAR', 'NVARCHAR2', 'RAW' ) THEN DATA_TYPE||'('||DECODE(CHAR_USED, 'C', CHAR_LENGTH, DATA_LENGTH)||')' \n"
++ "        --WHEN DATA_TYPE IN ( 'XMLTYPE','ANYATA', 'ROWID', 'BLOB', 'CLOB', 'BINARY_DOUBLE', 'BINARY_FLOAT', 'LONG', 'ROWID' ) THEN DATA_TYPE \n"
++ "        ELSE DATA_TYPE \n"
++ "       END \"Type\", \n"
++ "       DECODE(COL.NULLABLE, 'N', 'Not Null', NULL) \"Nullable\", \n"
++ "       DATA_DEFAULT \"Default\", \n"
++ "       (SELECT COMMENTS \n"
++ "          FROM SYS.ALL_COL_COMMENTS CM \n"
++ "         WHERE 1 = :v_one \n"
++ "           AND COL.OWNER = CM.OWNER \n"
++ "           AND COL.TABLE_NAME = CM.TABLE_NAME \n"
++ "           AND COL.COLUMN_NAME = CM.COLUMN_NAME) \"Comment\" \n"
++ "  FROM SYS.ALL_TAB_COLUMNS COL \n"
++ " WHERE COL.OWNER = :v_user \n"
++ "   AND COL.TABLE_NAME = :v_tname \n"
++ " ORDER BY COLUMN_ID  \n"
+;
 
 					{
+						OracleParameter v_one = new OracleParameter(":v_one", OracleDbType.Int32);
+						v_one.Value = (checked_showComment) ? 1 : 0;
+						cmd.Parameters.Add(v_one);
+
 						OracleParameter v_user = new OracleParameter(":v_user", OracleDbType.Varchar2, 32);
 						v_user.Value = user.ToUpper();
 						cmd.Parameters.Add(v_user);
@@ -284,9 +301,9 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 			{
 				if (dataReader != null)
 				{
-					dataReader.Close();
-					dataReader.Dispose();
-					dataReader = null;
+					//dataReader.Close();
+					//dataReader.Dispose();
+					dataReader = null; // null 처리시, GC가 처리대상이 됨
 				}
 
 			}
@@ -316,12 +333,12 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 
 		private void cbShowPK_CheckStateChanged(object sender, EventArgs e)
 		{
-
+			checked_showPK = cbShowPK.Checked;
 		}
 
 		private void cbShowComment_CheckStateChanged(object sender, EventArgs e)
 		{
-
+			checked_showComment = cbShowComment.Checked;
 		}
 
 		private void cbInsertComma_CheckedChanged(object sender, EventArgs e)
@@ -353,3 +370,44 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 	}
 	
 }
+
+
+/*
+ * 
+ * ## ORACLE - COLUMN_TYPE
+ * 
+SQL> select data_type, count(*) from sys.dba_tab_columns group by data_type having count(*) >= 20 order by 1;
+
+DATA_TYPE                                  COUNT(*)
+---------------------------------------- ----------
+ANYDATA                                          72
+AQ$_SIG_PROP                                     20
+BINARY_DOUBLE                                    41
+BLOB                                            122
+CHAR                                            927
+CLOB                                            862
+DATE                                           3707
+INTERVAL DAY(3) TO SECOND(0)                     72
+KU$_DEFERRED_STG_T                               36
+KU$_SCHEMAOBJ_T                                 289
+KU$_STORAGE_T                                    38
+LONG                                            260
+NUMBER                                        50849
+NVARCHAR2                                       100
+RAW                                            1910
+ROWID                                            83
+STRINGLIST                                       22
+TIMESTAMP(3)                                    125
+TIMESTAMP(3) WITH TIME ZONE                      97
+TIMESTAMP(6)                                    749
+TIMESTAMP(6) WITH LOCAL TIME ZONE                20
+TIMESTAMP(6) WITH TIME ZONE                     555
+TIMESTAMP(9)                                     34
+TIMESTAMP(9) WITH TIME ZONE                     100
+VARCHAR2                                      47385
+XMLTYPE                                         135
+
+26 rows selected.
+
+ * 
+ */
