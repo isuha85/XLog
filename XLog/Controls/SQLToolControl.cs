@@ -201,26 +201,33 @@ namespace XLog
 						return true;
 					}
 					break;
+				case Keys.Enter: // Toad
 				case Keys.K:
 					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Alt) != 0)) break; ;
 					if ((keyData & Keys.Control) != 0)
 					{
-						// [NOTE] FCTB 는 TextBox 를 확장했음에도, GetLineFromCharIndex() 등은 없다.
-						{
-							//TextBox textBox1 = new TextBox();
-							//int line = textBox1.GetLineFromCharIndex(textBox1.SelectionStart);
-							//Point point = textBox1.GetPositionFromCharIndex(textBox1.SelectionStart);
-							//int column = textBox1.SelectionStart - textBox1.GetFirstCharIndexFromLine(line);
-						}
-
 						var point = tb.PositionToPoint(tb.SelectionStart);
 						var line = tb.YtoLineIndex(point.Y);
-						//var lineText = fctb.GetLineText(line);
-						//var lineRange = fctb.GetLine(line);
-						//var len = fctb.GetLineLength(line);
 
-						var sql = GetSqlFromLine(tb.Text, line);
+						char[] tirmChars = { '\r', '\n', '\t', ' ' };
+						var sql = GetSqlFromLine(tb.Text, line).Trim(tirmChars);
 						doGo(sql);
+
+						// highlight
+						{
+							//TODO: GetRanges 에서 정규식으로만 검색이된다. 평문검색 옵션을 못찾아서, 임시처리
+							var regexPattern = sql.Replace("*", "\\*").Replace("+", "\\+");
+							Range[] ranges = tb.VisibleRange.GetRanges(regexPattern).ToArray();
+							//Range[] ranges = tb.GetRanges(sql, RegexOptions.None).ToArray();
+
+							//if (ranges.Length == 1) // TODO: 동일 SQL이 모두 선택됨 ( BUGBUG )
+							{
+								foreach (var r in ranges)
+								{
+									r.SetStyle(runSqlStyle);
+								}
+							}
+						}
 
 						return true;
 					}
@@ -229,6 +236,8 @@ namespace XLog
 					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Control) != 0)) break; ;
 					if ((keyData & Keys.Alt) != 0)
 					{
+						tb.VisibleRange.ClearStyle(runSqlStyle); // reset highlight
+
 						string selectedText = null;
 						var form = new frmColumnInfo();
 
@@ -296,10 +305,13 @@ namespace XLog
 
 			string code = code_.Trim() + ";"; // 마지막 ';' 이 없는 경우에 대응
 			int len = code.Length;
-			semicolon_pos = code.IndexOf(";");
 
+			semicolon_pos = code.IndexOf(";");
 			// ';' 이 없으면, 하나의 SQL 문장이다.
-			if (semicolon_pos == -1) return code;
+			if (semicolon_pos == -1)
+			{
+				return code;
+			}
 
 			// 맨마지막에만 ';' 이면, 제거하고 바로 리턴.
 			if (semicolon_pos == len - 1)
@@ -661,6 +673,7 @@ namespace XLog
 
 
 		private Style sameWordsStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Gray)));
+		private Style runSqlStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Blue)));
 		DateTime lastNavigatedDateTime = DateTime.Now;
 
 		private void tb_SelectionChangedDelayed(object sender, EventArgs e)
@@ -679,6 +692,8 @@ namespace XLog
 
 			//highlight same words
 			tb.VisibleRange.ClearStyle(sameWordsStyle);
+			tb.VisibleRange.ClearStyle(runSqlStyle);
+
 			if (!tb.Selection.IsEmpty)
 				return;//user selected diapason
 
