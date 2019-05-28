@@ -130,8 +130,11 @@ namespace XLog
 			{
 				dataGridView.RowsDefaultCellStyle.BackColor = Color.White;
 				dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.Aquamarine;
+			}
 
-				//dataGridView.DataError += new DataGridViewDataErrorEventHandler(dataGridView_DataError);
+			// TabControl
+			{
+				tabControl1.SelectedIndex = 2;
 			}
 
 			// toolStripProgressBar1
@@ -429,7 +432,7 @@ namespace XLog
 			try
 			{
 				dataGridView.DataSource = null;     // (1) 결과창을 비워준다.
-				tabControl1.SelectedIndex = 0;      // (2) 결과탭을 보여준디.
+				tabControl1.SelectedIndex = 2;      // (2) 결과탭을 보여준디.
 				Application.DoEvents();
 
 				//adapter.SelectCommand = new OracleCommand(rtbSqlEdit.Text, (OracleConnection)conn);

@@ -64,7 +64,7 @@ namespace XLog
         {
             panel1.Dock = DockStyle.Fill;
 
-            tabControl1.SelectedIndex = 0;
+            tabControl1.SelectedIndex = 2;
             //tabControl1_Selecting(sender, null);
             CreateTabPage();
             tabControl1_HandleCreated(sender, e);
