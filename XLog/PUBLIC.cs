@@ -390,30 +390,30 @@ namespace XLog
 
 		public override DbDataAdapter XDbDataAdapter()
 		{
-			DbDataAdapter sDataAdapter = null;
+			DbDataAdapter adapter = null;
 
 			if (mConnType == XDbConnType.ORACLE)
 			{
-				sDataAdapter = new OracleDataAdapter();
+				adapter = new OracleDataAdapter();
 			}
 			else if (mConnType == XDbConnType.ALTIBASE)
 			{
-				sDataAdapter = new AltibaseDataAdapter();
+				adapter = new AltibaseDataAdapter();
 			}
 			else if (mConnType == XDbConnType.MSSQL)
 			{
-				sDataAdapter = new SqlDataAdapter();
+				adapter = new SqlDataAdapter();
 			}
 			else if (mConnType == XDbConnType.TIBERO)
 			{
-				sDataAdapter = new OleDbDataAdapterTbr();
+				adapter = new OleDbDataAdapterTbr();
 			}
 			else if (mConnType == XDbConnType.OLEDB)
 			{
-				sDataAdapter = new OleDbDataAdapter();
+				adapter = new OleDbDataAdapter();
 			}
 
-			return sDataAdapter;
+			return adapter;
 		}
 
 		public override DbDataAdapter XDbDataAdapter(DbCommand aSelectCommand)

@@ -106,12 +106,7 @@ namespace XLog
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
-
-        //private void tabControl1_Selecting(object sender, TabControlCancelEventArgs e)
-        //{
-        //    CreateTabPage();
-        //}
-
+		
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             // If the last TabPage is selected then Create a new TabPage

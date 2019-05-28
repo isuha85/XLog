@@ -195,26 +195,32 @@ namespace XLog
 						return true;
 					}
 					break;
-				case Keys.L:
-					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Alt) != 0) ) break; ;
-					if ((keyData & Keys.Control) != 0)
-					{
-						var sql = tb.SelectedText;
-						doGo(sql);
-						return true;
-					}
-					break;
-				case Keys.Enter: // Toad
-				case Keys.K:
+				case Keys.L:        // Toad: 소문자 전환 단축키 
 					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Alt) != 0)) break; ;
 					if ((keyData & Keys.Control) != 0)
 					{
+						// FCTB 자체구현이 있으므로 이를 전달만 한다.
+						SendKeys.SendWait("(^+U)");
+						return true ;
+					}
+					break;
+				case Keys.Enter:	// Toad
+				case Keys.K:		// Orange
+					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Alt) != 0)) break; ;
+					if ((keyData & Keys.Control) != 0)
+					{
+						if (tb.SelectedText.Length > 0)
+						{
+							doResult(tb.SelectedText);
+							return true;
+						}
+
 						var point = tb.PositionToPoint(tb.SelectionStart);
 						var line = tb.YtoLineIndex(point.Y);
 
 						char[] tirmChars = { '\r', '\n', '\t', ' ' };
 						var sql = GetSqlFromLine(tb.Text, line).Trim(tirmChars);
-						doGo(sql);
+						doResult(sql);
 
 						// highlight
 						{
@@ -415,7 +421,7 @@ namespace XLog
 				
 		#endregion
 
-		private void doGo(string sql_)
+		private void doResult(string sql_)
 		{
 			PUBLIC.TIME_CHECK(System.DateTime.Now.Ticks); // 기준시간 등록
 
@@ -595,7 +601,7 @@ namespace XLog
 
         private void btnGo_Click(object sender, EventArgs e)
         {
-			doGo(tb.Text);
+			doResult(tb.Text);
         }
 
         private void btnStop_Click(object sender, EventArgs e)
