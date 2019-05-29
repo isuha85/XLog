@@ -57,7 +57,7 @@ namespace XLog
 		// BOOL EnumWindows(WNDENUMPROC lpEnumFunc, LPARMAM IParam)
 		// typedef BOOL (CALLBACK* WNDENUMPROC)(HWND, LPARAM);
 
-		// 출처: https://kspil.tistory.com/8 [필스의 프로그래밍세상]
+		// FROM: https://kspil.tistory.com/8
 		[StructLayout(LayoutKind.Explicit)]
 		public struct Rect
 		{
@@ -66,9 +66,73 @@ namespace XLog
 			[FieldOffset(8)] public int bottom;
 			[FieldOffset(12)] public int right;
 		}
+
+		// FROM: https://searchcode.com/file/102430309/OpenTween/NativeMethods.cs
+
+		public enum SendMessageType : uint
+		{
+			WM_SETREDRAW = 0x000B,
+			WM_USER = 0x400,
+
+			TCM_FIRST = 0x1300,
+			TCM_SETMINTABWIDTH = TCM_FIRST + 49,
+
+			LVM_FIRST = 0x1000,
+			LVM_SETITEMSTATE = LVM_FIRST + 43,
+			LVM_GETSELECTIONMARK = LVM_FIRST + 66,
+			LVM_SETSELECTIONMARK = LVM_FIRST + 67,
+		}
+
+		[DllImport("user32.dll")]
+		public extern static IntPtr SendMessage(
+			IntPtr hwnd,
+			SendMessageType wMsg,
+			IntPtr wParam,
+			IntPtr lParam);
+
+		[DllImport("user32.dll")]
+		public extern static IntPtr SendMessage(
+			IntPtr hwnd,
+			SendMessageType wMsg,
+			IntPtr wParam,
+			ref LVITEM lParam);
+
+
+		// FROM: LVITEM structure (Windows)
+		// http://msdn.microsoft.com/en-us/library/windows/desktop/bb774760%28v=vs.85%29.aspx
+		[StructLayout(LayoutKind.Sequential)]
+		[BestFitMapping(false, ThrowOnUnmappableChar = true)]
+		public struct LVITEM
+		{
+			public uint mask;
+			public int iItem;
+			public int iSubItem;
+			public LVIS state;
+			public LVIS stateMask;
+			public string pszText;
+			public int cchTextMax;
+			public int iImage;
+			public IntPtr lParam;
+			public int iIndent;
+			public int iGroupId;
+			public uint cColumns;
+			public uint puColumns;
+			public int piColFmt;
+			public int iGroup;
+		}
+
+		// FROM: List-View Item States (Windows)
+		// http://msdn.microsoft.com/en-us/library/windows/desktop/bb774733%28v=vs.85%29.aspx
+		[Flags]
+		public enum LVIS : uint
+		{
+			SELECTED = 0x02,
+		}
+
 	}
-	
+
 	#endregion
+
 
 	public class PUBLIC
     {

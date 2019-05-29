@@ -70,12 +70,9 @@ namespace XLog
             tabControl1_HandleCreated(sender, e);
         }
 
-        [DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
-        private const int TCM_SETMINTABWIDTH = 0x1300 + 49;
         private void tabControl1_HandleCreated(object sender, EventArgs e)
         {
-            SendMessage(this.tabControl1.Handle, TCM_SETMINTABWIDTH, IntPtr.Zero, (IntPtr)16);
+            Win32API.SendMessage(this.tabControl1.Handle, Win32API.SendMessageType.TCM_SETMINTABWIDTH, IntPtr.Zero, (IntPtr)16);
         }
 
         private void tabControl1_DrawItem(object sender, DrawItemEventArgs e)

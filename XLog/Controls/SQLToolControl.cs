@@ -166,7 +166,7 @@ namespace XLog
 				//case Keys.F7:		// Clear
 				//case Keys.F8:		// History, Alt+Up : History UP / Alt+Down : History DOWN
 				//case Keys.F9:		// SQL Validate
-				//case Keys.F10:		// Popup Menu
+				//case Keys.F10:	// Popup Menu
 				case Keys.E:
 					if ((keyData & Keys.Alt) != 0) break;
 					if (((keyData & Keys.Control) != 0) && ((keyData & Keys.Shift) != 0))
