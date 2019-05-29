@@ -167,6 +167,7 @@ namespace XLog
 				//case Keys.F8:		// History, Alt+Up : History UP / Alt+Down : History DOWN
 				//case Keys.F9:		// SQL Validate
 				//case Keys.F10:	// Popup Menu
+
 				case Keys.E:
 					if ((keyData & Keys.Alt) != 0) break;
 					if (((keyData & Keys.Control) != 0) && ((keyData & Keys.Shift) != 0))
@@ -202,11 +203,87 @@ namespace XLog
 					}
 					break;
 
-				case Keys.B:		// Toad
-				case Keys.OemMinus:	// Orange
+				case Keys.B:        // Toad
+				case Keys.OemMinus: // Orange, FCTB에서 직전 커서 위치로 이동 기능이 막히게됨.
 					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0)) break;
-					
-					tb.CommentSelected("--"); // FCTB가 토글 형태로 동작한다. 자체구현할지 말지. 생각해보자.
+					{
+						// FCTB
+						{
+							//tb.SelectionStart;		// POSITION
+							//tb.Selection.Start:		// PLACE
+							//tb.Selection.End.iLine;	// int
+							//tb[iLine][index];			// ??
+						}
+
+						//{
+						//	Win32API.POINTCRT lpPoint;
+						//	int rc = Win32API.GetCaretPos(out lpPoint);
+
+						//	var x9 = tb.SelectionStart;
+
+						//	//tb.PointToPosition(car);
+						//	//car.
+						//}
+
+
+
+						//Win32API.POINTCRT point;
+						//Win32API.GetCaretPos(out point);
+
+						bool focused = tb.Focused;
+						int start = tb.SelectionStart;
+						int len = tb.SelectionLength;
+
+						var startPlace = tb.Selection.Start;
+						Point startPoint = tb.PlaceToPoint(tb.Selection.Start);	// 영역선택후 MOUSE UP 위치
+						Point endPoint = tb.PlaceToPoint(tb.Selection.End);     // MOUSE DOWN 위치
+
+						// do Something !!
+						{
+							tb.CommentSelected("--"); // FCTB가 토글 형태로 동작한다. 자체구현할지 말지. 생각해보자.
+						}
+
+						//if ( (startPoint.Y > endPoint.Y) || (startPoint.Y == endPoint.Y && startPoint.X > endPoint.X) )
+						{
+							{
+								//Point car = tb.PlaceToPoint(tb.Selection.Start);
+								//CreateCaret(Handle, 0, carWidth, caretHeight + 1);
+								//Win32API.SetCaretPos(startPoint.X, startPoint.Y);
+								//ShowCaret(Handle);
+
+								tb.SelectionStart = tb.PlaceToPosition(startPlace);
+							}
+						}
+
+						//tb.SelectionStart = start;
+						//tb.SelectionLength = len;
+						//tb.Select();
+
+
+						//public static extern int GetCaretPos(out POINTCRT lpPoint);
+
+
+
+						//var preSelectionStart = tb.SelectionStart;
+						//var point = tb.PositionToPoint(tb.SelectionStart);
+
+						//tb.CommentSelected("--"); // FCTB가 토글 형태로 동작한다. 자체구현할지 말지. 생각해보자.
+
+						//// restore cursor position and selection
+						////textBox.Select(start, length);
+						//Win32API.SetCaretPos(point.X, point.Y);
+						//tb.SelectionStart = preSelectionStart;
+
+						//var line = tb.YtoLineIndex(point.Y);
+						//tb.PointToPosition(point);
+
+
+						//int line = tb.GetLineFromCharIndex(tb.SelectionStart);
+						//int column = tb.SelectionStart - tb.GetFirstCharIndexFromLine(line);
+						//Point pnt = tb.GetPositionFromCharIndex(10);
+
+						return true;
+					}
 					break;
 				case Keys.F:
 					if ((keyData & Keys.Alt) != 0) break;
@@ -291,7 +368,6 @@ namespace XLog
 						tb.VisibleRange.ClearStyle(runSqlStyle); // reset highlight
 
 						string selectedText = null;
-						var form = new frmColumnInfo();
 
 						if (tb.SelectionLength != 0)
 						{
@@ -324,7 +400,7 @@ namespace XLog
 							// [NOTE] 오류처리 편의상, 호출자를 알기위하여, Thread Local Storage (TLS) 변수를 사용했다
 							Thread.SetData(Thread.GetNamedDataSlot("ParentForm"), this.ParentForm); // TLS 변수 내이밍을 _XX 로 할까?
 
-							form.ShowMain(selectedText, conn);
+							new frmColumnInfo().ShowMain(selectedText, conn);
 						}
 
 						return true;

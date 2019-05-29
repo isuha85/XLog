@@ -31,6 +31,18 @@ namespace XLog
 
 	public class Win32API
 	{
+		public struct POINTCRT // GetCaretPos
+		{
+			public int x;
+			public int y;
+		};
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern bool SetCaretPos(int x, int y);
+
+		[DllImport("user32.dll")]
+		public static extern int GetCaretPos(out POINTCRT lpPoint);
+
 		//HWND FindWindowA( LPCSTR lpClassName, LPCSTR lpWindowName );
 		[DllImport("user32.dll")]
 		public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
