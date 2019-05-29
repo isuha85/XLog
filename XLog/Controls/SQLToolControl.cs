@@ -156,8 +156,60 @@ namespace XLog
 
 			switch (key)
 			{
+				//case Keys.M:		// 자바코드로 변환. 단축키실행 후 붙여넣기 
+				//case Keys.Insert:	// 조회된 로우 복사 시 컬럼ID도 같이 복사
+				//case Keys.F2:		// SQL 창 전체화면 전환 , Shift+F2 : Grid Output창 전체화면 전환
+				//case Keys.F3:		// Find Next / Prev
+				//case Keys.F4:		// 또는 Ctrl + Click
+				//case Keys.F5:		// 모든 SQL문 실행
+				//case Keys.F6:		// SQL 창간의 이동 (O) , 커서를 Editor와 Results 패널 사이로 전환 (T)
+				//case Keys.F7:		// Clear
+				//case Keys.F8:		// History, Alt+Up : History UP / Alt+Down : History DOWN
+				//case Keys.F9:		// SQL Validate
+				//case Keys.F10:		// Popup Menu
+				case Keys.E:
+					if ((keyData & Keys.Alt) != 0) break;
+					if (((keyData & Keys.Control) != 0) && ((keyData & Keys.Shift) != 0))
+					{
+						// PLAN ON
+						//doPlan(tb.SelectedText);
+						return true;
+					}
+					else if ((keyData & Keys.Control) != 0)
+					{
+						// PLAN ONLY
+						//doPlanOnly(tb.SelectedText);
+						return true;
+					}
+					break;
+
+				case Keys.L:        // Toad: 소문자 전환 단축키 
+					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0)) break;
+					if ((keyData & Keys.Control) != 0)
+					{
+						SendKeys.SendWait("(^+U)"); // FCTB 자체구현 호출
+						return true;
+					}
+					break;
+
+
+				case Keys.R:		// Toad
+					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0)) break;
+					if ((keyData & Keys.Control) != 0)
+					{
+						SendKeys.SendWait("(^H)"); // FCTB 자체구현 호출
+						return true;
+					}
+					break;
+
+				case Keys.B:		// Toad
+				case Keys.OemMinus:	// Orange
+					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0)) break;
+					
+					tb.CommentSelected("--"); // FCTB가 토글 형태로 동작한다. 자체구현할지 말지. 생각해보자.
+					break;
 				case Keys.F:
-					if ((keyData & Keys.Alt) != 0) break; ;
+					if ((keyData & Keys.Alt) != 0) break;
 					if ( ((keyData & Keys.Control) != 0) && ((keyData & Keys.Shift) != 0) )
 					{
 						// TODO: 특정 선택 영역만 "포맷팅" 하는 기능 필요
@@ -195,18 +247,9 @@ namespace XLog
 						return true;
 					}
 					break;
-				case Keys.L:        // Toad: 소문자 전환 단축키 
-					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Alt) != 0)) break; ;
-					if ((keyData & Keys.Control) != 0)
-					{
-						// FCTB 자체구현이 있으므로 이를 전달만 한다.
-						SendKeys.SendWait("(^+U)");
-						return true ;
-					}
-					break;
-				case Keys.Enter:	// Toad
+				case Keys.Enter:    // Toad
 				case Keys.K:		// Orange
-					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Alt) != 0)) break; ;
+					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Alt) != 0)) break;
 					if ((keyData & Keys.Control) != 0)
 					{
 						if (tb.SelectedText.Length > 0)
@@ -242,7 +285,7 @@ namespace XLog
 					}
 					break;
 				case Keys.C:
-					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Control) != 0)) break; ;
+					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Control) != 0)) break;
 					if ((keyData & Keys.Alt) != 0)
 					{
 						tb.VisibleRange.ClearStyle(runSqlStyle); // reset highlight

@@ -29,7 +29,7 @@ namespace XLog
 {
 	#region dlopen for Win32 (MFC)
 
-	public class Win32
+	public class Win32API
 	{
 		//HWND FindWindowA( LPCSTR lpClassName, LPCSTR lpWindowName );
 		[DllImport("user32.dll")]
@@ -49,6 +49,10 @@ namespace XLog
 		//BOOL GetWindowRect( HWND hWnd /* handle to window */, LPRECT lpRect /* window coordinates */ );
 		[DllImport("user32.dll")]
 		public static extern bool GetwindowRect(IntPtr hWnd, out Rect lpRect);
+
+		//UNIT GetSystemDerictory(LPSTR lpBuffer, /* 경로병을 저장할 버퍼 */ UINT uSize /* 디렉토리 버퍼의 크기 */ );
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+		public static extern int GetSystemDirectory([MarshalAs(UnmanagedType.LPWStr, SizeConst = 256)]StringBuilder buffer, int size);
 
 		// BOOL EnumWindows(WNDENUMPROC lpEnumFunc, LPARMAM IParam)
 		// typedef BOOL (CALLBACK* WNDENUMPROC)(HWND, LPARAM);
