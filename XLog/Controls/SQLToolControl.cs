@@ -156,6 +156,7 @@ namespace XLog
 
 			switch (key)
 			{
+				//case Keys.Escape:	// 열린 Popup 창 닫기
 				//case Keys.M:		// 자바코드로 변환. 단축키실행 후 붙여넣기 
 				//case Keys.Insert:	// 조회된 로우 복사 시 컬럼ID도 같이 복사
 				//case Keys.F2:		// SQL 창 전체화면 전환 , Shift+F2 : Grid Output창 전체화면 전환
@@ -749,14 +750,32 @@ namespace XLog
         } // btnOpt
 
 
+		private void dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
+		{
+			dataGridView_DataError_(sender, e);
+		}
+		[System.Diagnostics.Conditional("DEBUG")]
+		private void dataGridView_DataError_(object sender, DataGridViewDataErrorEventArgs e)
+		{
+			MessageBoxEx.Show(this.ParentForm, e.ToString());
+			Debug.Assert(false);
+		}
+
 		private Style sameWordsStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Gray)));
 		private Style runSqlStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Blue)));
 		DateTime lastNavigatedDateTime = DateTime.Now;
 
 		private void tb_SelectionChangedDelayed(object sender, EventArgs e)
 		{
+			tb.VisibleRange.ClearStyle(sameWordsStyle);
+			tb.VisibleRange.ClearStyle(runSqlStyle);
+		}
+
+		private void tb_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if (tb.SelectedText.Trim().Length == 0) return;
+
 			// TODO: 라이센스확인요, FCTB의 테스트 샘플 코드 사용함 - PowerfulCSharpEditor.cs 
-			var tb = sender as FastColoredTextBox;
 			//remember last visit time
 			if (tb.Selection.IsEmpty && tb.Selection.Start.iLine < tb.LinesCount)
 			{
@@ -766,13 +785,6 @@ namespace XLog
 					lastNavigatedDateTime = tb[tb.Selection.Start.iLine].LastVisit;
 				}
 			}
-
-			//highlight same words
-			tb.VisibleRange.ClearStyle(sameWordsStyle);
-			tb.VisibleRange.ClearStyle(runSqlStyle);
-
-			if (!tb.Selection.IsEmpty)
-				return;//user selected diapason
 
 			//get fragment around caret
 			var fragment = tb.Selection.GetFragment(@"\w");
@@ -787,17 +799,5 @@ namespace XLog
 				foreach (var r in ranges)
 					r.SetStyle(sameWordsStyle);
 		}
-		
-		private void dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
-		{
-			dataGridView_DataError_(sender, e);
-		}
-		[System.Diagnostics.Conditional("DEBUG")]
-		private void dataGridView_DataError_(object sender, DataGridViewDataErrorEventArgs e)
-		{
-			MessageBoxEx.Show(this.ParentForm, e.ToString());
-			Debug.Assert(false);
-		}
-
 	} // class SQLToolUserControl
 }

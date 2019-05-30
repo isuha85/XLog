@@ -40,6 +40,8 @@
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.tb = new FastColoredTextBoxNS.FastColoredTextBox();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.tpPlanText = new System.Windows.Forms.TabPage();
+			this.tpPlan = new System.Windows.Forms.TabPage();
 			this.tpResult = new System.Windows.Forms.TabPage();
 			this.dataGridView = new System.Windows.Forms.DataGridView();
 			this.tpOutput = new System.Windows.Forms.TabPage();
@@ -48,7 +50,6 @@
 			this.rtbServerOutput = new System.Windows.Forms.RichTextBox();
 			this.tpStat = new System.Windows.Forms.TabPage();
 			this.dgvStat = new System.Windows.Forms.DataGridView();
-			this.tpPlanText = new System.Windows.Forms.TabPage();
 			this.dgvTmp = new System.Windows.Forms.DataGridView();
 			this.btnOpt = new System.Windows.Forms.Button();
 			this.btnPrev = new System.Windows.Forms.Button();
@@ -60,7 +61,6 @@
 			this.btnStop = new System.Windows.Forms.Button();
 			this.btnGo = new System.Windows.Forms.Button();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-			this.tpPlan = new System.Windows.Forms.TabPage();
 			this.statusStrip1.SuspendLayout();
 			this.panel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -181,6 +181,7 @@
 			this.tb.CommentPrefix = "--";
 			this.tb.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.tb.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+			this.tb.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.tb.IsReplaceMode = false;
 			this.tb.Language = FastColoredTextBoxNS.Language.SQL;
 			this.tb.LeftBracket = '(';
@@ -195,6 +196,7 @@
 			this.tb.Text = "fastColoredTextBox2";
 			this.tb.Zoom = 100;
 			this.tb.SelectionChangedDelayed += new System.EventHandler(this.tb_SelectionChangedDelayed);
+			this.tb.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.tb_MouseDoubleClick);
 			// 
 			// tabControl1
 			// 
@@ -209,6 +211,24 @@
 			this.tabControl1.SelectedIndex = 0;
 			this.tabControl1.Size = new System.Drawing.Size(553, 197);
 			this.tabControl1.TabIndex = 5;
+			// 
+			// tpPlanText
+			// 
+			this.tpPlanText.Location = new System.Drawing.Point(4, 28);
+			this.tpPlanText.Name = "tpPlanText";
+			this.tpPlanText.Size = new System.Drawing.Size(545, 165);
+			this.tpPlanText.TabIndex = 4;
+			this.tpPlanText.Text = "Plan (Text)";
+			this.tpPlanText.UseVisualStyleBackColor = true;
+			// 
+			// tpPlan
+			// 
+			this.tpPlan.Location = new System.Drawing.Point(4, 28);
+			this.tpPlan.Name = "tpPlan";
+			this.tpPlan.Size = new System.Drawing.Size(545, 165);
+			this.tpPlan.TabIndex = 5;
+			this.tpPlan.Text = "Plan";
+			this.tpPlan.UseVisualStyleBackColor = true;
 			// 
 			// tpResult
 			// 
@@ -290,15 +310,6 @@
 			this.dgvStat.RowTemplate.Height = 30;
 			this.dgvStat.Size = new System.Drawing.Size(545, 165);
 			this.dgvStat.TabIndex = 6;
-			// 
-			// tpPlanText
-			// 
-			this.tpPlanText.Location = new System.Drawing.Point(4, 28);
-			this.tpPlanText.Name = "tpPlanText";
-			this.tpPlanText.Size = new System.Drawing.Size(545, 165);
-			this.tpPlanText.TabIndex = 4;
-			this.tpPlanText.Text = "Plan (Text)";
-			this.tpPlanText.UseVisualStyleBackColor = true;
 			// 
 			// dgvTmp
 			// 
@@ -418,15 +429,6 @@
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
 			this.flowLayoutPanel1.Size = new System.Drawing.Size(86, 770);
 			this.flowLayoutPanel1.TabIndex = 4;
-			// 
-			// tpPlan
-			// 
-			this.tpPlan.Location = new System.Drawing.Point(4, 28);
-			this.tpPlan.Name = "tpPlan";
-			this.tpPlan.Size = new System.Drawing.Size(545, 165);
-			this.tpPlan.TabIndex = 5;
-			this.tpPlan.Text = "Plan";
-			this.tpPlan.UseVisualStyleBackColor = true;
 			// 
 			// SQLToolControl
 			// 

@@ -30,7 +30,7 @@
         {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSQLTool));
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.tab = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -39,32 +39,32 @@
 			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 			this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
 			this.panel1.SuspendLayout();
-			this.tabControl1.SuspendLayout();
+			this.tab.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.tabControl1);
+			this.panel1.Controls.Add(this.tab);
 			this.panel1.Controls.Add(this.toolStrip1);
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(977, 687);
 			this.panel1.TabIndex = 2;
 			// 
-			// tabControl1
+			// tab
 			// 
-			this.tabControl1.Controls.Add(this.tabPage1);
-			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-			this.tabControl1.Location = new System.Drawing.Point(0, 33);
-			this.tabControl1.Name = "tabControl1";
-			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(977, 654);
-			this.tabControl1.TabIndex = 2;
-			this.tabControl1.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
-			this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
-			this.tabControl1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl1_MouseDown);
+			this.tab.Controls.Add(this.tabPage1);
+			this.tab.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tab.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+			this.tab.Location = new System.Drawing.Point(0, 33);
+			this.tab.Name = "tab";
+			this.tab.SelectedIndex = 0;
+			this.tab.Size = new System.Drawing.Size(977, 654);
+			this.tab.TabIndex = 2;
+			this.tab.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
+			this.tab.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
+			this.tab.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl1_MouseDown);
 			// 
 			// tabPage1
 			// 
@@ -136,7 +136,7 @@
 			this.Load += new System.EventHandler(this.SQLTool_Load);
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
-			this.tabControl1.ResumeLayout(false);
+			this.tab.ResumeLayout(false);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.ResumeLayout(false);
@@ -152,7 +152,7 @@
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tab;
         private System.Windows.Forms.TabPage tabPage1;
     }
 }

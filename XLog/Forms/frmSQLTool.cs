@@ -23,67 +23,73 @@ namespace XLog
         public frmSQLTool()
         {
             InitializeComponent();
+			//this.Icon = new Icon(Properties.Resources.x128_01_main.ToString());
 
-            //this.Icon = new Icon(Properties.Resources.x128_01_main.ToString());
+			// TODO: 여전히 깜박임. ㅠㅠ
+			//this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
+			this.SetStyle(System.Windows.Forms.ControlStyles.DoubleBuffer, true);
+			this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, true);
+		}
 
-            // TODO: 여전히 깜박임. ㅠㅠ
-            //this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
-            //this.SetStyle(System.Windows.Forms.ControlStyles.DoubleBuffer, true);
-            //this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, true);
-
-        }
-
-        private void CreateTabPage()
+        private void SQLTool_Load(object sender, EventArgs e)
         {
-            int lastIndex = tabControl1.TabCount - 1;
-            if (tabControl1.SelectedIndex != lastIndex)
-            {
-                return;
-            }
+            panel1.Dock = DockStyle.Fill;
 
+			Win32API.SendMessage(this.tab.Handle, Win32API.SendMessageType.TCM_SETMINTABWIDTH, IntPtr.Zero, (IntPtr)16);
+			CreateTabPage();
+		}
+
+		private void CreateTabPage()
+        {
+            int lastIndex = tab.TabCount - 1;
             nTabSeq++;
 
             string sTmp = "SQL" + nTabSeq + "    ";
             TabPage myTabPage = new TabPage(sTmp);
 
-            //var myTabForm = new TUserSQL();
             var myTabForm = new SQLToolControl();
 
-            myTabForm.Show();
             //myTabForm.TopLevel = false;
             myTabForm.Dock = DockStyle.Fill;
             myTabForm.Visible = true;
             myTabPage.Controls.Add(myTabForm);
 
             //tabControl1.TabPages.Add(myTabPage);
-            tabControl1.TabPages.Insert(lastIndex, myTabPage);
-            tabControl1.SelectedIndex = tabControl1.TabCount - 2;
-        }
+            tab.TabPages.Insert(lastIndex, myTabPage);
+            tab.SelectedIndex = tab.TabCount - 2;
 
-        private void SQLTool_Load(object sender, EventArgs e)
-        {
-            panel1.Dock = DockStyle.Fill;
+			// TODO: (BUGBUG) 탭추가시 깜박임 심하다.
+			myTabForm.Show();
+		}
 
-            tabControl1.SelectedIndex = 2;
-            //tabControl1_Selecting(sender, null);
-            CreateTabPage();
-            tabControl1_HandleCreated(sender, e);
-        }
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			Keys key = keyData & ~(Keys.Alt | Keys.Shift | Keys.Control);
 
-        private void tabControl1_HandleCreated(object sender, EventArgs e)
-        {
-            Win32API.SendMessage(this.tabControl1.Handle, Win32API.SendMessageType.TCM_SETMINTABWIDTH, IntPtr.Zero, (IntPtr)16);
-        }
+			switch (key)
+			{
+				case Keys.T:
+					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0)) break;
+					if ((keyData & Keys.Control) != 0)
+					{
+						CreateTabPage();
+						return true;
+					}
+					break;
+			}
+
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
 
         private void tabControl1_DrawItem(object sender, DrawItemEventArgs e)
         {
             // https://social.technet.microsoft.com/wiki/contents/articles/50957.c-winform-tabcontrol-with-add-and-close-button.aspx#Caution_Hot_Stuff
             try
             {
-                var tabPage = this.tabControl1.TabPages[e.Index];
-                var tabRect = this.tabControl1.GetTabRect(e.Index);
+                var tabPage = this.tab.TabPages[e.Index];
+                var tabRect = this.tab.GetTabRect(e.Index);
                 tabRect.Inflate(-2, -2);
-                if (e.Index == this.tabControl1.TabCount - 1) // Add button to the last TabPage only
+                if (e.Index == this.tab.TabCount - 1) // Add button to the last TabPage only
                 {
                     var addImage = new Bitmap(Properties.Resources.x16_01_add);
                     e.Graphics.DrawImage(addImage,
@@ -107,16 +113,27 @@ namespace XLog
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             // If the last TabPage is selected then Create a new TabPage
-            if (tabControl1.SelectedIndex == tabControl1.TabPages.Count - 1)
-                CreateTabPage();
-        }
+            if (tab.SelectedIndex == tab.TabPages.Count - 1)
+			{
+				if (tab.SelectedIndex != 0 )
+				{
+					CreateTabPage();
+				}
+				else
+				{
+					// TODO: SQL 창의 변경내용을 저장할것인 확인필요
+					this.Visible = false;
+					this.Close();
+				}
+			}
+		}
 
         private void tabControl1_MouseDown(object sender, MouseEventArgs e)
         {
             // Process MouseDown event only till (tabControl.TabPages.Count - 1) excluding the last TabPage
-            for (var i = 0; i < this.tabControl1.TabPages.Count - 1; i++)
+            for (var i = 0; i < this.tab.TabPages.Count - 1; i++)
             {
-                var tabRect = this.tabControl1.GetTabRect(i);
+                var tabRect = this.tab.GetTabRect(i);
                 tabRect.Inflate(-2, -2);
                 var closeImage = new Bitmap(Properties.Resources.x16_01_close);
                 var imageRect = new Rectangle(
@@ -126,7 +143,7 @@ namespace XLog
                     closeImage.Height);
                 if (imageRect.Contains(e.Location))
                 {
-                    this.tabControl1.TabPages.RemoveAt(i);
+                    this.tab.TabPages.RemoveAt(i);
                     break;
                 }
             }
