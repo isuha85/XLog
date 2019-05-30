@@ -58,6 +58,7 @@
 			this.tab.SelectedIndex = 0;
 			this.tab.Size = new System.Drawing.Size(977, 654);
 			this.tab.TabIndex = 2;
+			this.tab.SelectedIndexChanged += new System.EventHandler(this.tab_SelectedIndexChanged);
 			// 
 			// toolStrip1
 			// 

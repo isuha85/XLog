@@ -11,10 +11,14 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using Microsoft.Win32;
 using Timer = System.Windows.Forms.Timer;
+
+using System.Collections;
+using System.Collections.Concurrent;
 
 using FarsiLibrary.Win;
 using FarsiLibrary.Win.Design;
@@ -27,12 +31,16 @@ namespace XLog
     public partial class frmSQLTool : Form
     {
         private int nTabSeq = 0;
+		//private ConcurrentStack<int> SelectedIndexStack = null;
 
-        public frmSQLTool()
+		public frmSQLTool()
         {
             InitializeComponent();
-			//this.Icon = new Icon(Properties.Resources.x128_01_main.ToString());
 
+			{
+				//this.Icon = new Icon(Properties.Resources.x128_01_main.ToString());
+				//SelectedIndexStack = new ConcurrentStack<int>();
+			}
 		}
 
 		private void SQLTool_Load(object sender, EventArgs e)
@@ -60,6 +68,7 @@ namespace XLog
 			
 			{
 				tabPage.Visible = false;
+
 				//sqlTool.TopLevel = false; // WinForm 을 추가할때 필요함.
 				sqlTool.Dock = DockStyle.Fill;
 				tabPage.Controls.Add(sqlTool);
@@ -84,30 +93,43 @@ namespace XLog
 						return true;
 					}
 					break;
+				case Keys.F4:
+					if ((keyData & Keys.Alt) != 0) break;
+
+					if ((keyData & Keys.Control) != 0)
+					{
+						if ((keyData & Keys.Shift) != 0)
+						{
+							// TODO: 저장여부확인 (해당TAB)
+
+							int NewIndex = tab.SelectedIndex;
+							if (tab.SelectedIndex == tab.TabCount - 1)
+							{
+								NewIndex = NewIndex - 1;
+							}
+
+							tab.TabPages.RemoveAt(tab.SelectedIndex);
+							tab.SelectedIndex = NewIndex;
+
+							return true;
+						}
+
+						if (this.ParentForm != null)
+						{
+							// Child Form 인 경우만 종료한다.
+							// TODO: 저장여부확인 (전역)
+							this.Close();
+						}
+					}
+					break;
 			}
 
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-        private void tabControl1_MouseDown(object sender, MouseEventArgs e)
-        {
-            //// Process MouseDown event only till (tabControl.TabPages.Count - 1) excluding the last TabPage
-            //for (var i = 0; i < this.tab.TabPages.Count - 1; i++)
-            //{
-            //    var tabRect = this.tab.GetTabRect(i);
-            //    tabRect.Inflate(-2, -2);
-            //    var closeImage = new Bitmap(Properties.Resources.x16_01_close);
-            //    var imageRect = new Rectangle(
-            //        (tabRect.Right - closeImage.Width),
-            //        tabRect.Top + (tabRect.Height - closeImage.Height) / 2,
-            //        closeImage.Width,
-            //        closeImage.Height);
-            //    if (imageRect.Contains(e.Location))
-            //    {
-            //        tab.TabPages.RemoveAt(i);
-            //        break;
-            //    }
-            //}
-        }
-    }
+		private void tab_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			//SelectedIndexStack.Push(tab.SelectedIndex);
+		}
+	}
 }
