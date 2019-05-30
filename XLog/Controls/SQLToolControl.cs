@@ -118,10 +118,6 @@ namespace XLog
 				tb.Dock = DockStyle.Fill;
 				tb.Language = Language.SQL;
 				tb.AcceptsTab = true;
-				//fctb.WordWrap = false;
-				//fctb.ReadOnly = true;
-				//fctb.ShortcutsEnabled = true;
-				//fctb.IndentBackColor = Color.Gray;
 				tb.SelectionHighlightingForLineBreaksEnabled = true;
 
 				tb.Text = @"select level from dual connect by level <= 1001";
@@ -642,7 +638,7 @@ namespace XLog
 							//xDb.mConnStr = "Provider=Altibase.OLEDB;Data Source=192.168.56.201;User ID=sys;Password=manager;Extended Properties='PORT=20300'"; // OK, But CLOB BUGBUG
 							break;
 						default:
-							MessageBox.Show("[NEVER] " + sXDBConnType);
+							MessageBoxEx.Show("[NEVER] " + sXDBConnType);
 							return; // TODO: C# 강제종료는 어떻게? 
 							break;
 					}

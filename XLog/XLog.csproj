@@ -279,12 +279,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\x16_01_add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\x16_01_close.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\x128_01_main.png" />
   </ItemGroup>
   <ItemGroup>

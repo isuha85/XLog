@@ -46,18 +46,16 @@ namespace XLog
 			}
 
 			panel.Dock = DockStyle.Fill;
-			Win32API.SendMessage(this.tab.Handle, Win32API.SendMessageType.TCM_SETMINTABWIDTH, IntPtr.Zero, (IntPtr)16);
-			CreateTabPage();
+			//Win32API.SendMessage(this.tab.Handle, Win32API.SendMessageType.TCM_SETMINTABWIDTH, IntPtr.Zero, (IntPtr)16);
+			AddTab();
 		}
 
-		private void CreateTabPage()
+		private void AddTab()
         {
-            int lastIndex = tab.TabCount - 1;
             nTabSeq++;
-
-            string sTmp = "SQL" + nTabSeq + "    ";
-
-            var tabPage = new TabPage(sTmp);
+			//string sTmp = "SQL" + nTabSeq + "    ";
+			string sTmp = "SQL" + nTabSeq;
+			var tabPage = new TabPage(sTmp);
             var sqlTool = new SQLToolControl();
 			
 			{
@@ -66,8 +64,8 @@ namespace XLog
 				sqlTool.Dock = DockStyle.Fill;
 				tabPage.Controls.Add(sqlTool);
 				//tab.Controls.Add(tabPage);
-				tab.TabPages.Insert(lastIndex, tabPage);
-				tab.SelectedIndex = tab.TabCount - 2;
+				tab.TabPages.Insert(tab.TabCount, tabPage);
+				tab.SelectedIndex = tab.TabCount - 1;
 				tab.Refresh();
 			}
 		}
@@ -82,7 +80,7 @@ namespace XLog
 					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0)) break;
 					if ((keyData & Keys.Control) != 0)
 					{
-						CreateTabPage();
+						AddTab();
 						return true;
 					}
 					break;
@@ -91,72 +89,25 @@ namespace XLog
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-        private void tabControl1_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            // https://social.technet.microsoft.com/wiki/contents/articles/50957.c-winform-tabcontrol-with-add-and-close-button.aspx#Caution_Hot_Stuff
-            try
-            {
-                var tabPage = this.tab.TabPages[e.Index];
-                var tabRect = this.tab.GetTabRect(e.Index);
-                tabRect.Inflate(-2, -2);
-                if (e.Index == this.tab.TabCount - 1) // Add button to the last TabPage only
-                {
-                    var addImage = new Bitmap(Properties.Resources.x16_01_add);
-                    e.Graphics.DrawImage(addImage,
-                        tabRect.Left + (tabRect.Width - addImage.Width) / 2,
-                        tabRect.Top + (tabRect.Height - addImage.Height) / 2);
-
-                }
-                else // draw Close button to all other TabPages
-                {
-                    var closeImage = new Bitmap(Properties.Resources.x16_01_close);
-                    e.Graphics.DrawImage(closeImage,
-                        (tabRect.Right - closeImage.Width),
-                        tabRect.Top + (tabRect.Height - closeImage.Height) / 2);
-                    TextRenderer.DrawText(e.Graphics, tabPage.Text, tabPage.Font,
-                        tabRect, tabPage.ForeColor, TextFormatFlags.Left);
-                }
-            }
-            catch (Exception ex) { throw new Exception(ex.Message); }
-        }
-		
-        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-   //         // If the last TabPage is selected then Create a new TabPage
-   //         if (tab.SelectedIndex == tab.TabPages.Count - 1)
-			//{
-			//	if (tab.SelectedIndex != 0 )
-			//	{
-			//		CreateTabPage();
-			//	}
-			//	else
-			//	{
-			//		// TODO: SQL 창의 변경내용을 저장할것인 확인필요
-			//		this.Visible = false;
-			//		this.Close();
-			//	}
-			//}
-		}
-
         private void tabControl1_MouseDown(object sender, MouseEventArgs e)
         {
-            // Process MouseDown event only till (tabControl.TabPages.Count - 1) excluding the last TabPage
-            for (var i = 0; i < this.tab.TabPages.Count - 1; i++)
-            {
-                var tabRect = this.tab.GetTabRect(i);
-                tabRect.Inflate(-2, -2);
-                var closeImage = new Bitmap(Properties.Resources.x16_01_close);
-                var imageRect = new Rectangle(
-                    (tabRect.Right - closeImage.Width),
-                    tabRect.Top + (tabRect.Height - closeImage.Height) / 2,
-                    closeImage.Width,
-                    closeImage.Height);
-                if (imageRect.Contains(e.Location))
-                {
-                    this.tab.TabPages.RemoveAt(i);
-                    break;
-                }
-            }
+            //// Process MouseDown event only till (tabControl.TabPages.Count - 1) excluding the last TabPage
+            //for (var i = 0; i < this.tab.TabPages.Count - 1; i++)
+            //{
+            //    var tabRect = this.tab.GetTabRect(i);
+            //    tabRect.Inflate(-2, -2);
+            //    var closeImage = new Bitmap(Properties.Resources.x16_01_close);
+            //    var imageRect = new Rectangle(
+            //        (tabRect.Right - closeImage.Width),
+            //        tabRect.Top + (tabRect.Height - closeImage.Height) / 2,
+            //        closeImage.Width,
+            //        closeImage.Height);
+            //    if (imageRect.Contains(e.Location))
+            //    {
+            //        tab.TabPages.RemoveAt(i);
+            //        break;
+            //    }
+            //}
         }
     }
 }

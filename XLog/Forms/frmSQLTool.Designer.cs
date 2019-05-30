@@ -31,7 +31,6 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSQLTool));
 			this.panel = new System.Windows.Forms.Panel();
 			this.tab = new System.Windows.Forms.TabControl();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -39,7 +38,6 @@
 			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 			this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
 			this.panel.SuspendLayout();
-			this.tab.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -54,26 +52,12 @@
 			// 
 			// tab
 			// 
-			this.tab.Controls.Add(this.tabPage1);
 			this.tab.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tab.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
 			this.tab.Location = new System.Drawing.Point(0, 33);
 			this.tab.Name = "tab";
 			this.tab.SelectedIndex = 0;
 			this.tab.Size = new System.Drawing.Size(977, 654);
 			this.tab.TabIndex = 2;
-			this.tab.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
-			this.tab.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
-			this.tab.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl1_MouseDown);
-			// 
-			// tabPage1
-			// 
-			this.tabPage1.Location = new System.Drawing.Point(4, 28);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Size = new System.Drawing.Size(969, 622);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "+";
-			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
 			// toolStrip1
 			// 
@@ -136,7 +120,6 @@
 			this.Load += new System.EventHandler(this.SQLTool_Load);
 			this.panel.ResumeLayout(false);
 			this.panel.PerformLayout();
-			this.tab.ResumeLayout(false);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.ResumeLayout(false);
@@ -153,6 +136,5 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
         private System.Windows.Forms.TabControl tab;
-        private System.Windows.Forms.TabPage tabPage1;
     }
 }
