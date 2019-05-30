@@ -33,19 +33,19 @@ namespace XLog
             InitializeComponent();
 			//this.Icon = new Icon(Properties.Resources.x128_01_main.ToString());
 
-			// TODO: 여전히 깜박임. ㅠㅠ
-			//this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
-			SetStyle(ControlStyles.DoubleBuffer, true);
-			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-
-			//FATabStripItem yy;
-			//FarsiLibrary.Win.FAT
 		}
 
-        private void SQLTool_Load(object sender, EventArgs e)
+		private void SQLTool_Load(object sender, EventArgs e)
         {
-            panel1.Dock = DockStyle.Fill;
+			// 효과가 있는지는 모르겠음.
+			{
+				DoubleBuffered = true;
+				SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+				SetStyle(ControlStyles.DoubleBuffer, true);
+				SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+			}
 
+			panel.Dock = DockStyle.Fill;
 			Win32API.SendMessage(this.tab.Handle, Win32API.SendMessageType.TCM_SETMINTABWIDTH, IntPtr.Zero, (IntPtr)16);
 			CreateTabPage();
 		}
@@ -56,21 +56,20 @@ namespace XLog
             nTabSeq++;
 
             string sTmp = "SQL" + nTabSeq + "    ";
-            TabPage myTabPage = new TabPage(sTmp);
 
-            var myTabForm = new SQLToolControl();
-
-            //myTabForm.TopLevel = false;
-            myTabForm.Dock = DockStyle.Fill;
-            myTabForm.Visible = true;
-            myTabPage.Controls.Add(myTabForm);
-
-            //tabControl1.TabPages.Add(myTabPage);
-            tab.TabPages.Insert(lastIndex, myTabPage);
-            tab.SelectedIndex = tab.TabCount - 2;
-
-			// TODO: (BUGBUG) 탭추가시 깜박임 심하다.
-			myTabForm.Show();
+            var tabPage = new TabPage(sTmp);
+            var sqlTool = new SQLToolControl();
+			
+			{
+				tabPage.Visible = false;
+				//sqlTool.TopLevel = false; // WinForm 을 추가할때 필요함.
+				sqlTool.Dock = DockStyle.Fill;
+				tabPage.Controls.Add(sqlTool);
+				//tab.Controls.Add(tabPage);
+				tab.TabPages.Insert(lastIndex, tabPage);
+				tab.SelectedIndex = tab.TabCount - 2;
+				tab.Refresh();
+			}
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -123,20 +122,20 @@ namespace XLog
 		
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // If the last TabPage is selected then Create a new TabPage
-            if (tab.SelectedIndex == tab.TabPages.Count - 1)
-			{
-				if (tab.SelectedIndex != 0 )
-				{
-					CreateTabPage();
-				}
-				else
-				{
-					// TODO: SQL 창의 변경내용을 저장할것인 확인필요
-					this.Visible = false;
-					this.Close();
-				}
-			}
+   //         // If the last TabPage is selected then Create a new TabPage
+   //         if (tab.SelectedIndex == tab.TabPages.Count - 1)
+			//{
+			//	if (tab.SelectedIndex != 0 )
+			//	{
+			//		CreateTabPage();
+			//	}
+			//	else
+			//	{
+			//		// TODO: SQL 창의 변경내용을 저장할것인 확인필요
+			//		this.Visible = false;
+			//		this.Close();
+			//	}
+			//}
 		}
 
         private void tabControl1_MouseDown(object sender, MouseEventArgs e)

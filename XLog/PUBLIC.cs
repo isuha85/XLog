@@ -16,12 +16,11 @@ using System.Windows.Forms.Design;
 using Microsoft.Win32;
 using Timer = System.Windows.Forms.Timer;
 
-//using System.Linq;
 //using System.Threading.Tasks;
-
 //using System.Configuration;
 //using Sprache;
 
+using System.Linq;
 using System.Data;                          // 공통 인터페이스 , IDbConnection .. 등
 using System.Data.Common;                   // 추상 클래스 , DbConnection .. 등
 using System.Data.OleDb;                    // Any DB - oracle / SQL Server / tibero / ..
@@ -30,6 +29,7 @@ using Altibase.Data.AltibaseClient;         // altibase
 using Tibero.DbAccess;                      // tibero
 using Oracle.ManagedDataAccess.Client;      // Managed 드라이버 (32/64 bit에 무방), deprecated - using System.Data.OracleClient;
 using Oracle.ManagedDataAccess.Types;
+using MySql.Data.MySqlClient;
 
 namespace XLog
 {

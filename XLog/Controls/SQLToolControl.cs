@@ -1,13 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
-using System.Data;
-using System.Linq;
+using System.Drawing.Design;
+using System.Drawing.Drawing2D;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Forms.Design;
+using Microsoft.Win32;
+using Timer = System.Windows.Forms.Timer;
+
+//using System.Threading.Tasks;
+//using System.Configuration;
+//using Sprache;
 
 using FastColoredTextBoxNS;
 
@@ -17,22 +28,16 @@ using FastColoredTextBoxNS;
 //using PoorMansTSqlFormatterRedux.Parsers;
 //using PoorMansTSqlFormatterRedux.Formatters;
 
-using System.Diagnostics;                   // 특정시간 응답대기
-using System.Configuration;
-
+using System.Linq;
+using System.Data;                          // 공통 인터페이스 , IDbConnection .. 등
+using System.Data.Common;                   // 추상 클래스 , DbConnection .. 등
 using System.Data.OleDb;                    // Any DB - oracle / SQL Server / tibero / ..
-using Tibero.DbAccess;                      // tibero
 using System.Data.SqlClient;                // SQL Server
 using Altibase.Data.AltibaseClient;         // altibase
-
-//using Oracle.DataAccessxx;                // Unmanaged 드라이버
+using Tibero.DbAccess;                      // tibero
 using Oracle.ManagedDataAccess.Client;      // Managed 드라이버 (32/64 bit에 무방), deprecated - using System.Data.OracleClient;
 using Oracle.ManagedDataAccess.Types;
-
-using System.Data.Common;
-using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
-
 
 /*
  * #### SQL Server vs ORACLE | TIBERO | ALTIBASE
@@ -83,6 +88,8 @@ namespace XLog
         public SQLToolControl()
         {
             InitializeComponent();
+
+
         }
 
 		private void SQLToolUserControl_Load(object sender, EventArgs e)
@@ -96,6 +103,15 @@ namespace XLog
 
             splitContainer1.Dock = DockStyle.Fill;
             tabControl1.Dock = DockStyle.Fill;
+
+			// "tabPage.Visible = false" 가 효과가 높고, DoubleBuffered 효과는 잘 모르겠지만 넣어둠
+			{
+				DoubleBuffered = true;  
+
+				typeof(DataGridView).InvokeMember("DoubleBuffered",
+					BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty,
+					null, tb, new object[] { true });  // fctb 을 설정해준다.
+			}
 
 			// FCTB
 			{

@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSQLTool));
-			this.panel1 = new System.Windows.Forms.Panel();
+			this.panel = new System.Windows.Forms.Panel();
 			this.tab = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -38,19 +38,19 @@
 			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 			this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
-			this.panel1.SuspendLayout();
+			this.panel.SuspendLayout();
 			this.tab.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// panel1
+			// panel
 			// 
-			this.panel1.Controls.Add(this.tab);
-			this.panel1.Controls.Add(this.toolStrip1);
-			this.panel1.Location = new System.Drawing.Point(0, 0);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(977, 687);
-			this.panel1.TabIndex = 2;
+			this.panel.Controls.Add(this.tab);
+			this.panel.Controls.Add(this.toolStrip1);
+			this.panel.Location = new System.Drawing.Point(0, 0);
+			this.panel.Name = "panel";
+			this.panel.Size = new System.Drawing.Size(977, 687);
+			this.panel.TabIndex = 2;
 			// 
 			// tab
 			// 
@@ -129,13 +129,13 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1002, 712);
-			this.Controls.Add(this.panel1);
+			this.Controls.Add(this.panel);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "frmSQLTool";
 			this.Text = "SQL Tool";
 			this.Load += new System.EventHandler(this.SQLTool_Load);
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
+			this.panel.ResumeLayout(false);
+			this.panel.PerformLayout();
 			this.tab.ResumeLayout(false);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
@@ -145,7 +145,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
