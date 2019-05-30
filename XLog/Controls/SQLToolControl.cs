@@ -68,10 +68,24 @@ namespace XLog
 {
     public partial class SQLToolControl : UserControl
     {
-        //private string connStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON";
-        //private OracleConnection conn = null;
-        //private OracleDataAdapter adapter = null;
-        private DbConnection conn = null;                       // Abstract 클래스 (System.Data.Common)
+		private struct Configure
+		{
+			public int Panel2Size;
+			public int Panel2SizePre;
+			public DateTime Panel2SizeDateTime;
+			public double SplitterScale;
+		};
+		Configure configure;
+
+		private Style sameWordsStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Gray)));
+		private Style runSqlStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Blue)));
+		DateTime lastNavigatedDateTime = DateTime.Now;
+
+
+		//private string connStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON";
+		//private OracleConnection conn = null;
+		//private OracleDataAdapter adapter = null;
+		private DbConnection conn = null;                       // Abstract 클래스 (System.Data.Common)
         private DbDataAdapter adapter = null;
         XDb xDb = null;
 
@@ -88,29 +102,36 @@ namespace XLog
         public SQLToolControl()
         {
             InitializeComponent();
-
-
         }
 
 		private void SQLToolUserControl_Load(object sender, EventArgs e)
         {
-            int margin_w = flowLayoutPanel1.Width;
-            int w = this.Width - margin_w;
-            int h = this.Height / 2;
-
-            splitContainer1.Panel1.Size = new Size(w, h);
-            splitContainer1.Panel2.Size = new Size(w, h);
-
-            splitContainer1.Dock = DockStyle.Fill;
-            tabControl1.Dock = DockStyle.Fill;
-
 			// "tabPage.Visible = false" 가 효과가 높고, DoubleBuffered 효과는 잘 모르겠지만 넣어둠
 			{
-				DoubleBuffered = true;  
+				Visible = false;
+				DoubleBuffered = true;
 
 				typeof(DataGridView).InvokeMember("DoubleBuffered",
 					BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty,
 					null, tb, new object[] { true });  // fctb 을 설정해준다.
+			}
+
+			// resize
+			{
+				//int margin_w = flowLayoutPanel.Width;
+				//int w = this.Width - margin_w;
+				//int h = configure.Panel2MinSize;
+				//splitContainer.Panel1.Size = new Size(w, this.Height - h);
+				//splitContainer.Panel2.Size = new Size(w, h);				
+
+				configure.SplitterScale = 0.60;
+				splitContainer.SplitterDistance = (int)(splitContainer.Height * configure.SplitterScale);
+				configure.Panel2Size = splitContainer.Height - splitContainer.SplitterDistance;
+				configure.Panel2SizePre = configure.Panel2Size;
+				configure.Panel2SizeDateTime = DateTime.Now;
+
+				splitContainer.Dock = DockStyle.Fill;
+				tabControl.Dock = DockStyle.Fill;
 			}
 
 			// FCTB
@@ -136,6 +157,8 @@ namespace XLog
 				myStr += "\n\nselect 3 from dual;  ";
 				//myStr = "select 1 from dual;";
 				tb.Text = myStr;
+
+				Visible = true;
 			}
 
 			// DataGridView 레코드 색상 번갈아서 바꾸기
@@ -146,7 +169,7 @@ namespace XLog
 
 			// TabControl
 			{
-				tabControl1.SelectedIndex = 2;
+				tabControl.SelectedIndex = 2;
 			}
 
 			// toolStripProgressBar1
@@ -519,7 +542,7 @@ namespace XLog
 			try
 			{
 				dataGridView.DataSource = null;     // (1) 결과창을 비워준다.
-				tabControl1.SelectedIndex = 2;      // (2) 결과탭을 보여준디.
+				tabControl.SelectedIndex = 2;      // (2) 결과탭을 보여준디.
 				Application.DoEvents();
 
 				//adapter.SelectCommand = new OracleCommand(rtbSqlEdit.Text, (OracleConnection)conn);
@@ -773,10 +796,6 @@ namespace XLog
 			Debug.Assert(false);
 		}
 
-		private Style sameWordsStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Gray)));
-		private Style runSqlStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Blue)));
-		DateTime lastNavigatedDateTime = DateTime.Now;
-
 		private void tb_SelectionChangedDelayed(object sender, EventArgs e)
 		{
 			tb.VisibleRange.ClearStyle(sameWordsStyle);
@@ -810,6 +829,36 @@ namespace XLog
 			if (ranges.Length > 1)
 				foreach (var r in ranges)
 					r.SetStyle(sameWordsStyle);
+		}
+
+		private void SQLToolControl_Resize(object sender, EventArgs e)
+		{
+		}
+
+		private void splitContainer_SplitterMoved(object sender, SplitterEventArgs e)
+		{
+			DateTime now = DateTime.Now;
+
+			//if (configure.SplitterDistanceDateTime.AddSeconds(1) >= now)
+			{
+				configure.Panel2SizeDateTime = now;
+				configure.Panel2SizePre = configure.Panel2Size;
+				configure.Panel2Size = splitContainer.Height - splitContainer.SplitterDistance;
+			}
+		}
+
+		private void splitContainer_Resize(object sender, EventArgs e)
+		{
+			DateTime now = DateTime.Now;
+
+			// [TIP] 크기조정시 SplitterMoved -> Resize 순서로 호출됨을 확인, 구분할 수 있는 조건이 없어서, 변경시간을 이용함.
+			if ( configure.Panel2SizeDateTime.AddSeconds(1) >= now )
+			{
+				if (splitContainer.Height >= configure.Panel2SizePre + splitContainer.Panel1MinSize)
+				{
+					splitContainer.SplitterDistance = splitContainer.Height - configure.Panel2SizePre;
+				}
+			}
 		}
 	} // class SQLToolUserControl
 }

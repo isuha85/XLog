@@ -37,9 +37,9 @@
 			this.lbTime = new System.Windows.Forms.ToolStripStatusLabel();
 			this.lbRow = new System.Windows.Forms.ToolStripStatusLabel();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.splitContainer = new System.Windows.Forms.SplitContainer();
 			this.tb = new FastColoredTextBoxNS.FastColoredTextBox();
-			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.tabControl = new System.Windows.Forms.TabControl();
 			this.tpPlanText = new System.Windows.Forms.TabPage();
 			this.tpPlan = new System.Windows.Forms.TabPage();
 			this.tpResult = new System.Windows.Forms.TabPage();
@@ -60,15 +60,15 @@
 			this.btnOpen = new System.Windows.Forms.Button();
 			this.btnStop = new System.Windows.Forms.Button();
 			this.btnGo = new System.Windows.Forms.Button();
-			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.statusStrip1.SuspendLayout();
 			this.panel1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-			this.splitContainer1.Panel1.SuspendLayout();
-			this.splitContainer1.Panel2.SuspendLayout();
-			this.splitContainer1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+			this.splitContainer.Panel1.SuspendLayout();
+			this.splitContainer.Panel2.SuspendLayout();
+			this.splitContainer.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tb)).BeginInit();
-			this.tabControl1.SuspendLayout();
+			this.tabControl.SuspendLayout();
 			this.tpResult.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
 			this.tpOutput.SuspendLayout();
@@ -76,7 +76,7 @@
 			this.tpStat.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dgvStat)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dgvTmp)).BeginInit();
-			this.flowLayoutPanel1.SuspendLayout();
+			this.flowLayoutPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// statusStrip1
@@ -133,32 +133,34 @@
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.splitContainer1);
+			this.panel1.Controls.Add(this.splitContainer);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(714, 770);
 			this.panel1.TabIndex = 6;
 			// 
-			// splitContainer1
+			// splitContainer
 			// 
-			this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-			this.splitContainer1.Name = "splitContainer1";
-			this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			this.splitContainer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer.Name = "splitContainer";
+			this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
 			// 
-			// splitContainer1.Panel1
+			// splitContainer.Panel1
 			// 
-			this.splitContainer1.Panel1.Controls.Add(this.tb);
+			this.splitContainer.Panel1.Controls.Add(this.tb);
 			// 
-			// splitContainer1.Panel2
+			// splitContainer.Panel2
 			// 
-			this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-			this.splitContainer1.Panel2.Controls.Add(this.dgvTmp);
-			this.splitContainer1.Size = new System.Drawing.Size(714, 770);
-			this.splitContainer1.SplitterDistance = 200;
-			this.splitContainer1.TabIndex = 6;
+			this.splitContainer.Panel2.Controls.Add(this.tabControl);
+			this.splitContainer.Panel2.Controls.Add(this.dgvTmp);
+			this.splitContainer.Size = new System.Drawing.Size(714, 770);
+			this.splitContainer.SplitterDistance = 372;
+			this.splitContainer.TabIndex = 6;
+			this.splitContainer.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_SplitterMoved);
+			this.splitContainer.Resize += new System.EventHandler(this.splitContainer_Resize);
 			// 
 			// tb
 			// 
@@ -181,7 +183,6 @@
 			this.tb.CommentPrefix = "--";
 			this.tb.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.tb.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-			this.tb.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.tb.IsReplaceMode = false;
 			this.tb.Language = FastColoredTextBoxNS.Language.SQL;
 			this.tb.LeftBracket = '(';
@@ -198,19 +199,19 @@
 			this.tb.SelectionChangedDelayed += new System.EventHandler(this.tb_SelectionChangedDelayed);
 			this.tb.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.tb_MouseDoubleClick);
 			// 
-			// tabControl1
+			// tabControl
 			// 
-			this.tabControl1.Controls.Add(this.tpPlanText);
-			this.tabControl1.Controls.Add(this.tpPlan);
-			this.tabControl1.Controls.Add(this.tpResult);
-			this.tabControl1.Controls.Add(this.tpOutput);
-			this.tabControl1.Controls.Add(this.tpDbmsOutput);
-			this.tabControl1.Controls.Add(this.tpStat);
-			this.tabControl1.Location = new System.Drawing.Point(3, 3);
-			this.tabControl1.Name = "tabControl1";
-			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(553, 197);
-			this.tabControl1.TabIndex = 5;
+			this.tabControl.Controls.Add(this.tpPlanText);
+			this.tabControl.Controls.Add(this.tpPlan);
+			this.tabControl.Controls.Add(this.tpResult);
+			this.tabControl.Controls.Add(this.tpOutput);
+			this.tabControl.Controls.Add(this.tpDbmsOutput);
+			this.tabControl.Controls.Add(this.tpStat);
+			this.tabControl.Location = new System.Drawing.Point(3, 3);
+			this.tabControl.Name = "tabControl";
+			this.tabControl.SelectedIndex = 0;
+			this.tabControl.Size = new System.Drawing.Size(553, 197);
+			this.tabControl.TabIndex = 5;
 			// 
 			// tpPlanText
 			// 
@@ -411,44 +412,45 @@
 			this.btnGo.UseVisualStyleBackColor = true;
 			this.btnGo.Click += new System.EventHandler(this.btnGo_Click);
 			// 
-			// flowLayoutPanel1
+			// flowLayoutPanel
 			// 
-			this.flowLayoutPanel1.AutoSize = true;
-			this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.flowLayoutPanel1.Controls.Add(this.btnGo);
-			this.flowLayoutPanel1.Controls.Add(this.btnStop);
-			this.flowLayoutPanel1.Controls.Add(this.btnOpen);
-			this.flowLayoutPanel1.Controls.Add(this.btnClose);
-			this.flowLayoutPanel1.Controls.Add(this.btnLast);
-			this.flowLayoutPanel1.Controls.Add(this.btnFirst);
-			this.flowLayoutPanel1.Controls.Add(this.btnNext);
-			this.flowLayoutPanel1.Controls.Add(this.btnPrev);
-			this.flowLayoutPanel1.Controls.Add(this.btnOpt);
-			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Right;
-			this.flowLayoutPanel1.Location = new System.Drawing.Point(714, 0);
-			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-			this.flowLayoutPanel1.Size = new System.Drawing.Size(86, 770);
-			this.flowLayoutPanel1.TabIndex = 4;
+			this.flowLayoutPanel.AutoSize = true;
+			this.flowLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.flowLayoutPanel.Controls.Add(this.btnGo);
+			this.flowLayoutPanel.Controls.Add(this.btnStop);
+			this.flowLayoutPanel.Controls.Add(this.btnOpen);
+			this.flowLayoutPanel.Controls.Add(this.btnClose);
+			this.flowLayoutPanel.Controls.Add(this.btnLast);
+			this.flowLayoutPanel.Controls.Add(this.btnFirst);
+			this.flowLayoutPanel.Controls.Add(this.btnNext);
+			this.flowLayoutPanel.Controls.Add(this.btnPrev);
+			this.flowLayoutPanel.Controls.Add(this.btnOpt);
+			this.flowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Right;
+			this.flowLayoutPanel.Location = new System.Drawing.Point(714, 0);
+			this.flowLayoutPanel.Name = "flowLayoutPanel";
+			this.flowLayoutPanel.Size = new System.Drawing.Size(86, 770);
+			this.flowLayoutPanel.TabIndex = 4;
 			// 
 			// SQLToolControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.panel1);
-			this.Controls.Add(this.flowLayoutPanel1);
+			this.Controls.Add(this.flowLayoutPanel);
 			this.Controls.Add(this.statusStrip1);
 			this.Name = "SQLToolControl";
 			this.Size = new System.Drawing.Size(800, 800);
 			this.Load += new System.EventHandler(this.SQLToolUserControl_Load);
+			this.Resize += new System.EventHandler(this.SQLToolControl_Resize);
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
 			this.panel1.ResumeLayout(false);
-			this.splitContainer1.Panel1.ResumeLayout(false);
-			this.splitContainer1.Panel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-			this.splitContainer1.ResumeLayout(false);
+			this.splitContainer.Panel1.ResumeLayout(false);
+			this.splitContainer.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+			this.splitContainer.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.tb)).EndInit();
-			this.tabControl1.ResumeLayout(false);
+			this.tabControl.ResumeLayout(false);
 			this.tpResult.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
 			this.tpOutput.ResumeLayout(false);
@@ -456,7 +458,7 @@
 			this.tpStat.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.dgvStat)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.dgvTmp)).EndInit();
-			this.flowLayoutPanel1.ResumeLayout(false);
+			this.flowLayoutPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -471,8 +473,8 @@
         private System.Windows.Forms.ToolStripStatusLabel lbTime;
         private System.Windows.Forms.ToolStripStatusLabel lbRow;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.SplitContainer splitContainer;
+        private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tpResult;
         private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.TabPage tpOutput;
@@ -492,7 +494,7 @@
         private System.Windows.Forms.Button btnOpen;
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.Button btnGo;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
 		private FastColoredTextBoxNS.FastColoredTextBox tb;
 		private System.Windows.Forms.TabPage tpPlan;
 	}

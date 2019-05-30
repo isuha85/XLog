@@ -33,6 +33,13 @@ namespace XLog
         private int nTabSeq = 0;
 		//private ConcurrentStack<int> SelectedIndexStack = null;
 
+		private struct Configure
+		{
+			public FormBorderStyle FormBorderStyle;
+			public FormWindowState FormWindowState;
+		};
+		Configure configure;
+
 		public frmSQLTool()
         {
             InitializeComponent();
@@ -55,27 +62,26 @@ namespace XLog
 
 			panel.Dock = DockStyle.Fill;
 			//Win32API.SendMessage(this.tab.Handle, Win32API.SendMessageType.TCM_SETMINTABWIDTH, IntPtr.Zero, (IntPtr)16);
-			AddTab();
-		}
+			CreateTab();
 
-		private void AddTab()
-        {
-            nTabSeq++;
-			//string sTmp = "SQL" + nTabSeq + "    ";
-			string sTmp = "SQL" + nTabSeq;
-			var tabPage = new TabPage(sTmp);
-            var sqlTool = new SQLToolControl();
-			
+			// Configure
 			{
-				tabPage.Visible = false;
 
-				//sqlTool.TopLevel = false; // WinForm 을 추가할때 필요함.
-				sqlTool.Dock = DockStyle.Fill;
-				tabPage.Controls.Add(sqlTool);
-				//tab.Controls.Add(tabPage);
-				tab.TabPages.Insert(tab.TabCount, tabPage);
-				tab.SelectedIndex = tab.TabCount - 1;
-				tab.Refresh();
+				//this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+				//this.WindowState = FormWindowState.Maximized;
+				//this.StartPosition = FormStartPosition.Manual;
+
+				//var fullScrenn_bounds = Rectangle.Empty;
+
+				//foreach (var screen in Screen.AllScreens)
+				//{
+				//	fullScrenn_bounds = Rectangle.Union(fullScrenn_bounds, screen.Bounds);
+				//}
+				//this.ClientSize = new Size(fullScrenn_bounds.Width, fullScrenn_bounds.Height);
+				//this.Location = new Point(fullScrenn_bounds.Left, fullScrenn_bounds.Top);
+
+				configure.FormBorderStyle = FormBorderStyle;
+				configure.FormWindowState = FormWindowState.Normal;
 			}
 		}
 
@@ -89,7 +95,7 @@ namespace XLog
 					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0)) break;
 					if ((keyData & Keys.Control) != 0)
 					{
-						AddTab();
+						CreateTab();
 						return true;
 					}
 					break;
@@ -125,6 +131,27 @@ namespace XLog
 			}
 
 			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+		private void CreateTab()
+		{
+			nTabSeq++;
+			//string sTmp = "SQL" + nTabSeq + "    ";
+			string sTmp = "SQL" + nTabSeq;
+			var tabPage = new TabPage(sTmp);
+			var sqlTool = new SQLToolControl();
+
+			{
+				tabPage.Visible = false;
+
+				//sqlTool.TopLevel = false; // WinForm 을 추가할때 필요함.
+				sqlTool.Dock = DockStyle.Fill;
+				tabPage.Controls.Add(sqlTool);
+				//tab.Controls.Add(tabPage);
+				tab.TabPages.Insert(tab.TabCount, tabPage);
+				tab.SelectedIndex = tab.TabCount - 1;
+				tab.Refresh();
+			}
 		}
 
 		private void tab_SelectedIndexChanged(object sender, EventArgs e)
