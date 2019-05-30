@@ -108,6 +108,15 @@
     <Reference Include="DocumentFormat.OpenXml, Version=2.9.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.2.9.1\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
+    <Reference Include="FarsiLibrary.Localization, Version=2.7.0.0, Culture=neutral, PublicKeyToken=def7c46cace23f8f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Farsi.Library.Win.2.7.0\lib\net46\FarsiLibrary.Localization.dll</HintPath>
+    </Reference>
+    <Reference Include="FarsiLibrary.Utils, Version=2.7.0.0, Culture=neutral, PublicKeyToken=def7c46cace23f8f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Farsi.Library.Win.2.7.0\lib\net46\FarsiLibrary.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="FarsiLibrary.Win, Version=2.7.0.0, Culture=neutral, PublicKeyToken=def7c46cace23f8f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Farsi.Library.Win.2.7.0\lib\net46\FarsiLibrary.Win.dll</HintPath>
+    </Reference>
     <Reference Include="FastColoredTextBox, Version=2.16.24.0, Culture=neutral, PublicKeyToken=fb8aa12b994ef61b, processorArchitecture=MSIL">
       <HintPath>..\packages\FCTB.2.16.24\lib\FastColoredTextBox.dll</HintPath>
     </Reference>

@@ -1,18 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
+using System.Drawing.Design;
+using System.Drawing.Drawing2D;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Forms.Design;
+using Microsoft.Win32;
+using Timer = System.Windows.Forms.Timer;
 
-using System.Runtime.InteropServices; //  Do not forget this namespace or else DllImport won't work 
+using FarsiLibrary.Win;
+using FarsiLibrary.Win.Design;
 
 /// TODO
 /// +) TabControl 에 있는 Close('X') 버튼은, "원치않는 닫힘이 될수도 있겠음" , 확인창 추가하던지, 빼고 그냥 변경중표시('*') 정도를 하든지.
-
 
 namespace XLog
 {
@@ -27,8 +35,11 @@ namespace XLog
 
 			// TODO: 여전히 깜박임. ㅠㅠ
 			//this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
-			this.SetStyle(System.Windows.Forms.ControlStyles.DoubleBuffer, true);
-			this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, true);
+			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
+			//FATabStripItem yy;
+			//FarsiLibrary.Win.FAT
 		}
 
         private void SQLTool_Load(object sender, EventArgs e)
