@@ -315,7 +315,7 @@ namespace XLog
 					{
 						if (tb.SelectedText.Length > 0)
 						{
-							doResult(tb.SelectedText);
+							ShowResult(tb.SelectedText);
 							return true;
 						}
 
@@ -324,7 +324,7 @@ namespace XLog
 
 						char[] tirmChars = { '\r', '\n', '\t', ' ' };
 						var sql = GetSqlFromLine(tb.Text, line).Trim(tirmChars);
-						doResult(sql);
+						ShowResult(sql);
 
 						// highlight
 						{
@@ -524,7 +524,7 @@ namespace XLog
 				
 		#endregion
 
-		private void doResult(string sql_)
+		private void ShowResult(string sql_)
 		{
 			PUBLIC.TIME_CHECK(System.DateTime.Now.Ticks); // 기준시간 등록
 
@@ -640,23 +640,23 @@ namespace XLog
 					switch (sXDBConnType)
 					{
 						case XDbConnType.ORACLE:
-							xDb.mConnStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON"; // OK
+							xDb.ConnStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON"; // OK
 							break;
 						case XDbConnType.ALTIBASE:
 							// (1) if Autocommit then {"LobLocator cannot span the transaction 332417."}
-							xDb.mConnStr = "DSN=192.168.56.201;uid=sys;pwd=manager;NLS_USE=MS949;PORT=20300"; // OK
+							xDb.ConnStr = "DSN=192.168.56.201;uid=sys;pwd=manager;NLS_USE=MS949;PORT=20300"; // OK
 							break;
 						case XDbConnType.TIBERO:
 							// (2) {"TBR-02040 (24000): Invalid cursor state."}
-							xDb.mConnStr = "Provider=tbprov.Tbprov.5;Data Source=tibero;User ID=sys;Password=tibero;";
+							xDb.ConnStr = "Provider=tbprov.Tbprov.5;Data Source=tibero;User ID=sys;Password=tibero;";
 							FETCH_SIZE = 1;
 							break;
 						case XDbConnType.MSSQL:
-							xDb.mConnStr = "Server=192.168.56.201;Database=master;Uid=sa;Pwd=password12!";
+							xDb.ConnStr = "Server=192.168.56.201;Database=master;Uid=sa;Pwd=password12!";
 							break;
 						case XDbConnType.OLEDB:
 							// (1) ALTIBASE의 경우 CLOB 조회 불가
-							xDb.mConnStr = "Provider=tbprov.Tbprov;Data Source=tibero;User ID=sys;Password=tibero;"; 
+							xDb.ConnStr = "Provider=tbprov.Tbprov;Data Source=tibero;User ID=sys;Password=tibero;"; 
 							//xDb.mConnStr = "Provider=Altibase.OLEDB;Data Source=192.168.56.201;User ID=sys;Password=manager;Extended Properties='PORT=20300'"; // OK, But CLOB BUGBUG
 							break;
 						default:
@@ -664,7 +664,7 @@ namespace XLog
 							return; // TODO: C# 강제종료는 어떻게? 
 							//break;
 					}
-					toolStripStatusLabel4.Text = "Connecting.. " + xDb.mConnType;
+					toolStripStatusLabel4.Text = "Connecting.. " + xDb.ConnType;
                     Application.DoEvents();
                 }
 
@@ -675,7 +675,7 @@ namespace XLog
                 //adapter = new OracleDataAdapter();
                 adapter = xDb.XDbDataAdapter();
 
-				toolStripStatusLabel4.Text = "Connected " + xDb.mConnType;
+				toolStripStatusLabel4.Text = "Connected " + xDb.ConnType;
 				Application.DoEvents();
 			}
 			catch (Exception ex)
@@ -704,7 +704,7 @@ namespace XLog
 
         private void btnGo_Click(object sender, EventArgs e)
         {
-			doResult(tb.Text);
+			ShowResult(tb.Text);
         }
 
         private void btnStop_Click(object sender, EventArgs e)

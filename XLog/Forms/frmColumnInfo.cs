@@ -45,7 +45,23 @@ namespace XLog
 		public static int preHeight { get; set; } = -1;
 		public static int preWidth { get; set; } = -1;
 
-		//private DataTable datatable;
+		private struct Configure
+		{
+			public Point LocationPre;
+			public int HeightPre;
+			public int WidthPre;
+			//public static Point LocationPre { get; set; } = new Point(-1, -1);
+			//public static int HeightPre { get; set; } = -1;
+			//public static int WidthPre { get; set; } = -1;
+		};
+		static Configure configure;
+
+		static frmColumnInfo()
+		{
+			configure.LocationPre = new Point(-1, -1);
+			configure.HeightPre = -1;
+			configure.WidthPre = -1;
+		}
 
 		public frmColumnInfo()
 		{
@@ -60,19 +76,26 @@ namespace XLog
 			cbLowerCase.Checked = checked_lowerCase;
 			cbShowComment.Checked = checked_showComment;
 
-			if (preLocation.X == -1)
+			//if (configure.LocationPre == new Point(0, 0))
+			if (configure.LocationPre.X == -1)
 			{
-				//form.StartPosition = FormStartPosition.CenterParent;
+				// [TIP] 아래 구문이 _LOAD 함수에서 호출되면, 동작하지 않는다, 이유는 모름.
 				StartPosition = FormStartPosition.CenterScreen;
-				//frmColumnInfo.preLocation = form.Location;
+				//StartPosition = FormStartPosition.CenterParent;
+				//StartPosition = FormStartPosition.WindowsDefaultLocation;
 			}
 			else
 			{
 				StartPosition = FormStartPosition.Manual;
-				Location = preLocation;
-				Height = preHeight;
-				Width = preWidth;
+				Location = configure.LocationPre;
+				Height = configure.HeightPre;
+				Width = configure.WidthPre;
 			}
+		}
+
+		private void frmColumnInfo_Load(object sender, EventArgs e)
+		{
+			// TODO: xx_LOAD 함수와 생성자의 역활차이는 뭘까?
 		}
 
 		public void ShowMain(string selectedText, DbConnection conn)
@@ -365,10 +388,11 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 
 		private void frmColumnInfo_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			frmColumnInfo.preLocation = this.Location;
-			frmColumnInfo.preHeight = this.Height;
-			frmColumnInfo.preWidth = this.Width;
+			configure.LocationPre = this.Location;
+			configure.HeightPre = this.Height;
+			configure.WidthPre = this.Width;
 		}
+
 	}
 	
 }

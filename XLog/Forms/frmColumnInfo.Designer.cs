@@ -172,6 +172,7 @@
 			this.Name = "frmColumnInfo";
 			this.Text = "frmColumnInfo";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmColumnInfo_FormClosing);
+			this.Load += new System.EventHandler(this.frmColumnInfo_Load);
 			this.flowLayoutPanel1.ResumeLayout(false);
 			this.flowLayoutPanel1T.ResumeLayout(false);
 			this.flowLayoutPanel1T.PerformLayout();

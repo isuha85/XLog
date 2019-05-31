@@ -33,6 +33,39 @@ using MySql.Data.MySqlClient;
 
 namespace XLog
 {
+	#region Global Configure By Singleton
+
+	// GameData.Instance._test;
+
+	public sealed class XConfig
+	{
+		private static XConfig instance = null;
+		private static readonly object threadLock = new object();
+
+		XConfig()
+		{
+		}
+
+		public static XConfig Get
+		{
+			get
+			{
+				lock (threadLock)
+				{
+					if (instance == null)
+					{
+						instance = new XConfig();
+					}
+					return instance;
+				}
+			}
+		}
+
+		// My Configurations
+		public int _test; // 선언할 변수들
+	}
+	#endregion
+
 	#region dlopen for Win32 (MFC)
 
 	public class Win32API
@@ -157,30 +190,30 @@ namespace XLog
 		#region Common Function For TIME
 
 		public static double TIME_DELTA { get; set; }
-        private static long mTickPrev { get; set; } = -1;
-        private static long mTickStart { get; set; } = -1;
+        private static long TickPre { get; set; } = -1;
+        private static long TickStart { get; set; } = -1;
 
-        public static double TIME_CHECK(long aTickStart = -1)
+        public static double TIME_CHECK(long tickStart = -1)
         {
             long sTickNow = System.DateTime.Now.Ticks;
 
-            if (aTickStart != -1)
+            if (tickStart != -1)
             {
-                mTickStart = aTickStart;
+                TickStart = tickStart;
                 return 0;
             }
 
-            if (mTickPrev == -1)
+            if (TickPre == -1)
             {
                 TIME_DELTA = 0;
             }
             else
             {
-                TIME_DELTA = Math.Truncate((double)(sTickNow - mTickPrev) / 10000.0F) / 1000;
+                TIME_DELTA = Math.Truncate((double)(sTickNow - TickPre) / 10000.0F) / 1000;
             }
-            mTickPrev = sTickNow;
+            TickPre = sTickNow;
 
-            return Math.Truncate((double)(sTickNow - mTickStart) / 10000.0F) / 1000;
+            return Math.Truncate((double)(sTickNow - TickStart) / 10000.0F) / 1000;
         }
 
 		#endregion
@@ -225,14 +258,14 @@ namespace XLog
     //public sealed class OleDbDataAdapter : DbDataAdapter, IDbDataAdapter, IDataAdapter, ICloneable
     public abstract class XDbBase
     {
-        public string mConnStr { get; set; }
-        public XDbConnType mConnType { get; set; } = XDbConnType.ORACLE;
+        public string ConnStr { get; set; }
+        public XDbConnType ConnType { get; set; } = XDbConnType.ORACLE;
         //public bool AutoCommit { get; set; }
-        public DbConnection mConnection = null;
+        public DbConnection Connection = null;
         public DbTransaction mSelectTransaction4alt = null;
 
-		public string mUserName = null;
-		public string mSchemaName = null; // ORACLE의 경우 USER와 SCHEMA가 동일한 구조
+		public string UserName = null;
+		public string SchemaName = null; // ORACLE의 경우 USER와 SCHEMA가 동일한 구조
 
 		#region Abstract Functions
 
@@ -265,74 +298,74 @@ namespace XLog
 
 		public XDb(XDbConnType type)
 		{
-			this.mConnType = type;
+			this.ConnType = type;
 		}
 
 		public override DbConnection XDbConnection(string connStr_ = null)
 		{
-			if (mConnection != null)
+			if (Connection != null)
 			{
 				// TODO: 임시코드, 종료처리할지, 오류낼지.
-				mConnection.Close();
-				mConnection = null;
+				Connection.Close();
+				Connection = null;
 			}
 
 			string connStr = null;
 
 			if (connStr_ == null)
 			{
-				connStr = mConnStr;
+				connStr = ConnStr;
 			}
 			else
 			{
 				connStr = connStr_;
 			}
 
-			if (mConnType == XDbConnType.ORACLE)
+			if (ConnType == XDbConnType.ORACLE)
 			{
-				mConnection = new OracleConnection(connStr);
+				Connection = new OracleConnection(connStr);
 			}
-			else if (mConnType == XDbConnType.ALTIBASE)
+			else if (ConnType == XDbConnType.ALTIBASE)
 			{
-				mConnection = new AltibaseConnection(connStr);
+				Connection = new AltibaseConnection(connStr);
 			}
-			else if (mConnType == XDbConnType.MSSQL)
+			else if (ConnType == XDbConnType.MSSQL)
 			{
-				mConnection = new SqlConnection(connStr);
+				Connection = new SqlConnection(connStr);
 			}
-			else if (mConnType == XDbConnType.TIBERO)
+			else if (ConnType == XDbConnType.TIBERO)
 			{
-				mConnection = new OleDbConnectionTbr(connStr);
+				Connection = new OleDbConnectionTbr(connStr);
 			}
-			else if (mConnType == XDbConnType.OLEDB)
+			else if (ConnType == XDbConnType.OLEDB)
 			{
-				mConnection = new OleDbConnection(connStr);
+				Connection = new OleDbConnection(connStr);
 			}
 
-			return mConnection;
+			return Connection;
 		}
 
 		public override DbCommand XDbCommand()
 		{
 			DbCommand cmd = null;
 
-			if (mConnType == XDbConnType.ORACLE)
+			if (ConnType == XDbConnType.ORACLE)
 			{
 				cmd = new OracleCommand();
 			}
-			else if (mConnType == XDbConnType.ALTIBASE)
+			else if (ConnType == XDbConnType.ALTIBASE)
 			{
 				cmd = new AltibaseCommand();
 			}
-			else if (mConnType == XDbConnType.MSSQL)
+			else if (ConnType == XDbConnType.MSSQL)
 			{
 				cmd = new SqlCommand();
 			}
-			else if (mConnType == XDbConnType.TIBERO)
+			else if (ConnType == XDbConnType.TIBERO)
 			{
 				cmd = new OleDbCommandTbr();
 			}
-			else if (mConnType == XDbConnType.OLEDB)
+			else if (ConnType == XDbConnType.OLEDB)
 			{
 				cmd = new OleDbCommand();
 			}
@@ -365,7 +398,7 @@ namespace XLog
 			sCommand.CommandType = CommandType.Text;
 			if (aConnection == null)
 			{
-				sCommand.Connection = mConnection;
+				sCommand.Connection = Connection;
 			}
 			else
 			{
@@ -373,7 +406,7 @@ namespace XLog
 			}
 
 			if (false
-				|| mConnType == XDbConnType.ALTIBASE
+				|| ConnType == XDbConnType.ALTIBASE
 			   //|| mConnType == XDbConnType.TIBERO
 			   )
 			{
@@ -383,7 +416,7 @@ namespace XLog
 
 				if (mSelectTransaction4alt == null)
 				{
-					mSelectTransaction4alt = mConnection.BeginTransaction(); // [WHAT] mConnection.EnlistTransaction
+					mSelectTransaction4alt = Connection.BeginTransaction(); // [WHAT] mConnection.EnlistTransaction
 					sCommand.Transaction = mSelectTransaction4alt;
 				}
 				else
@@ -391,7 +424,7 @@ namespace XLog
 					mSelectTransaction4alt.Rollback();
 					//mSelectTransaction4alt.Commit();
 
-					mSelectTransaction4alt = mConnection.BeginTransaction();
+					mSelectTransaction4alt = Connection.BeginTransaction();
 					//mSelectTransaction4alt.Connection.BeginTransaction(); // 이런식으로 작성하면, "개체의 현재상태가 유효하지 않습니다" 오류가 2번째 Rollback에서 발생
 				}
 			}
@@ -411,23 +444,23 @@ namespace XLog
 		{
 			IDataParameter sParameter = null;
 
-			if (mConnType == XDbConnType.ORACLE)
+			if (ConnType == XDbConnType.ORACLE)
 			{
 				sParameter = new OracleParameter(parameterName, parameterValue);
 			}
-			else if (mConnType == XDbConnType.ALTIBASE)
+			else if (ConnType == XDbConnType.ALTIBASE)
 			{
 				sParameter = new AltibaseParameter(parameterName, parameterValue);
 			}
-			else if (mConnType == XDbConnType.MSSQL)
+			else if (ConnType == XDbConnType.MSSQL)
 			{
 				sParameter = new SqlParameter(parameterName, parameterValue);
 			}
-			else if (mConnType == XDbConnType.TIBERO)
+			else if (ConnType == XDbConnType.TIBERO)
 			{
 				sParameter = new OleDbParameterTbr(parameterName, parameterValue);
 			}
-			else if (mConnType == XDbConnType.OLEDB)
+			else if (ConnType == XDbConnType.OLEDB)
 			{
 				sParameter = new OleDbParameter(parameterName, parameterValue);
 			}
@@ -478,23 +511,23 @@ namespace XLog
 		{
 			DbDataAdapter adapter = null;
 
-			if (mConnType == XDbConnType.ORACLE)
+			if (ConnType == XDbConnType.ORACLE)
 			{
 				adapter = new OracleDataAdapter();
 			}
-			else if (mConnType == XDbConnType.ALTIBASE)
+			else if (ConnType == XDbConnType.ALTIBASE)
 			{
 				adapter = new AltibaseDataAdapter();
 			}
-			else if (mConnType == XDbConnType.MSSQL)
+			else if (ConnType == XDbConnType.MSSQL)
 			{
 				adapter = new SqlDataAdapter();
 			}
-			else if (mConnType == XDbConnType.TIBERO)
+			else if (ConnType == XDbConnType.TIBERO)
 			{
 				adapter = new OleDbDataAdapterTbr();
 			}
-			else if (mConnType == XDbConnType.OLEDB)
+			else if (ConnType == XDbConnType.OLEDB)
 			{
 				adapter = new OleDbDataAdapter();
 			}
@@ -519,7 +552,7 @@ namespace XLog
 			sDataAdapter.SelectCommand.CommandType = CommandType.Text;
 			if (aConnection == null)
 			{
-				sDataAdapter.SelectCommand.Connection = mConnection;
+				sDataAdapter.SelectCommand.Connection = Connection;
 			}
 			else
 			{

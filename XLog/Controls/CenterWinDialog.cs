@@ -15,20 +15,20 @@ namespace XLog
 		public CenterWinDialog(Form owner)
 		{
 			mOwner = owner;
-			owner.BeginInvoke(new MethodInvoker(findDialog));
+			owner.BeginInvoke(new MethodInvoker(FindDialog));
 		}
 
-		private void findDialog()
+		private void FindDialog()
 		{
 			// Enumerate windows to find the message box
 			if (mTries < 0) return;
-			EnumThreadWndProc callback = new EnumThreadWndProc(checkWindow);
+			EnumThreadWndProc callback = new EnumThreadWndProc(CheckWindow);
 			if (EnumThreadWindows(GetCurrentThreadId(), callback, IntPtr.Zero))
 			{
-				if (++mTries < 10) mOwner.BeginInvoke(new MethodInvoker(findDialog));
+				if (++mTries < 10) mOwner.BeginInvoke(new MethodInvoker(FindDialog));
 			}
 		}
-		private bool checkWindow(IntPtr hWnd, IntPtr lp)
+		private bool CheckWindow(IntPtr hWnd, IntPtr lp)
 		{
 			// Checks if <hWnd> is a dialog
 			StringBuilder sb = new StringBuilder(260);

@@ -230,8 +230,7 @@ namespace XLog
 			ptStart.X = (ptStart.X < 0) ? 0 : ptStart.X;
 			ptStart.Y = (ptStart.Y < 0) ? 0 : ptStart.Y;
 
-			int result = MoveWindow(hChildWnd, ptStart.X, ptStart.Y, width,
-									height, false);
+			int result = MoveWindow(hChildWnd, ptStart.X, ptStart.Y, width, height, false);
 		}
 	}
 }
