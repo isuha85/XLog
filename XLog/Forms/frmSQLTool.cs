@@ -87,6 +87,9 @@ namespace XLog
 					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0) || (keyData & Keys.Control) != 0) break;
 
 					{
+						//this.Opacity = 0.0; // 완전투명
+						this.Opacity = 0.1; // 거의투명
+
 						// this.StartPosition = FormStartPosition.Manual; // 듀얼모니터 에서 필수라고 함 - https://outshine90.tistory.com/m/4
 						if (configure.bMaximized)
 						{
@@ -113,6 +116,7 @@ namespace XLog
 						}
 
 						this.Visible = true;
+						this.Opacity = 1;
 						this.Refresh();
 						return true;
 					}
