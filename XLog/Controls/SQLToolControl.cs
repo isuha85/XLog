@@ -754,34 +754,9 @@ namespace XLog
             dataGridView.Rows[jumpToRow].Selected = true;
         }
 
-        static int btnOpt_Click_Cnt = 0;
         private void btnOpt_Click(object sender, EventArgs e)
         {
-            btnOpt_Click_Cnt++;
-
-            if (btnOpt_Click_Cnt % 2 != 0)
-            {
-                if (btnOpt_Click_Cnt == 1)
-                {
-                    dgvTmp.DefaultCellStyle.ForeColor = dataGridView.DefaultCellStyle.ForeColor;
-                    dgvTmp.RowsDefaultCellStyle.BackColor = dataGridView.RowsDefaultCellStyle.BackColor;
-                    dgvTmp.GridColor = dataGridView.GridColor;
-                    dgvTmp.BorderStyle = dataGridView.BorderStyle;
-                }
-
-                dataGridView.DefaultCellStyle.ForeColor = Color.Coral;
-                dataGridView.RowsDefaultCellStyle.BackColor = Color.AliceBlue;
-                dataGridView.GridColor = Color.Blue;
-                dataGridView.BorderStyle = BorderStyle.Fixed3D;
-            }
-            else
-            {
-                dataGridView.DefaultCellStyle.ForeColor = dgvTmp.DefaultCellStyle.ForeColor;
-                dataGridView.RowsDefaultCellStyle.BackColor = dgvTmp.RowsDefaultCellStyle.BackColor;
-                dataGridView.GridColor = dgvTmp.GridColor;
-                dataGridView.BorderStyle = dgvTmp.BorderStyle;
-            }
-        } // btnOpt
+        }
 
 
 		private void dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)

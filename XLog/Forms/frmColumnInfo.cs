@@ -41,10 +41,6 @@ namespace XLog
 		public static bool checked_showPK { get; set; } = false;
 		public static bool checked_showComment { get; set; } = false;
 
-		public static Point preLocation { get; set; } = new Point(-1,-1);
-		public static int preHeight { get; set; } = -1;
-		public static int preWidth { get; set; } = -1;
-
 		private struct Configure
 		{
 			public Point LocationPre;

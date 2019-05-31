@@ -35,8 +35,8 @@ namespace XLog
 {
 	#region Global Configure By Singleton
 
-	// GameData.Instance._test;
-
+	// Usage: XConfig.Get.xx;
+	// FROM : http://charlie0301.blogspot.com/2016/12/singleton-pattern-in-c.html
 	public sealed class XConfig
 	{
 		private static XConfig instance = null;
