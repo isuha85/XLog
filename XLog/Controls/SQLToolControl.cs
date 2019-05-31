@@ -663,7 +663,7 @@ namespace XLog
 						default:
 							MessageBoxEx.Show("[NEVER] " + sXDBConnType);
 							return; // TODO: C# 강제종료는 어떻게? 
-							break;
+							//break;
 					}
 					toolStripStatusLabel4.Text = "Connecting.. " + xDb.mConnType;
                     Application.DoEvents();

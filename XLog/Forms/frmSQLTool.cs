@@ -35,8 +35,10 @@ namespace XLog
 
 		private struct Configure
 		{
+			public FormWindowState WindowState;
+			public Point Location;
 			public FormBorderStyle FormBorderStyle;
-			public FormWindowState FormWindowState;
+			public bool bMaximized;
 		};
 		Configure configure;
 
@@ -66,22 +68,11 @@ namespace XLog
 
 			// Configure
 			{
-
-				//this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-				//this.WindowState = FormWindowState.Maximized;
-				//this.StartPosition = FormStartPosition.Manual;
-
-				//var fullScrenn_bounds = Rectangle.Empty;
-
-				//foreach (var screen in Screen.AllScreens)
-				//{
-				//	fullScrenn_bounds = Rectangle.Union(fullScrenn_bounds, screen.Bounds);
-				//}
-				//this.ClientSize = new Size(fullScrenn_bounds.Width, fullScrenn_bounds.Height);
-				//this.Location = new Point(fullScrenn_bounds.Left, fullScrenn_bounds.Top);
-
+				this.StartPosition = FormStartPosition.Manual; // 듀얼모니터 에서 필수라고 함 - https://outshine90.tistory.com/m/4
 				configure.FormBorderStyle = FormBorderStyle;
-				configure.FormWindowState = FormWindowState.Normal;
+				configure.WindowState = FormWindowState.Normal;
+				configure.Location = this.Location;
+				configure.bMaximized = false;
 			}
 		}
 
@@ -91,6 +82,41 @@ namespace XLog
 
 			switch (key)
 			{
+				case Keys.F11:
+				case Keys.F2:		// Toad
+					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0) || (keyData & Keys.Control) != 0) break;
+
+					{
+						// this.StartPosition = FormStartPosition.Manual; // 듀얼모니터 에서 필수라고 함 - https://outshine90.tistory.com/m/4
+						if (configure.bMaximized)
+						{
+							this.WindowState = configure.WindowState;
+							this.Visible = false; // [TIP] WindowState 라인하고 위치가 바뀌면, 오동작한다 - 그러나 이 코드가 별 도움은 안된다 
+
+							this.Location = configure.Location;
+							this.FormBorderStyle = configure.FormBorderStyle;
+							configure.bMaximized = false;
+						}
+						else
+						{
+							this.Visible = false;
+
+							configure.WindowState = this.WindowState;
+							configure.Location = this.Location; // 최대화전 위치 백업
+							configure.FormBorderStyle = this.FormBorderStyle;
+							configure.bMaximized = true;
+
+							this.Location = new Point(0, 0); // 눈피로 - 크롬처럼, 전체화면시에 (0.0) 으로 이동후 확장
+							this.Refresh();
+							this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+							this.WindowState = FormWindowState.Maximized;
+						}
+
+						this.Visible = true;
+						this.Refresh();
+						return true;
+					}
+					//break;
 				case Keys.T:
 					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0)) break;
 					if ((keyData & Keys.Control) != 0)
