@@ -86,6 +86,7 @@ namespace XLog
 				case Keys.F2:		// Toad
 					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0) || (keyData & Keys.Control) != 0) break;
 
+					// TODO: [미구현] Shift+F2 : Grid Output창 전체화면 전환 ( 필요성을 아직 모르겠음 )
 					{
 						//this.Opacity = 0.0; // 완전투명
 						this.Opacity = 0.1; // 거의투명

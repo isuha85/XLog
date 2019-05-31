@@ -194,7 +194,6 @@ namespace XLog
 				//case Keys.Escape:	// 열린 Popup 창 닫기
 				//case Keys.M:		// 자바코드로 변환. 단축키실행 후 붙여넣기 
 				//case Keys.Insert:	// 조회된 로우 복사 시 컬럼ID도 같이 복사
-				//case Keys.F2:		// SQL 창 전체화면 전환 , Shift+F2 : Grid Output창 전체화면 전환
 				//case Keys.F3:		// Find Next / Prev
 				//case Keys.F4:		// 또는 Ctrl + Click
 				//case Keys.F5:		// 모든 SQL문 실행
