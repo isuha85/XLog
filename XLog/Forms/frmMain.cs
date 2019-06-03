@@ -17,9 +17,15 @@ namespace XLog
         public frmMain()
         {
             InitializeComponent();
-        }
 
-        private void queryToolStripMenuItem_Click(object sender, EventArgs e)
+			// FROM: https://happyguy81.tistory.com/56
+			// TODO: 영향도 확인요 (Win10에서 배율조정시)
+			//AutoScaleMode = AutoScaleMode.Font;	// default
+			//AutoScaleMode = AutoScaleMode.None;
+			AutoScaleMode = AutoScaleMode.Dpi;
+		}
+
+		private void queryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             QueryF = new frmSQLTool(); //폼2 객체 선언
             QueryF.MdiParent = this;

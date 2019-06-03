@@ -62,6 +62,7 @@ namespace XLog
 		public frmColumnInfo()
 		{
 			InitializeComponent();
+			AutoScaleMode = AutoScaleMode.Inherit;
 
 			//cbShowComment.Visible = false;
 			cbShowPK.Visible = false;

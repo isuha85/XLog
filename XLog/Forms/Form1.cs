@@ -24,6 +24,7 @@ namespace XLog
 		public Form1()
         {
             InitializeComponent();
+			AutoScaleMode = AutoScaleMode.Inherit;
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
