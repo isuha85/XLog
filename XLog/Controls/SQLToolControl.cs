@@ -136,6 +136,7 @@ namespace XLog
 
 			// FCTB
 			{
+				//tb.Selection.ColumnSelectionMode = true; // 설정하지 않아도, Alt+MOUSE 로 컬럼모드가 가능하다.
 				tb.Dock = DockStyle.Fill;
 				tb.Language = Language.SQL;
 				tb.AcceptsTab = true;
@@ -757,7 +758,6 @@ namespace XLog
         private void btnOpt_Click(object sender, EventArgs e)
         {
         }
-
 
 		private void dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
 		{
