@@ -21,10 +21,5 @@ namespace XLog
 			//Application.Run(new Form1()); return;
 			Application.Run(new frmSQLTool());
         }
-
-        /// 참고 URLs
-        /// + https://iconverticons.com/online/
-        ///     png 파일을 ico 으로 변환
-        /// + 
     }
 }

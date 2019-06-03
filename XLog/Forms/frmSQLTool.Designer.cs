@@ -37,6 +37,7 @@
 			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 			this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
+			this.mySqlCommand1 = new MySql.Data.MySqlClient.MySqlCommand();
 			this.panel.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -109,6 +110,13 @@
 			this.toolStripComboBox1.Name = "toolStripComboBox1";
 			this.toolStripComboBox1.Size = new System.Drawing.Size(121, 33);
 			// 
+			// mySqlCommand1
+			// 
+			this.mySqlCommand1.CacheAge = 0;
+			this.mySqlCommand1.Connection = null;
+			this.mySqlCommand1.EnableCaching = false;
+			this.mySqlCommand1.Transaction = null;
+			// 
 			// frmSQLTool
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
@@ -137,5 +145,6 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
         private System.Windows.Forms.TabControl tab;
-    }
+		private MySql.Data.MySqlClient.MySqlCommand mySqlCommand1;
+	}
 }
