@@ -260,7 +260,7 @@ namespace XLog
 					break;
 
 
-				case Keys.R:		// Toad
+				case Keys.R:        // Toad
 					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0)) break;
 					if ((keyData & Keys.Control) != 0)
 					{
@@ -304,41 +304,68 @@ namespace XLog
 					if ((keyData & Keys.Alt) != 0) break;
 					if ( ((keyData & Keys.Control) != 0) && ((keyData & Keys.Shift) != 0) )
 					{
-						// TODO: 특정 선택 영역만 "포맷팅" 하는 기능 필요
-						var code = tb.Text;
-
-						// TODO: 공통설정화면으로 처리.
-						var _formatterOptions = new PoorMansTSqlFormatterRedux.Formatters.TSqlStandardFormatterOptions
+						if (tb.SelectionLength > 0 )
 						{
-							KeywordStandardization = true,
-							IndentString = "\t",
-							SpacesPerTab = 4,
-							MaxLineWidth = 999,
-							NewStatementLineBreaks = 2,
-							NewClauseLineBreaks = 1,
-							TrailingCommas = true,
-							SpaceAfterExpandedComma = false,
-							ExpandBetweenConditions = true,
-							ExpandBooleanExpressions = true,
-							ExpandCaseStatements = true,
-							ExpandCommaLists = true,
-							BreakJoinOnSections = false,
-							UppercaseKeywords = true,
-							ExpandInLists = true
-						};
+							// TODO: 공통설정화면으로 처리.
+							var _formatterOptions = new PoorMansTSqlFormatterRedux.Formatters.TSqlStandardFormatterOptions
+							{
+								KeywordStandardization = true,
+								IndentString = "\t",
+								SpacesPerTab = 4,
+								MaxLineWidth = 999,
+								NewStatementLineBreaks = 2,
+								NewClauseLineBreaks = 1,
+								TrailingCommas = true,
+								SpaceAfterExpandedComma = false,
+								ExpandBetweenConditions = true,
+								ExpandBooleanExpressions = true,
+								ExpandCaseStatements = true,
+								ExpandCommaLists = true,
+								BreakJoinOnSections = false,
+								UppercaseKeywords = false,
+								ExpandInLists = true
+							};
 
-						//var tokenizer = new PoorMansTSqlFormatterLib.Tokenizers.TSqlStandardTokenizer();
-						var tokenizer = new PoorMansTSqlFormatterRedux.Tokenizers.TSqlStandardTokenizer();
-						var parser = new PoorMansTSqlFormatterRedux.Parsers.TSqlStandardParser();
-						var formatter = new PoorMansTSqlFormatterRedux.Formatters.TSqlStandardFormatter(_formatterOptions);
+							//var tokenizer = new PoorMansTSqlFormatterLib.Tokenizers.TSqlStandardTokenizer();
+							var tokenizer = new PoorMansTSqlFormatterRedux.Tokenizers.TSqlStandardTokenizer();
+							var parser = new PoorMansTSqlFormatterRedux.Parsers.TSqlStandardParser();
+							var formatter = new PoorMansTSqlFormatterRedux.Formatters.TSqlStandardFormatter(_formatterOptions);
 
-						var tokenizedSQL = tokenizer.TokenizeSQL(code);
-						var parsedSQL = parser.ParseSQL(tokenizedSQL);
-						tb.Text = formatter.FormatSQLTree(parsedSQL);
+							// TODO: 특정 선택 영역만 "포맷팅" 하는 기능 필요
+							var oldText = tb.Text;
+							var oldSelectionStart = tb.SelectionStart;
+							var oldSelectionEnd = oldSelectionStart + tb.SelectionLength;
+							var oldSelectionLength = tb.SelectionLength;
+
+							char[] tirmChars = { '\r', '\n'};
+							var tokenizedSQL = tokenizer.TokenizeSQL(tb.SelectedText);
+							var parsedSQL = parser.ParseSQL(tokenizedSQL);
+							var formatSQL = formatter.FormatSQLTree(parsedSQL).TrimEnd(tirmChars); ;
+							tb.Text = oldText.Substring(0, oldSelectionStart - 1) + formatSQL +
+								oldText.Substring(oldSelectionEnd, oldText.Length - oldSelectionEnd);
+							tb.SelectionStart = oldSelectionStart + formatSQL.Length;
+							tb.SelectionLength = 0;
+						}
 
 						return true;
 					}
 					break;
+
+				case Keys.Z:
+					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0)) break;
+					if ((keyData & Keys.Control) != 0)
+					{
+						var oldSelectionStart = tb.SelectionStart;
+
+						// FCTB - '취소'이후 변경된 영역이 선택되므로, 이를 재처리
+						tb.ProcessKey(keyData);
+
+						tb.SelectionStart = oldSelectionStart - 1; // 왜 (-1) 이 필요한지 이해가 안되나, 필요함.
+						tb.SelectionLength = 0;
+						return true;
+					}
+					break;
+
 				case Keys.Enter:    // Toad
 				case Keys.K:		// Orange
 					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Alt) != 0)) break;
