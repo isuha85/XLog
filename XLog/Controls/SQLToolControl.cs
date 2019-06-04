@@ -78,27 +78,30 @@ namespace XLog
 		};
 		Configure configure;
 
-		private Style sameWordsStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Gray)));
-		private Style runSqlStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Blue)));
+		DockContent doc1 = null; // WeifenLuo.WinFormsUI.Docking.DockContent
+		DockContent doc2 = null;
+
+		Style sameWordsStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Gray)));
+		Style runSqlStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Blue)));
 		DateTime lastNavigatedDateTime = DateTime.Now;
 
 
-		//private string connStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON";
-		//private OracleConnection conn = null;
-		//private OracleDataAdapter adapter = null;
-		private DbConnection conn = null;                       // Abstract 클래스 (System.Data.Common)
-        private DbDataAdapter adapter = null;
+		//string connStr = "Data Source=192.168.56.201:1521/xe;User ID=US_GDMON;Password=US_GDMON";
+		//OracleConnection conn = null;
+		//OracleDataAdapter adapter = null;
+		DbConnection conn = null;                       // Abstract 클래스 (System.Data.Common)
+        DbDataAdapter adapter = null;
         XDb xDb = null;
 
-        private bool bStop = false;
+        bool bStop = false;
 
-		//private int FETCH_SIZE = 1;
-		//private int FETCH_SIZE = 2;		// [TIBERO] {"TBR-02040 (24000): Invalid cursor state."}
-		//private int FETCH_SIZE = 10;
-		private int FETCH_SIZE = 100;       // [TIBERO] {"보호된 메모리를 읽거나 쓰려고 했습니다. 대부분 이러한 경우는 다른 메모리가 손상되었음을 나타냅니다."}
-		//private int FETCH_SIZE = 1000;
+		//int FETCH_SIZE = 1;
+		//int FETCH_SIZE = 2;		// [TIBERO] {"TBR-02040 (24000): Invalid cursor state."}
+		//int FETCH_SIZE = 10;
+		int FETCH_SIZE = 100;       // [TIBERO] {"보호된 메모리를 읽거나 쓰려고 했습니다. 대부분 이러한 경우는 다른 메모리가 손상되었음을 나타냅니다."}
+		//int FETCH_SIZE = 1000;
 
-		private int JUMP_TO_ROW = 20;
+		int JUMP_TO_ROW = 20;
 
         public SQLToolControl()
         {
@@ -126,8 +129,8 @@ namespace XLog
 				this.dockPanel.DocumentStyle = DocumentStyle.DockingSdi;
 				//this.dockPanel.DocumentStyle = DocumentStyle.DockingWindow;
 
-				var doc1 = new DockContent(); // WeifenLuo.WinFormsUI.Docking.DockContent
-				var doc2 = new DockContent();
+				doc1 = new DockContent(); // WeifenLuo.WinFormsUI.Docking.DockContent
+				doc2 = new DockContent();
 
 				doc2.Text = "Bind Variables";
 
@@ -271,8 +274,28 @@ namespace XLog
 
 				case Keys.B:        // Toad
 				case Keys.OemMinus: // Orange, FCTB에서 직전 커서 위치로 이동 기능이 막히게됨.
-					if ((keyData & Keys.Alt) != 0) break;
-					if ((keyData & Keys.Control) != 0)
+					if ((keyData & Keys.Alt) != 0)
+					{
+						if (((keyData & Keys.Control) != 0) || ((keyData & Keys.Shift) != 0)) break;
+
+						// [NEW] Bind Variables DockPanel
+						{
+							if ( doc2.Visible )
+							{
+								doc2.Hide();
+								doc2.Visible = false;
+							}
+							else
+							{
+								SetBindList();
+								doc2.Show();
+								doc2.Visible = true;
+							}
+						}
+
+						return true;
+					}
+					else if ((keyData & Keys.Control) != 0)
 					{
 						string commentPrefix = "--";
 						var oldStartPlace = tb.Selection.Start; // 영역선택후 MOUSE UP 위치
@@ -452,7 +475,32 @@ namespace XLog
 
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
-		
+
+		// TODO: 현재 STMT의 변수만 보일지, 다 보일지, 선택/결정 필요
+		private void SetBindList()
+		{
+			var text = tb.Text;
+			//var regexPattern = ":[a-zA-Z][a-zA-Z0-9_]*";
+			var regexPattern = ":[a-zA-Z]\\w*";
+
+			text = text + "\n";
+			text = Regex.Replace(text, "--.*\n", "");
+			text = Regex.Replace(text, "/\\*(.|\r|\n)*\\*/", "");
+			text = Regex.Replace(text, "'(.|\r|\n)*'", "");
+
+			var mc = Regex.Matches(text, regexPattern);
+			foreach (Match m in mc)
+			{
+				Debug.WriteLine("{0}:{1}", m.Index, m.Value);
+
+				Range[] ranges = tb.GetRanges(m.Value).ToArray();
+				foreach (var r in ranges)
+				{
+					r.SetStyle(sameWordsStyle);
+				}
+			}
+		}
+
 		#region Common Function for SQLTool
 
 		/*
