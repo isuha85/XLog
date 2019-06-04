@@ -21,6 +21,7 @@ using Timer = System.Windows.Forms.Timer;
 //using Sprache;
 
 using FastColoredTextBoxNS;
+using WeifenLuo.WinFormsUI.Docking;
 
 // https://qiita.com/motuo/items/5ffe1134d99ddf2e7b2d
 //using PoorMansTSqlFormatterLib.Tokenizers;
@@ -102,7 +103,10 @@ namespace XLog
         public SQLToolControl()
         {
             InitializeComponent();
-        }
+
+			//AutoScaleMode = AutoScaleMode.Inherit;
+			AutoScaleMode = AutoScaleMode.Dpi;
+		}
 
 		private void SQLToolUserControl_Load(object sender, EventArgs e)
         {
@@ -114,6 +118,32 @@ namespace XLog
 				typeof(DataGridView).InvokeMember("DoubleBuffered",
 					BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty,
 					null, tb, new object[] { true });  // fctb 을 설정해준다.
+			}
+
+			// DockPanel
+			{
+				this.dockPanel.Dock = DockStyle.Fill;
+				this.dockPanel.DocumentStyle = DocumentStyle.DockingSdi;
+				//this.dockPanel.DocumentStyle = DocumentStyle.DockingWindow;
+
+				var doc1 = new DockContent(); // WeifenLuo.WinFormsUI.Docking.DockContent
+				var doc2 = new DockContent();
+
+				doc2.Text = "Bind Variables";
+
+				doc1.Show(dockPanel, DockState.Document);
+				doc1.Controls.Add(tb);
+				doc1.AllowEndUserDocking = false;
+
+				//doc2.Show(this.dockPanel, DockState.DockRightAutoHide);
+				doc2.Show(dockPanel, DockState.DockRight);
+				doc1.Controls.Add(dgvBind);
+				doc2.AllowEndUserDocking = false; // TODO: 고정하고 싶은데. 영향이 없음. (BUGBUG)
+				//doc3.Show(doc1.Pane, null); // 이렇게 사용하면, TabControl 대체가 가능함
+				//doc4.Show(doc1.Pane, null);
+
+				tb.Dock = DockStyle.Fill;
+				dgvBind.Dock = DockStyle.Fill;
 			}
 
 			// resize
