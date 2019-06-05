@@ -38,6 +38,8 @@
 			this.lbRow = new System.Windows.Forms.ToolStripStatusLabel();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.splitContainer = new System.Windows.Forms.SplitContainer();
+			this.dgvBind = new System.Windows.Forms.DataGridView();
+			this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
 			this.tb = new FastColoredTextBoxNS.FastColoredTextBox();
 			this.tabControl = new System.Windows.Forms.TabControl();
 			this.tpPlanText = new System.Windows.Forms.TabPage();
@@ -61,14 +63,17 @@
 			this.btnStop = new System.Windows.Forms.Button();
 			this.btnGo = new System.Windows.Forms.Button();
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-			this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-			this.dgvBind = new System.Windows.Forms.DataGridView();
+			this.comboBox = new System.Windows.Forms.ComboBox();
+			this.Variable = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.Type = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.statusStrip1.SuspendLayout();
 			this.panel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
 			this.splitContainer.Panel1.SuspendLayout();
 			this.splitContainer.Panel2.SuspendLayout();
 			this.splitContainer.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.dgvBind)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tb)).BeginInit();
 			this.tabControl.SuspendLayout();
 			this.tpPlanText.SuspendLayout();
@@ -80,7 +85,6 @@
 			this.tpStat.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dgvStat)).BeginInit();
 			this.flowLayoutPanel.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.dgvBind)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// statusStrip1
@@ -154,6 +158,7 @@
 			// 
 			// splitContainer.Panel1
 			// 
+			this.splitContainer.Panel1.Controls.Add(this.comboBox);
 			this.splitContainer.Panel1.Controls.Add(this.dgvBind);
 			this.splitContainer.Panel1.Controls.Add(this.dockPanel);
 			this.splitContainer.Panel1.Controls.Add(this.tb);
@@ -166,6 +171,27 @@
 			this.splitContainer.TabIndex = 6;
 			this.splitContainer.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_SplitterMoved);
 			this.splitContainer.Resize += new System.EventHandler(this.splitContainer_Resize);
+			// 
+			// dgvBind
+			// 
+			this.dgvBind.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.dgvBind.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Variable,
+            this.Value,
+            this.Type});
+			this.dgvBind.Location = new System.Drawing.Point(340, 26);
+			this.dgvBind.Name = "dgvBind";
+			this.dgvBind.RowTemplate.Height = 30;
+			this.dgvBind.Size = new System.Drawing.Size(355, 150);
+			this.dgvBind.TabIndex = 6;
+			// 
+			// dockPanel
+			// 
+			this.dockPanel.BackColor = System.Drawing.SystemColors.ControlLight;
+			this.dockPanel.Location = new System.Drawing.Point(7, 110);
+			this.dockPanel.Name = "dockPanel";
+			this.dockPanel.Size = new System.Drawing.Size(313, 220);
+			this.dockPanel.TabIndex = 4;
 			// 
 			// tb
 			// 
@@ -188,6 +214,7 @@
 			this.tb.CommentPrefix = "--";
 			this.tb.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.tb.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+			this.tb.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.tb.IsReplaceMode = false;
 			this.tb.Language = FastColoredTextBoxNS.Language.SQL;
 			this.tb.LeftBracket = '(';
@@ -249,7 +276,6 @@
 			this.tbPlan.CommentPrefix = "--";
 			this.tbPlan.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.tbPlan.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-			this.tbPlan.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.tbPlan.IsReplaceMode = false;
 			this.tbPlan.Language = FastColoredTextBoxNS.Language.SQL;
 			this.tbPlan.LeftBracket = '(';
@@ -463,22 +489,31 @@
 			this.flowLayoutPanel.Size = new System.Drawing.Size(86, 770);
 			this.flowLayoutPanel.TabIndex = 4;
 			// 
-			// dockPanel
+			// comboBox
 			// 
-			this.dockPanel.BackColor = System.Drawing.SystemColors.ControlLight;
-			this.dockPanel.Location = new System.Drawing.Point(7, 110);
-			this.dockPanel.Name = "dockPanel";
-			this.dockPanel.Size = new System.Drawing.Size(313, 220);
-			this.dockPanel.TabIndex = 4;
+			this.comboBox.FormattingEnabled = true;
+			this.comboBox.Items.AddRange(new object[] {
+            "String",
+            "NUMBER"});
+			this.comboBox.Location = new System.Drawing.Point(586, 186);
+			this.comboBox.Name = "comboBox";
+			this.comboBox.Size = new System.Drawing.Size(121, 26);
+			this.comboBox.TabIndex = 8;
 			// 
-			// dgvBind
+			// Variable
 			// 
-			this.dgvBind.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dgvBind.Location = new System.Drawing.Point(426, 92);
-			this.dgvBind.Name = "dgvBind";
-			this.dgvBind.RowTemplate.Height = 30;
-			this.dgvBind.Size = new System.Drawing.Size(240, 150);
-			this.dgvBind.TabIndex = 6;
+			this.Variable.HeaderText = "Name";
+			this.Variable.Name = "Variable";
+			// 
+			// Value
+			// 
+			this.Value.HeaderText = "Value";
+			this.Value.Name = "Value";
+			// 
+			// Type
+			// 
+			this.Type.HeaderText = "Type";
+			this.Type.Name = "Type";
 			// 
 			// SQLToolControl
 			// 
@@ -498,6 +533,7 @@
 			this.splitContainer.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
 			this.splitContainer.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.dgvBind)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.tb)).EndInit();
 			this.tabControl.ResumeLayout(false);
 			this.tpPlanText.ResumeLayout(false);
@@ -509,7 +545,6 @@
 			this.tpStat.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.dgvStat)).EndInit();
 			this.flowLayoutPanel.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.dgvBind)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -550,5 +585,9 @@
 		private FastColoredTextBoxNS.FastColoredTextBox tbPlan;
 		private System.Windows.Forms.DataGridView dgvBind;
 		private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
+		private System.Windows.Forms.ComboBox comboBox;
+		private System.Windows.Forms.DataGridViewTextBoxColumn Variable;
+		private System.Windows.Forms.DataGridViewTextBoxColumn Value;
+		private System.Windows.Forms.DataGridViewTextBoxColumn Type;
 	}
 }

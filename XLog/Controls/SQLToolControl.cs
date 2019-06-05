@@ -287,9 +287,9 @@ namespace XLog
 							}
 							else
 							{
-								SetBindList();
 								doc2.Show();
 								doc2.Visible = true;
+								SetBindList();
 							}
 						}
 
@@ -476,6 +476,7 @@ namespace XLog
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
+		static DataTable dtBind = null;
 		// TODO: 현재 STMT의 변수만 보일지, 다 보일지, 선택/결정 필요
 		private void SetBindList()
 		{
@@ -488,17 +489,38 @@ namespace XLog
 			text = Regex.Replace(text, "/\\*(.|\r|\n)*\\*/", "");
 			text = Regex.Replace(text, "'(.|\r|\n)*'", "");
 
+			if (dtBind == null)
+			{
+				dtBind = new DataTable();
+				dtBind.Columns.Add("Name", typeof(string));
+				dtBind.Columns.Add("Value", typeof(string));
+				dtBind.Columns.Add("Type", typeof(string));
+				//dtBind.Columns.Add("Type", typeof(ComboBox));
+			}
+			else
+			{
+				dtBind.Clear();
+			}
+
 			var mc = Regex.Matches(text, regexPattern);
 			foreach (Match m in mc)
 			{
-				Debug.WriteLine("{0}:{1}", m.Index, m.Value);
+				//Debug.WriteLine("{0}:{1}", m.Index, m.Value);
+				//Range[] ranges = tb.GetRanges(m.Value).ToArray();
+				//foreach (var r in ranges)
+				//{
+				//	r.SetStyle(sameWordsStyle);
+				//}
 
-				Range[] ranges = tb.GetRanges(m.Value).ToArray();
-				foreach (var r in ranges)
 				{
-					r.SetStyle(sameWordsStyle);
+					DataRow row = dtBind.NewRow();
+					row["Name"] = m.Value;
+					row["Type"] = "xx";
+					dtBind.Rows.Add(row);
+
+					dgvBind.DataSource = dtBind;
 				}
-			}
+			}			
 		}
 
 		#region Common Function for SQLTool
