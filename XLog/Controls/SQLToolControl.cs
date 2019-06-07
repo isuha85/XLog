@@ -140,7 +140,8 @@ namespace XLog
 
 				//doc2.Show(this.dockPanel, DockState.DockRightAutoHide);
 				doc2.Show(dockPanel, DockState.DockRight);
-				doc1.Controls.Add(dgvBind);
+				doc2.Controls.Add(dgvBind);
+				//doc2.Controls.Add(comboBox);
 				doc2.AllowEndUserDocking = false; // TODO: 고정하고 싶은데. 영향이 없음. (BUGBUG)
 				//doc3.Show(doc1.Pane, null); // 이렇게 사용하면, TabControl 대체가 가능함
 				//doc4.Show(doc1.Pane, null);
