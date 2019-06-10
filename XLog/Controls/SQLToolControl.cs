@@ -190,7 +190,8 @@ namespace XLog
 					;
 				myStr += "\r\nselect 2 from dual;  ";
 				myStr += "\n\nselect 3 from dual;  ";
-				//myStr = "select 1 from dual;";
+				myStr = "select /* :v1 , :v9 */ sysdate from dual where '1' = :v1 and 1 = :v2;";
+				myStr += "\n";
 				tb.Text = myStr;
 
 				Visible = true;
@@ -218,7 +219,17 @@ namespace XLog
 
                 toolStripStatusLabel4.Text = "";
             }
-        } // Load
+
+			// dgvBind
+			{
+				dgvBind.Dock = DockStyle.Fill;
+				dgvBind.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+				dgvBind.AutoGenerateColumns = false;
+			}
+
+			doc2.Width = (int)(splitContainer.Panel1.Width * 0.3);
+			ShowBindList(); // OKT_NOW
+		} // Load
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
@@ -288,9 +299,9 @@ namespace XLog
 							}
 							else
 							{
-								doc2.Show();
 								doc2.Visible = true;
-								SetBindList();
+								doc2.Show();
+								ShowBindList();
 							}
 						}
 
@@ -477,33 +488,138 @@ namespace XLog
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-		static DataTable dtBind = null;
-		// TODO: 현재 STMT의 변수만 보일지, 다 보일지, 선택/결정 필요
-		private void SetBindList()
+		//private DataTable dtBind = null;
+		private List<BindRow> bindRows = new List<BindRow>();
+		private List<BindType> bindTypes = new List<BindType>();
+
+		private void SetBindColumnHeader()
 		{
+			{
+				DataGridViewTextBoxColumn nameColumn = new DataGridViewTextBoxColumn();
+				nameColumn.Name = "No";
+				nameColumn.DataPropertyName = "No";
+				nameColumn.ReadOnly = true;
+				dgvBind.Columns.Add(nameColumn);
+				dgvBind.Columns[0].Visible = false; // 숨김 컬럼
+			}
+
+			{
+				DataGridViewTextBoxColumn nameColumn = new DataGridViewTextBoxColumn();
+				nameColumn.Name = "Name";
+				nameColumn.DataPropertyName = "Name";
+				nameColumn.ReadOnly = true;
+				dgvBind.Columns.Add(nameColumn);
+			}
+
+			{
+				DataGridViewTextBoxColumn valueColumn = new DataGridViewTextBoxColumn();
+				valueColumn.Name = "Value";
+				valueColumn.DataPropertyName = "Value";
+				//idColumn.ReadOnly = true;
+				dgvBind.Columns.Add(valueColumn);
+			}
+
+			{
+				DataGridViewComboBoxColumn typeColumn = new DataGridViewComboBoxColumn();
+				foreach (BindType e in bindTypes) typeColumn.Items.Add(e);  // Populate the combo boxdrop-down list with objects. 
+
+				// Add "unassigned" to the drop-down list and display it for empty AssignedTo values or when the user presses CTRL+0. 
+				//typeColumn.Items.Add("unassigned");
+				//typeColumn.DefaultCellStyle.NullValue = "unassigned";
+				typeColumn.Items.Add("ANYDATA");
+				typeColumn.DefaultCellStyle.NullValue = "ANYDATA";
+
+				typeColumn.Name = "Type";
+				typeColumn.DataPropertyName = "Type";
+				typeColumn.AutoComplete = true;
+				typeColumn.DisplayMember = "Name";
+				typeColumn.ValueMember = "Self";
+
+				dgvBind.Columns.Add(typeColumn);
+
+				// Add a button column. 
+				//DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
+				//buttonColumn.HeaderText = "";
+				//buttonColumn.Name = "Status Request";
+				//buttonColumn.Text = "Request Status";
+				//buttonColumn.UseColumnTextForButtonValue = true;
+				//dgvBind.Columns.Add(buttonColumn);
+
+				// Add a CellClick handler to handle clicks in the button column.
+				//dgvBind.CellClick += new DataGridViewCellEventHandler(dataGridView1_CellClick);
+			}
+		}
+
+		private void dgvBind_CellClick(object sender, DataGridViewCellEventArgs e)
+		{
+			// do Something..
+		}
+
+		public class BindRow
+		{
+			public BindRow(int no)
+			{
+				No = no;
+			}
+
+			public int No { get; set; }
+			public String Name { get; set; }
+			public String Value { get; set; }
+			public BindType Type { get; set; }
+		}
+
+		public class BindType
+		{
+			public BindType(String name)
+			{
+				Name = name;
+			}
+
+			public String Name { get; set; }
+
+			// TODO: 하나의 약속인듯 - 이해는 안되지만 없으면 런타임 오류 발생.
+			public BindType Self
+			{
+				get { return this; }
+			}
+		}
+
+		// TODO: 현재 STMT의 변수만 보일지, 다 보일지, 선택/결정 필요
+		private void ShowBindList()
+		{
+			// 최초수행
+			if (bindTypes.Count == 0)
+			{
+				// BindType 초기화
+				// bindType[0] , bindType[1] 의 차이는 초기 선택값의 위치
+				bindTypes.Add(new BindType("VARCHAR"));
+				bindTypes.Add(new BindType("NUMBER"));
+				bindTypes.Add(new BindType("CHAR"));
+				bindTypes.Add(new BindType("NCHAR"));
+				//bindTypes.Add(new BindType("ROWID"));
+
+				SetBindColumnHeader();
+			}
+			else
+			{
+				dgvBind.DataSource = null; // bindRows가 변경되어도, 이 Line 이 없으면 감지하지 못한다
+				bindRows.Clear();
+			}
+
 			var text = tb.Text;
 			//var regexPattern = ":[a-zA-Z][a-zA-Z0-9_]*";
 			var regexPattern = ":[a-zA-Z]\\w*";
 
 			text = text + "\n";
 			text = Regex.Replace(text, "--.*\n", "");
-			text = Regex.Replace(text, "/\\*(.|\r|\n)*\\*/", "");
-			text = Regex.Replace(text, "'(.|\r|\n)*'", "");
-
-			if (dtBind == null)
-			{
-				dtBind = new DataTable();
-				dtBind.Columns.Add("Name", typeof(string));
-				dtBind.Columns.Add("Value", typeof(string));
-				dtBind.Columns.Add("Type", typeof(string));
-				//dtBind.Columns.Add("Type", typeof(ComboBox));
-			}
-			else
-			{
-				dtBind.Clear();
-			}
+			text = Regex.Replace(text, "--.*\r", ""); // WHEN MACOS
+			text = Regex.Replace(text, "/\\*(.|\r|\n)*?\\*/", ""); // [NOTE] .+ is greedy , Change it to .+? ( Not Greedy )
+			text = Regex.Replace(text, "'(.|\r|\n)*?'", "");
 
 			var mc = Regex.Matches(text, regexPattern);
+			var set = new HashSet<string>();
+			int ix = 0;
+
 			foreach (Match m in mc)
 			{
 				//Debug.WriteLine("{0}:{1}", m.Index, m.Value);
@@ -513,16 +629,124 @@ namespace XLog
 				//	r.SetStyle(sameWordsStyle);
 				//}
 
+				if ( set.Add(m.Value) )
 				{
-					DataRow row = dtBind.NewRow();
-					row["Name"] = m.Value;
-					row["Type"] = "xx";
-					dtBind.Rows.Add(row);
-
-					dgvBind.DataSource = dtBind;
+					bindRows.Add(new BindRow(ix++) { Name = m.Value, Value = "", Type = bindTypes[0] });
 				}
-			}			
+				else
+				{
+					// ignore duplication
+				}
+			} // foreach
+			dgvBind.DataSource = bindRows;
 		}
+
+		//private void SetBindList()
+		//{
+		//	// BindType 초기화
+		//	// bindType[0] , bindType[1] 의 차이는 초기 선택값의 위치
+		//	bindTypes.Add(new BindType("VARCHAR"));
+		//	bindTypes.Add(new BindType("NUMBER"));
+		//	SetDgvColumnHeader();
+		//	{
+		//		bindRows.Add(new BindRow(2));
+		//		bindRows.Add(new BindRow(9) { Name = ":v9", Value = "", Type = bindTypes[0] });
+		//	}
+		//	dgvBind.DataSource = bindRows;
+		//}
+
+
+		private void ShowResult(string sql_)
+		{
+			PUBLIC.TIME_CHECK(System.DateTime.Now.Ticks); // 기준시간 등록
+
+			lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
+			//eTick = System.DateTime.Now.Ticks;
+			//dTickSec = (double)(eTick - sTick) / 10000000.0F;
+			//lbTime.Text = dTickSec + " sec";
+
+			//this.Cursor = Cursors.WaitCursor;
+			toolStripStatusLabel4.Text = "Running ..";
+			lbRow.Text = "0 rows";
+
+			// 출처: https://and0329.tistory.com/entry/C-과-오라클-데이터베이스-연동-방법 
+			try
+			{
+				dataGridView.DataSource = null;     // (1) 결과창을 비워준다.
+				tabControl.SelectedIndex = 2;      // (2) 결과탭을 보여준디.
+				Application.DoEvents();
+
+				//adapter.SelectCommand = new OracleCommand(rtbSqlEdit.Text, (OracleConnection)conn);
+				adapter.SelectCommand = xDb.XDbCommand(sql_, conn);
+
+				DataTable dt = new DataTable();     // TODO: (BUGBUG) DataTable을 재사용하면, 컬럼명이 추가된다.
+				DataTable dt2 = new DataTable();    // 처음 결과 셋을 일부만 저장하여 보여주는 Fake 코드 (출력성능이슈)
+
+				//adapter.Fill(dt);
+				//adapter.Fill(0, 10, dt);
+				int sPos = 0;
+				int rc;
+
+				lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
+
+				//adapter.MissingMappingAction = MissingMappingAction.Error;		// {"TableMapping.DataSetTable=''인 TableMapping이 없습니다."}
+				//adapter.MissingSchemaAction = MissingSchemaAction.AddWithKey;
+				while ((rc = adapter.Fill(sPos, FETCH_SIZE, dt)) > 0)
+				{
+					//sPos += FETCH_SIZE;
+					sPos += rc;
+
+					if (toolStripProgressBar1.Value <= toolStripProgressBar1.Maximum * 0.9)
+					{
+						toolStripProgressBar1.PerformStep();
+					}
+
+					//System.Threading.Thread.Sleep(100);
+
+					//if ( (FETCH_SIZE > 1 && sPos == FETCH_SIZE) || (sPos == 100) )
+					if (sPos == FETCH_SIZE)
+					{
+						// [NOTE] 대량 데이타 출력 성능을 위한 더미 코드.
+						dt2 = dt.Copy();
+						dataGridView.DataSource = XDb.ConvertDataTable(dt2);
+					}
+
+					lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
+					lbRow.Text = sPos + "+" + " rows";
+					Application.DoEvents();         //TODO: [NOTE] 필수적임, DoEvents 삽입
+
+					if (bStop)
+					{
+						break;
+					}
+				} // while
+
+				//lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TICK_DELTA + ")";
+				lbTime.Text = PUBLIC.TIME_CHECK() + " sec";
+				lbRow.Text = sPos + " rows";
+
+				// TODO: RAW 타입에 대해서 DataGridView 에서 Error
+				dataGridView.DataSource = XDb.ConvertDataTable(dt);
+			}
+			catch (Exception ex)
+			{
+				MessageBoxEx.Show(this.ParentForm, ex.Message);
+			}
+
+			toolStripProgressBar1.Value = 0;
+
+			if (bStop)
+			{
+				bStop = false;
+				toolStripStatusLabel4.Text = "Stop";
+			}
+			else
+			{
+				toolStripStatusLabel4.Text = "Done";
+			}
+			//this.Cursor = Cursors.Default;
+		} // doGo
+
 
 		#region Common Function for SQLTool
 
@@ -652,97 +876,6 @@ namespace XLog
 		}
 				
 		#endregion
-
-		private void ShowResult(string sql_)
-		{
-			PUBLIC.TIME_CHECK(System.DateTime.Now.Ticks); // 기준시간 등록
-
-			lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
-			//eTick = System.DateTime.Now.Ticks;
-			//dTickSec = (double)(eTick - sTick) / 10000000.0F;
-			//lbTime.Text = dTickSec + " sec";
-
-			//this.Cursor = Cursors.WaitCursor;
-			toolStripStatusLabel4.Text = "Running ..";
-			lbRow.Text = "0 rows";
-
-			// 출처: https://and0329.tistory.com/entry/C-과-오라클-데이터베이스-연동-방법 
-			try
-			{
-				dataGridView.DataSource = null;     // (1) 결과창을 비워준다.
-				tabControl.SelectedIndex = 2;      // (2) 결과탭을 보여준디.
-				Application.DoEvents();
-
-				//adapter.SelectCommand = new OracleCommand(rtbSqlEdit.Text, (OracleConnection)conn);
-				adapter.SelectCommand = xDb.XDbCommand(sql_, conn);
-
-				DataTable dt = new DataTable();     // TODO: (BUGBUG) DataTable을 재사용하면, 컬럼명이 추가된다.
-				DataTable dt2 = new DataTable();    // 처음 결과 셋을 일부만 저장하여 보여주는 Fake 코드 (출력성능이슈)
-
-				//adapter.Fill(dt);
-				//adapter.Fill(0, 10, dt);
-				int sPos = 0;
-				int rc;
-
-				lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
-
-				//adapter.MissingMappingAction = MissingMappingAction.Error;		// {"TableMapping.DataSetTable=''인 TableMapping이 없습니다."}
-				//adapter.MissingSchemaAction = MissingSchemaAction.AddWithKey;
-				while ((rc = adapter.Fill(sPos, FETCH_SIZE, dt)) > 0)
-				{
-					//sPos += FETCH_SIZE;
-					sPos += rc;
-
-					if (toolStripProgressBar1.Value <= toolStripProgressBar1.Maximum * 0.9)
-					{
-						toolStripProgressBar1.PerformStep();
-					}
-
-					//System.Threading.Thread.Sleep(100);
-
-					//if ( (FETCH_SIZE > 1 && sPos == FETCH_SIZE) || (sPos == 100) )
-					if (sPos == FETCH_SIZE)
-					{
-						// [NOTE] 대량 데이타 출력 성능을 위한 더미 코드.
-						dt2 = dt.Copy();
-						dataGridView.DataSource = XDb.ConvertDataTable(dt2);
-					}
-
-					lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
-					lbRow.Text = sPos + "+" + " rows";
-					Application.DoEvents();         //TODO: [NOTE] 필수적임, DoEvents 삽입
-
-					if (bStop)
-					{
-						break;
-					}
-				} // while
-
-				//lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TICK_DELTA + ")";
-				lbTime.Text = PUBLIC.TIME_CHECK() + " sec";
-				lbRow.Text = sPos + " rows";
-
-				// TODO: RAW 타입에 대해서 DataGridView 에서 Error
-				dataGridView.DataSource = XDb.ConvertDataTable(dt);
-			}
-			catch (Exception ex)
-			{
-				MessageBoxEx.Show(this.ParentForm, ex.Message);
-			}
-
-			toolStripProgressBar1.Value = 0;
-
-			if (bStop)
-			{
-				bStop = false;
-				toolStripStatusLabel4.Text = "Stop";
-			}
-			else
-			{
-				toolStripStatusLabel4.Text = "Done";
-			}
-			//this.Cursor = Cursors.Default;
-		} // doGo
 
 		private void btnOpen_Click(object sender, EventArgs e)
         {
@@ -962,5 +1095,6 @@ namespace XLog
 				}
 			}
 		}
+
 	} // class SQLToolUserControl
 }

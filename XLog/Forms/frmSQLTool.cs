@@ -47,6 +47,9 @@ namespace XLog
             InitializeComponent();
 
 			{
+				this.Width = 1024;
+				this.Height = 768;
+
 				AutoScaleMode = AutoScaleMode.Inherit;
 				//this.Icon = new Icon(Properties.Resources.x128_01_main.ToString());
 				//SelectedIndexStack = new ConcurrentStack<int>();

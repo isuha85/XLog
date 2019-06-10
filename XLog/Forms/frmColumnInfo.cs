@@ -274,7 +274,7 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 + "        WHEN DATA_TYPE IN ( 'FLOAT' ) THEN DATA_TYPE||'('||DATA_PRECISION||')' \n"
 + "        WHEN DATA_TYPE IN ( 'TIMESTAMP' ) THEN DATA_TYPE||'('||DATA_SCALE||')' \n"
 + "        WHEN DATA_TYPE IN ( 'CHAR','VARCHAR2', 'NCHAR', 'NVARCHAR2', 'RAW' ) THEN DATA_TYPE||'('||DECODE(CHAR_USED, 'C', CHAR_LENGTH, DATA_LENGTH)||')' \n"
-+ "        --WHEN DATA_TYPE IN ( 'XMLTYPE','ANYATA', 'ROWID', 'BLOB', 'CLOB', 'BINARY_DOUBLE', 'BINARY_FLOAT', 'LONG', 'ROWID' ) THEN DATA_TYPE \n"
++ "        --WHEN DATA_TYPE IN ( 'XMLTYPE','ANYDATA', 'ROWID', 'BLOB', 'CLOB', 'BINARY_DOUBLE', 'BINARY_FLOAT', 'LONG', 'ROWID' ) THEN DATA_TYPE \n"
 + "        ELSE DATA_TYPE \n"
 + "       END \"Type\", \n"
 + "       DECODE(COL.NULLABLE, 'N', 'Not Null', NULL) \"Nullable\", \n"
