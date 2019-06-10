@@ -150,6 +150,21 @@ namespace XLog
 				dgvBind.Dock = DockStyle.Fill;
 			}
 
+			// dgvBind
+			{
+				dgvBind.Dock = DockStyle.Fill;
+				dgvBind.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+				dgvBind.AutoGenerateColumns = false;
+
+				//doc2.Width = (int)(splitContainer.Panel1.Width * 0.4); // 효과없음.
+				dockPanel.DockRightPortion = 0.3; // def: 0.25
+				doc2.Hide();
+				doc2.Visible = false;
+#if DEBUG
+				ShowBindList(); // 테스트 편의상
+#endif
+			}
+
 			// resize
 			{
 				//int margin_w = flowLayoutPanel.Width;
@@ -220,15 +235,6 @@ namespace XLog
                 toolStripStatusLabel4.Text = "";
             }
 
-			// dgvBind
-			{
-				dgvBind.Dock = DockStyle.Fill;
-				dgvBind.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-				dgvBind.AutoGenerateColumns = false;
-			}
-
-			doc2.Width = (int)(splitContainer.Panel1.Width * 0.3);
-			ShowBindList(); // OKT_NOW
 		} // Load
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -299,9 +305,12 @@ namespace XLog
 							}
 							else
 							{
-								doc2.Visible = true;
-								doc2.Show();
 								ShowBindList();
+								if ( dgvBind.RowCount > 0 )
+								{
+									doc2.Visible = true;
+									doc2.Show();
+								}
 							}
 						}
 
@@ -641,21 +650,6 @@ namespace XLog
 			dgvBind.DataSource = bindRows;
 		}
 
-		//private void SetBindList()
-		//{
-		//	// BindType 초기화
-		//	// bindType[0] , bindType[1] 의 차이는 초기 선택값의 위치
-		//	bindTypes.Add(new BindType("VARCHAR"));
-		//	bindTypes.Add(new BindType("NUMBER"));
-		//	SetDgvColumnHeader();
-		//	{
-		//		bindRows.Add(new BindRow(2));
-		//		bindRows.Add(new BindRow(9) { Name = ":v9", Value = "", Type = bindTypes[0] });
-		//	}
-		//	dgvBind.DataSource = bindRows;
-		//}
-
-
 		private void ShowResult(string sql_)
 		{
 			PUBLIC.TIME_CHECK(System.DateTime.Now.Ticks); // 기준시간 등록
@@ -672,8 +666,8 @@ namespace XLog
 			// 출처: https://and0329.tistory.com/entry/C-과-오라클-데이터베이스-연동-방법 
 			try
 			{
-				dataGridView.DataSource = null;     // (1) 결과창을 비워준다.
-				tabControl.SelectedIndex = 2;      // (2) 결과탭을 보여준디.
+				dataGridView.DataSource = null;		// (1) 결과창을 비워준다.
+				tabControl.SelectedIndex = 2;		// (2) 결과탭을 보여준디.
 				Application.DoEvents();
 
 				//adapter.SelectCommand = new OracleCommand(rtbSqlEdit.Text, (OracleConnection)conn);
