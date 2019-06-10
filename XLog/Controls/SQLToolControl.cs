@@ -381,8 +381,10 @@ namespace XLog
 							char[] tirmChars = { '\r', '\n'};
 							var tokenizedSQL = tokenizer.TokenizeSQL(tb.SelectedText);
 							var parsedSQL = parser.ParseSQL(tokenizedSQL);
-							var formatSQL = formatter.FormatSQLTree(parsedSQL).TrimEnd(tirmChars); ;
-							
+							//var formatSQL = formatter.FormatSQLTree(parsedSQL).TrimEnd(tirmChars);
+							var formatSQL = formatter.FormatSQLTree(parsedSQL);
+							formatSQL = formatSQL.Substring(0, formatSQL.Length - 2);
+
 							if (oldSelectionStart == 0 )
 							{
 								//tb.Text = ""; // [NOTE] 이런식으로 코딩하면, UNDO 버퍼에 '가비지'가 생긴다.
@@ -390,9 +392,10 @@ namespace XLog
 							}
 							else
 							{
-								tb.Text = oldText.Substring(0, oldSelectionStart - 1) + formatSQL + oldText.Substring(oldSelectionEnd, oldText.Length - oldSelectionEnd);
+								tb.Text = oldText.Substring(0, oldSelectionStart - 0) + formatSQL + oldText.Substring(oldSelectionEnd, oldText.Length - oldSelectionEnd);
 							}
-							tb.SelectionStart = oldSelectionStart + formatSQL.Length;
+
+							tb.SelectionStart = oldSelectionStart + formatSQL.Length + 3;
 							tb.SelectionLength = 0;
 						}
 
