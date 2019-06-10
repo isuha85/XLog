@@ -134,14 +134,39 @@ namespace XLog
 			Application.DoEvents();
 		}
 
+		static OracleCommand oraCmd1 = null;
+		static OracleCommand oraCmd2 = null;
+		static OracleCommand oraCmd3 = null;
+		static OracleCommand oraCmd4 = null;
 		private void SetDataTable_(string selectedText, OracleConnection conn)
 		{
 			string tname = null;
 			string user = null;
 			string object_type = null;
 
-			OracleCommand cmd = null;
+			//OracleCommand oracleCommandColumnInfo = null;
 			OracleDataReader dataReader = null;
+
+			if (oraCmd1 == null)
+			{
+				oraCmd1 = new OracleCommand();
+				oraCmd1.Connection = conn;
+			}
+			if (oraCmd2 == null)
+			{
+				oraCmd2 = new OracleCommand();
+				oraCmd2.Connection = conn;
+			}
+			if (oraCmd3 == null)
+			{
+				oraCmd3 = new OracleCommand();
+				oraCmd3.Connection = conn;
+			}
+			if (oraCmd4 == null)
+			{
+				oraCmd4 = new OracleCommand();
+				oraCmd4.Connection = conn;
+			}
 
 			try
 			{
@@ -156,15 +181,13 @@ namespace XLog
 					tname = selectedText;
 				}
 
-				cmd = new OracleCommand();
-				cmd.Connection = conn;
 
 				// TODO: 'USERNAME' 을 매번 구하는 건 낭비이다.
 				if (user == null)
 				{
-					cmd.Parameters.Clear();
-					cmd.CommandText = @"select user from dual";
-					user = (string)cmd.ExecuteScalar();
+					oraCmd1.Parameters.Clear();
+					oraCmd1.CommandText = @"select user from dual";
+					user = (string)oraCmd1.ExecuteScalar();
 				}
 
 RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
@@ -178,8 +201,8 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 				// CASE-1 : 해당 USER에서 검색
 				if (object_type == null)
 				{
-					cmd.Parameters.Clear();
-					cmd.CommandText =
+					oraCmd2.Parameters.Clear();
+					oraCmd2.CommandText =
 		@"select decode(object_type, 'UNDEFINED', NULL, object_type) object_type " +
 		"	from sys.all_objects " +
 		"  where 2=2" +
@@ -190,41 +213,41 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 					{
 						OracleParameter v_user = new OracleParameter(":v_user", OracleDbType.Varchar2, 32);
 						v_user.Value = user.ToUpper();
-						cmd.Parameters.Add(v_user);
+						oraCmd2.Parameters.Add(v_user);
 
 						OracleParameter v_tname = new OracleParameter(":v_tname", OracleDbType.Varchar2, 32);
 						v_tname.Value = tname.ToUpper();
-						cmd.Parameters.Add(v_tname);
+						oraCmd2.Parameters.Add(v_tname);
 					}
 
-					object_type = (string)cmd.ExecuteScalar();					
+					object_type = (string)oraCmd2.ExecuteScalar();					
 				}
 
 				// CASE-2 : 아니면 SYNONYM 이다.
 				if (object_type == null)
 				{
-					cmd.Parameters.Clear();
-					cmd.CommandText =
+					oraCmd3.Parameters.Clear();
+					oraCmd3.CommandText =
 		@"select table_owner, table_name, db_link " +
 		"   from sys.all_synonyms " +
 		"  where 2=2" +
 		"	 and (owner = 'PUBLIC' or owner = :v_user) " +
 		"	 and synonym_name = :v_tname " +
 		"  order by decode(owner,'PUBLIC',NULL,owner) nulls last"; // 기본값이 NULL이 마지막에 조회되나 명시함
-					cmd.CommandText = "select * from ( " + cmd.CommandText + " ) where rownum = 1";
+					oraCmd3.CommandText = "select * from ( " + oraCmd3.CommandText + " ) where rownum = 1";
 
 
 					{
 						OracleParameter v_user = new OracleParameter(":v_user", OracleDbType.Varchar2, 32);
 						v_user.Value = user.ToUpper();
-						cmd.Parameters.Add(v_user);
+						oraCmd3.Parameters.Add(v_user);
 
 						OracleParameter v_tname = new OracleParameter(":v_tname", OracleDbType.Varchar2, 32);
 						v_tname.Value = tname.ToUpper();
-						cmd.Parameters.Add(v_tname);
+						oraCmd3.Parameters.Add(v_tname);
 					}
 
-					dataReader = cmd.ExecuteReader();
+					dataReader = oraCmd3.ExecuteReader();
 
 					if (dataReader.Read()) // 1건이 보장되므로 while 대신에 if 가능
 					{
@@ -264,8 +287,8 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 				//else
 				{
 					// 아니면 테이블이라고 가정하자
-					cmd.Parameters.Clear();
-					cmd.CommandText =
+					oraCmd4.Parameters.Clear();
+					oraCmd4.CommandText =
 @"SELECT "
 + "       COL.COLUMN_NAME \"NAME\", \n"
 + "       CASE  \n"
@@ -294,20 +317,20 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 					{
 						OracleParameter v_one = new OracleParameter(":v_one", OracleDbType.Int32);
 						v_one.Value = (checked_showComment) ? 1 : 0;
-						cmd.Parameters.Add(v_one);
+						oraCmd4.Parameters.Add(v_one);
 
 						OracleParameter v_user = new OracleParameter(":v_user", OracleDbType.Varchar2, 32);
 						v_user.Value = user.ToUpper();
-						cmd.Parameters.Add(v_user);
+						oraCmd4.Parameters.Add(v_user);
 
 						OracleParameter v_tname = new OracleParameter(":v_tname", OracleDbType.Varchar2, 32);
 						v_tname.Value = tname.ToUpper();
-						cmd.Parameters.Add(v_tname);
+						oraCmd4.Parameters.Add(v_tname);
 					}
 
 					//dataReader = cmd.ExecuteReader();
 					OracleDataAdapter adapter = new OracleDataAdapter();
-					adapter.SelectCommand = cmd;
+					adapter.SelectCommand = oraCmd4;
 
 					DataTable dataTable = new DataTable();
 					adapter.Fill(dataTable);
