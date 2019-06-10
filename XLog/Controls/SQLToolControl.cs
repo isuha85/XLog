@@ -75,6 +75,8 @@ namespace XLog
 			public int Panel2SizePre;
 			public DateTime Panel2SizeDateTime;
 			public double SplitterScale;
+
+			public DateTime bindRowsLastAddTime;
 		};
 		Configure configure;
 
@@ -150,21 +152,6 @@ namespace XLog
 				dgvBind.Dock = DockStyle.Fill;
 			}
 
-			// dgvBind
-			{
-				dgvBind.Dock = DockStyle.Fill;
-				dgvBind.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-				dgvBind.AutoGenerateColumns = false;
-
-				//doc2.Width = (int)(splitContainer.Panel1.Width * 0.4); // 효과없음.
-				dockPanel.DockRightPortion = 0.3; // def: 0.25
-				doc2.Hide();
-				doc2.Visible = false;
-#if DEBUG
-				ShowBindList(); // 테스트 편의상
-#endif
-			}
-
 			// resize
 			{
 				//int margin_w = flowLayoutPanel.Width;
@@ -210,6 +197,20 @@ namespace XLog
 				tb.Text = myStr;
 
 				Visible = true;
+			}
+
+			// dgvBind
+			{
+				dgvBind.Dock = DockStyle.Fill;
+				dgvBind.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+				dgvBind.AutoGenerateColumns = false;
+
+				//doc2.Width = (int)(splitContainer.Panel1.Width * 0.4); // 효과없음.
+				dockPanel.DockRightPortion = 0.3; // def: 0.25
+				doc2.Hide();
+#if DEBUG
+				//ShowBindList(); // 테스트 편의상
+#endif
 			}
 
 			// DataGridView 레코드 색상 번갈아서 바꾸기
@@ -275,6 +276,7 @@ namespace XLog
 					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0)) break;
 					if ((keyData & Keys.Control) != 0)
 					{
+						// TODO: Ctrl + U 는 여러번 수행 무방하나, Ctrl + L 은 여러번 수행시 "ㅣ" 이라는 글자가 입력됨. (BUGBUG)
 						SendKeys.SendWait("(^+U)"); // FCTB 자체구현 호출
 						return true;
 					}
@@ -306,11 +308,6 @@ namespace XLog
 							else
 							{
 								ShowBindList();
-								if ( dgvBind.RowCount > 0 )
-								{
-									doc2.Visible = true;
-									doc2.Show();
-								}
 							}
 						}
 
@@ -497,9 +494,8 @@ namespace XLog
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-		//private DataTable dtBind = null;
-		private List<BindRow> bindRows = new List<BindRow>();
 		private List<BindType> bindTypes = new List<BindType>();
+		private List<BindRow> bindRows = new List<BindRow>();
 
 		private void SetBindColumnHeader()
 		{
@@ -564,7 +560,7 @@ namespace XLog
 			// do Something..
 		}
 
-		public class BindRow
+		public class BindRow : ICloneable
 		{
 			public BindRow(int no)
 			{
@@ -572,9 +568,19 @@ namespace XLog
 			}
 
 			public int No { get; set; }
-			public String Name { get; set; }
-			public String Value { get; set; }
+			public string Name { get; set; }
+			public string Value { get; set; }
 			public BindType Type { get; set; }
+
+			public object Clone() // This is a deep copy implementation of Clone
+			{
+				return new BindRow(this.No)
+				{
+					Name = this.Name,
+					Value = this.Value,
+					Type = this.Type, //TODO: 이건 ICloneable 구현하지 않았는데도, 동작한다? Self 때문인지는 확인안됨.
+				};
+			}
 		}
 
 		public class BindType
@@ -596,6 +602,12 @@ namespace XLog
 		// TODO: 현재 STMT의 변수만 보일지, 다 보일지, 선택/결정 필요
 		private void ShowBindList()
 		{
+			var bindRowsPre = new List<BindRow>();
+			foreach (var item in bindRows)
+			{
+				bindRowsPre.Add((BindRow)item.Clone());
+			}
+
 			// 최초수행
 			if (bindTypes.Count == 0)
 			{
@@ -616,8 +628,8 @@ namespace XLog
 			}
 
 			var text = tb.Text;
-			//var regexPattern = ":[a-zA-Z][a-zA-Z0-9_]*";
-			var regexPattern = ":[a-zA-Z]\\w*";
+			var regexPattern = ":[a-zA-Z][a-zA-Z0-9_]*";
+			//var regexPattern = ":[a-zA-Z]\\w*";
 
 			text = text + "\n";
 			text = Regex.Replace(text, "--.*\n", "");
@@ -626,21 +638,26 @@ namespace XLog
 			text = Regex.Replace(text, "'(.|\r|\n)*?'", "");
 
 			var mc = Regex.Matches(text, regexPattern);
+			if (mc.Count == 0) return;
+
 			var set = new HashSet<string>();
 			int ix = 0;
 
 			foreach (Match m in mc)
 			{
-				//Debug.WriteLine("{0}:{1}", m.Index, m.Value);
-				//Range[] ranges = tb.GetRanges(m.Value).ToArray();
-				//foreach (var r in ranges)
-				//{
-				//	r.SetStyle(sameWordsStyle);
-				//}
-
 				if ( set.Add(m.Value) )
 				{
-					bindRows.Add(new BindRow(ix++) { Name = m.Value, Value = "", Type = bindTypes[0] });
+					BindRow it = bindRowsPre.Find(x => x.Name == m.Value); // [기능] 사용자가 설정한 이전 값이 있으면 유지
+					if ( it != null )
+					{
+						bindRows.Add(new BindRow(ix++) { Name = m.Value, Value = it.Value, Type = it.Type });
+					}
+					else
+					{
+						// 신규 변수가 발견되면, "SQLExecute" 하지 않고 멈춘다.
+						configure.bindRowsLastAddTime = DateTime.Now;
+						bindRows.Add(new BindRow(ix++) { Name = m.Value, Value = "", Type = bindTypes[0] });
+					}
 				}
 				else
 				{
@@ -648,6 +665,12 @@ namespace XLog
 				}
 			} // foreach
 			dgvBind.DataSource = bindRows;
+
+			//if ( dgvBind.RowCount > 0 )
+			{
+				doc2.Visible = true;
+				doc2.Show();
+			}
 		}
 
 		private void ShowResult(string sql_)
@@ -672,6 +695,71 @@ namespace XLog
 
 				//adapter.SelectCommand = new OracleCommand(rtbSqlEdit.Text, (OracleConnection)conn);
 				adapter.SelectCommand = xDb.XDbCommand(sql_, conn);
+
+				do
+				{
+					// TODO: 전체 BindVar 얻는 부분과 유사한 코드, 정리요
+					var text = sql_;
+					var regexPattern = ":[a-zA-Z][a-zA-Z0-9_]*";
+
+					text = text + "\n";
+					text = Regex.Replace(text, "--.*\n", "");
+					text = Regex.Replace(text, "--.*\r", ""); // WHEN MACOS
+					text = Regex.Replace(text, "/\\*(.|\r|\n)*?\\*/", ""); // [NOTE] .+ is greedy , Change it to .+? ( Not Greedy )
+					text = Regex.Replace(text, "'(.|\r|\n)*?'", "");
+
+					var mc = Regex.Matches(text, regexPattern);
+					if (mc.Count == 0)
+					{
+						break;
+					}
+					else
+					{
+						ShowBindList();
+						var now = DateTime.Now;
+						if (configure.bindRowsLastAddTime.AddSeconds(1) >= now )
+						{
+							// dgvBind 에 새로운 변수가 등록되었다						
+							toolStripStatusLabel4.Text = "Bind variable not declared"; // SP2-0552: Bind variable "V1" not declared.
+							return;
+						}
+					}
+
+					var set = new HashSet<string>();
+					foreach (Match m in mc)
+					{
+						set.Add(m.Value); // 중복제거
+					} // foreach
+
+					foreach (BindRow m in bindRows)
+					{
+						if (!set.Contains(m.Name)) continue;
+
+						if (adapter.SelectCommand is OracleCommand cmd)
+						{
+							OracleDbType dbType = OracleDbType.Varchar2;
+							if (m.Type.Name == "NUMBER")
+							{
+								dbType = OracleDbType.Decimal;
+							}
+							else if (m.Type.Name == "CHAR")
+							{
+								dbType = OracleDbType.Char;
+							}
+							else if (m.Type.Name == "NCHAR")
+							{
+								dbType = OracleDbType.NChar;
+							}
+							else if (m.Type.Name == "NVARCHAR")
+							{
+								dbType = OracleDbType.NVarchar2;
+							}
+							cmd.Parameters.Add(new OracleParameter(m.Name, dbType, 32) { Value = m.Value });
+						}
+					}
+
+					break;
+				} while (true);
 
 				DataTable dt = new DataTable();     // TODO: (BUGBUG) DataTable을 재사용하면, 컬럼명이 추가된다.
 				DataTable dt2 = new DataTable();    // 처음 결과 셋을 일부만 저장하여 보여주는 Fake 코드 (출력성능이슈)
@@ -727,18 +815,20 @@ namespace XLog
 				MessageBoxEx.Show(this.ParentForm, ex.Message);
 			}
 
-			toolStripProgressBar1.Value = 0;
+			//finally
+			{
+				toolStripProgressBar1.Value = 0;
 
-			if (bStop)
-			{
-				bStop = false;
-				toolStripStatusLabel4.Text = "Stop";
+				if (bStop)
+				{
+					bStop = false;
+					toolStripStatusLabel4.Text = "Stop";
+				}
+				else
+				{
+					toolStripStatusLabel4.Text = "Done";
+				}
 			}
-			else
-			{
-				toolStripStatusLabel4.Text = "Done";
-			}
-			//this.Cursor = Cursors.Default;
 		} // doGo
 
 
@@ -1066,11 +1156,9 @@ namespace XLog
 
 		private void splitContainer_SplitterMoved(object sender, SplitterEventArgs e)
 		{
-			DateTime now = DateTime.Now;
-
 			//if (configure.SplitterDistanceDateTime.AddSeconds(1) >= now)
 			{
-				configure.Panel2SizeDateTime = now;
+				configure.Panel2SizeDateTime = DateTime.Now;
 				configure.Panel2SizePre = configure.Panel2Size;
 				configure.Panel2Size = splitContainer.Height - splitContainer.SplitterDistance;
 			}
@@ -1078,10 +1166,8 @@ namespace XLog
 
 		private void splitContainer_Resize(object sender, EventArgs e)
 		{
-			DateTime now = DateTime.Now;
-
 			// [TIP] 크기조정시 SplitterMoved -> Resize 순서로 호출됨을 확인, 구분할 수 있는 조건이 없어서, 변경시간을 이용함.
-			if ( configure.Panel2SizeDateTime.AddSeconds(1) >= now )
+			if ( configure.Panel2SizeDateTime.AddSeconds(1) >= DateTime.Now )
 			{
 				if (splitContainer.Height >= configure.Panel2SizePre + splitContainer.Panel1MinSize)
 				{
