@@ -382,8 +382,16 @@ namespace XLog
 							var tokenizedSQL = tokenizer.TokenizeSQL(tb.SelectedText);
 							var parsedSQL = parser.ParseSQL(tokenizedSQL);
 							var formatSQL = formatter.FormatSQLTree(parsedSQL).TrimEnd(tirmChars); ;
-							tb.Text = oldText.Substring(0, oldSelectionStart - 1) + formatSQL +
-								oldText.Substring(oldSelectionEnd, oldText.Length - oldSelectionEnd);
+							
+							if (oldSelectionStart == 0 )
+							{
+								//tb.Text = ""; // [NOTE] 이런식으로 코딩하면, UNDO 버퍼에 '가비지'가 생긴다.
+								tb.Text = formatSQL + oldText.Substring(oldSelectionEnd, oldText.Length - oldSelectionEnd);
+							}
+							else
+							{
+								tb.Text = oldText.Substring(0, oldSelectionStart - 1) + formatSQL + oldText.Substring(oldSelectionEnd, oldText.Length - oldSelectionEnd);
+							}
 							tb.SelectionStart = oldSelectionStart + formatSQL.Length;
 							tb.SelectionLength = 0;
 						}
@@ -616,9 +624,11 @@ namespace XLog
 				bindTypes.Add(new BindType("VARCHAR"));
 				bindTypes.Add(new BindType("NUMBER"));
 				bindTypes.Add(new BindType("CHAR"));
-				bindTypes.Add(new BindType("NCHAR"));
+#if DEBUG
+				bindTypes.Add(new BindType("NCHAR")); // 미구현
+				bindTypes.Add(new BindType("NVARCHAR"));
 				//bindTypes.Add(new BindType("ROWID"));
-
+#endif
 				SetBindColumnHeader();
 			}
 			else
