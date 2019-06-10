@@ -35,20 +35,20 @@ namespace XLog
 {
 	public partial class frmColumnInfo : Form
 	{
-		// TODO: 휘발성으로, 재구동이후에는 유지되지 않는다. 설정파일 개념이 요구됨
-		public static bool checked_insertComma { get; set; } = false;
-		public static bool checked_lowerCase { get; set; } = false;
-		public static bool checked_showPK { get; set; } = false;
-		public static bool checked_showComment { get; set; } = false;
-
 		private struct Configure
 		{
 			public Point LocationPre;
 			public int HeightPre;
 			public int WidthPre;
-			//public static Point LocationPre { get; set; } = new Point(-1, -1);
-			//public static int HeightPre { get; set; } = -1;
-			//public static int WidthPre { get; set; } = -1;
+
+			// TODO: 휘발성으로, 재구동이후에는 유지되지 않는다. 설정파일 개념이 요구됨
+			public bool checked_insertComma;
+			public bool checked_lowerCase;
+			public bool checked_showPK;
+			public bool checked_showComment;
+
+			public string selectedText;
+			public DbConnection conn;
 		};
 		static Configure configure;
 
@@ -57,6 +57,11 @@ namespace XLog
 			configure.LocationPre = new Point(-1, -1);
 			configure.HeightPre = -1;
 			configure.WidthPre = -1;
+
+			configure.checked_insertComma = false;
+			configure.checked_lowerCase = false;
+			configure.checked_showPK = false;
+			configure.checked_showComment = false;
 		}
 
 		public frmColumnInfo()
@@ -69,9 +74,9 @@ namespace XLog
 
 			dataGrdiView.BackgroundColor = Color.White;
 
-			cbInsertComma.Checked = checked_insertComma;
-			cbLowerCase.Checked = checked_lowerCase;
-			cbShowComment.Checked = checked_showComment;
+			cbInsertComma.Checked = configure.checked_insertComma;
+			cbLowerCase.Checked = configure.checked_lowerCase;
+			cbShowComment.Checked = configure.checked_showComment;
 
 			//if (configure.LocationPre == new Point(0, 0))
 			if (configure.LocationPre.X == -1)
@@ -110,6 +115,9 @@ namespace XLog
 		#region SetDataTable
 		public void SetDataTable(string selectedText, DbConnection conn)
 		{
+			configure.selectedText = selectedText;
+			configure.conn = conn;
+
 			if (conn is OracleConnection oracleConnection)
 			{
 				SetDataTable_(selectedText, oracleConnection); // 인자타입이 다름. 재귀호출 아니다.
@@ -316,7 +324,7 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 
 					{
 						OracleParameter v_one = new OracleParameter(":v_one", OracleDbType.Int32);
-						v_one.Value = (checked_showComment) ? 1 : 0;
+						v_one.Value = (configure.checked_showComment) ? 1 : 0;
 						oraCmd4.Parameters.Add(v_one);
 
 						OracleParameter v_user = new OracleParameter(":v_user", OracleDbType.Varchar2, 32);
@@ -368,22 +376,23 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 
 		private void cbInsertComma_CheckStateChanged(object sender, EventArgs e)
 		{
-			checked_insertComma = cbInsertComma.Checked;
+			configure.checked_insertComma = cbInsertComma.Checked;
 		}
 
 		private void cbLowerCase_CheckStateChanged(object sender, EventArgs e)
 		{
-			checked_lowerCase = cbLowerCase.Checked;
+			configure.checked_lowerCase = cbLowerCase.Checked;
 		}
 
 		private void cbShowPK_CheckStateChanged(object sender, EventArgs e)
 		{
-			checked_showPK = cbShowPK.Checked;
+			configure.checked_showPK = cbShowPK.Checked;
 		}
 
 		private void cbShowComment_CheckStateChanged(object sender, EventArgs e)
 		{
-			checked_showComment = cbShowComment.Checked;
+			configure.checked_showComment = cbShowComment.Checked;
+			SetDataTable(configure.selectedText, configure.conn);
 		}
 
 		private void cbInsertComma_CheckedChanged(object sender, EventArgs e)
