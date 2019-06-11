@@ -113,14 +113,10 @@ namespace XLog
 			AutoScaleMode = AutoScaleMode.Dpi;
 		}
 
-		public void SetTextBox(string text)
+		// [NOTE] 자동생성된 Control을 'ref' 지정으로 public 으로 노출
+		public ref FastColoredTextBox GetTextBox()
 		{
-			tb.Text = text;
-		}
-
-		public string GetTextBox()
-		{
-			return tb.Text;
+			return ref tb;
 		}
 
 		private void SQLToolUserControl_Load(object sender, EventArgs e)
@@ -209,6 +205,24 @@ namespace XLog
 				Visible = true;
 			}
 
+			// 나머지 출력용 FCTB
+			{
+				List<FastColoredTextBox> TBs = new List<FastColoredTextBox>();
+				TBs.Add(tbPlan);
+				TBs.Add(tbServerOutput);
+				TBs.Add(tbTextOutput);
+
+				foreach (FastColoredTextBox TB in TBs)
+				{
+					TB.Dock = DockStyle.Fill;
+					TB.Language = Language.SQL;
+					TB.ReadOnly = true;
+					TB.Text = "";
+					TB.ShowLineNumbers = false;
+				}
+
+			}
+
 			// dgvBind
 			{
 				dgvBind.Dock = DockStyle.Fill;
@@ -246,6 +260,7 @@ namespace XLog
                 toolStripStatusLabel4.Text = "";
             }
 
+			flowLayoutPanel.Visible = false;
 		} // Load
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -265,6 +280,21 @@ namespace XLog
 				//case Keys.F8:		// History, Alt+Up : History UP / Alt+Down : History DOWN
 				//case Keys.F9:		// SQL Validate
 				//case Keys.F10:	// Popup Menu
+
+				case Keys.N:        // Toad
+					if ((keyData & Keys.Alt) != 0) break;
+					if ((keyData & Keys.Control) != 0)
+					{
+						if ((keyData & Keys.Shift) != 0)
+						{
+							flowLayoutPanel.Visible = (flowLayoutPanel.Visible) ? false : true;
+							return true;
+						}
+						DisconnectDB();
+						ConnectDB();
+						return true;
+					}
+					break;
 
 				case Keys.E:
 					if ((keyData & Keys.Alt) != 0) break;
@@ -291,7 +321,6 @@ namespace XLog
 						return true;
 					}
 					break;
-
 
 				case Keys.R:        // Toad
 					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0)) break;
@@ -1169,8 +1198,8 @@ namespace XLog
 				
 		#endregion
 
-		private void btnOpen_Click(object sender, EventArgs e)
-        {
+		private void ConnectDB()
+		{
             try
             {
 				// [TIP] Win32에서 횐경변수는, 기본적으로 각각의 DLL단위로 다르게 설정된다.
@@ -1239,22 +1268,28 @@ namespace XLog
             }
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                //dgvGridResult.Dispose();
-                adapter.Dispose();
-                conn.Close();
+		private void DisconnectDB()
+		{
+			if (conn != null)
+			{
+				//dgvGridResult.Dispose();
+				adapter.Dispose();
+				conn.Close();
 
-                adapter = null;
-                conn = null;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
+				adapter = null;
+				conn = null;
+			}
+		}
+
+		private void btnOpen_Click(object sender, EventArgs e)
+		{
+			ConnectDB();
+		}
+
+		private void btnClose_Click(object sender, EventArgs e)
+		{
+			DisconnectDB();
+		}
 
         private void btnGo_Click(object sender, EventArgs e)
         {

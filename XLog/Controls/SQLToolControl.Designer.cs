@@ -47,10 +47,8 @@
 			this.tpPlan = new System.Windows.Forms.TabPage();
 			this.tpResult = new System.Windows.Forms.TabPage();
 			this.dataGridView = new System.Windows.Forms.DataGridView();
-			this.tpOutput = new System.Windows.Forms.TabPage();
-			this.rtbOutput = new System.Windows.Forms.RichTextBox();
 			this.tpServerOutput = new System.Windows.Forms.TabPage();
-			this.rtbServerOutput = new System.Windows.Forms.RichTextBox();
+			this.tpOutput = new System.Windows.Forms.TabPage();
 			this.tpStat = new System.Windows.Forms.TabPage();
 			this.dgvStat = new System.Windows.Forms.DataGridView();
 			this.btnOpt = new System.Windows.Forms.Button();
@@ -63,6 +61,8 @@
 			this.btnStop = new System.Windows.Forms.Button();
 			this.btnGo = new System.Windows.Forms.Button();
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+			this.tbServerOutput = new FastColoredTextBoxNS.FastColoredTextBox();
+			this.tbTextOutput = new FastColoredTextBoxNS.FastColoredTextBox();
 			this.statusStrip1.SuspendLayout();
 			this.panel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -76,11 +76,13 @@
 			((System.ComponentModel.ISupportInitialize)(this.tbPlan)).BeginInit();
 			this.tpResult.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
-			this.tpOutput.SuspendLayout();
 			this.tpServerOutput.SuspendLayout();
+			this.tpOutput.SuspendLayout();
 			this.tpStat.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dgvStat)).BeginInit();
 			this.flowLayoutPanel.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbServerOutput)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.tbTextOutput)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// statusStrip1
@@ -213,6 +215,7 @@
 			this.tb.CommentPrefix = "--";
 			this.tb.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.tb.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+			this.tb.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.tb.IsReplaceMode = false;
 			this.tb.Language = FastColoredTextBoxNS.Language.SQL;
 			this.tb.LeftBracket = '(';
@@ -270,14 +273,13 @@
         '\'',
         '\''};
 			this.tbPlan.AutoIndentCharsPatterns = "";
-			this.tbPlan.AutoScrollMinSize = new System.Drawing.Size(91, 18);
+			this.tbPlan.AutoScrollMinSize = new System.Drawing.Size(31, 18);
 			this.tbPlan.BackBrush = null;
 			this.tbPlan.CharHeight = 18;
 			this.tbPlan.CharWidth = 10;
 			this.tbPlan.CommentPrefix = "--";
 			this.tbPlan.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.tbPlan.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-			this.tbPlan.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.tbPlan.IsReplaceMode = false;
 			this.tbPlan.Language = FastColoredTextBoxNS.Language.SQL;
 			this.tbPlan.LeftBracket = '(';
@@ -290,7 +292,6 @@
 			this.tbPlan.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("tbPlan.ServiceColors")));
 			this.tbPlan.Size = new System.Drawing.Size(250, 65);
 			this.tbPlan.TabIndex = 4;
-			this.tbPlan.Text = "tbPlan";
 			this.tbPlan.Zoom = 100;
 			// 
 			// tpPlan
@@ -298,7 +299,7 @@
 			this.tpPlan.Location = new System.Drawing.Point(4, 25);
 			this.tpPlan.Margin = new System.Windows.Forms.Padding(2);
 			this.tpPlan.Name = "tpPlan";
-			this.tpPlan.Size = new System.Drawing.Size(434, 135);
+			this.tpPlan.Size = new System.Drawing.Size(635, 135);
 			this.tpPlan.TabIndex = 5;
 			this.tpPlan.Text = "Plan";
 			this.tpPlan.UseVisualStyleBackColor = true;
@@ -310,7 +311,7 @@
 			this.tpResult.Margin = new System.Windows.Forms.Padding(2);
 			this.tpResult.Name = "tpResult";
 			this.tpResult.Padding = new System.Windows.Forms.Padding(2);
-			this.tpResult.Size = new System.Drawing.Size(434, 135);
+			this.tpResult.Size = new System.Drawing.Size(635, 135);
 			this.tpResult.TabIndex = 0;
 			this.tpResult.Text = "Result";
 			this.tpResult.UseVisualStyleBackColor = true;
@@ -323,13 +324,24 @@
 			this.dataGridView.Margin = new System.Windows.Forms.Padding(2);
 			this.dataGridView.Name = "dataGridView";
 			this.dataGridView.RowTemplate.Height = 30;
-			this.dataGridView.Size = new System.Drawing.Size(430, 131);
+			this.dataGridView.Size = new System.Drawing.Size(631, 131);
 			this.dataGridView.TabIndex = 5;
 			this.dataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
 			// 
+			// tpServerOutput
+			// 
+			this.tpServerOutput.Controls.Add(this.tbServerOutput);
+			this.tpServerOutput.Location = new System.Drawing.Point(4, 25);
+			this.tpServerOutput.Margin = new System.Windows.Forms.Padding(2);
+			this.tpServerOutput.Name = "tpServerOutput";
+			this.tpServerOutput.Size = new System.Drawing.Size(635, 135);
+			this.tpServerOutput.TabIndex = 2;
+			this.tpServerOutput.Text = "Server Output";
+			this.tpServerOutput.UseVisualStyleBackColor = true;
+			// 
 			// tpOutput
 			// 
-			this.tpOutput.Controls.Add(this.rtbOutput);
+			this.tpOutput.Controls.Add(this.tbTextOutput);
 			this.tpOutput.Location = new System.Drawing.Point(4, 25);
 			this.tpOutput.Margin = new System.Windows.Forms.Padding(2);
 			this.tpOutput.Name = "tpOutput";
@@ -339,44 +351,13 @@
 			this.tpOutput.Text = "Text Output";
 			this.tpOutput.UseVisualStyleBackColor = true;
 			// 
-			// rtbOutput
-			// 
-			this.rtbOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.rtbOutput.Location = new System.Drawing.Point(2, 2);
-			this.rtbOutput.Margin = new System.Windows.Forms.Padding(2);
-			this.rtbOutput.Name = "rtbOutput";
-			this.rtbOutput.Size = new System.Drawing.Size(631, 131);
-			this.rtbOutput.TabIndex = 2;
-			this.rtbOutput.Text = "";
-			// 
-			// tpServerOutput
-			// 
-			this.tpServerOutput.Controls.Add(this.rtbServerOutput);
-			this.tpServerOutput.Location = new System.Drawing.Point(4, 25);
-			this.tpServerOutput.Margin = new System.Windows.Forms.Padding(2);
-			this.tpServerOutput.Name = "tpServerOutput";
-			this.tpServerOutput.Size = new System.Drawing.Size(434, 135);
-			this.tpServerOutput.TabIndex = 2;
-			this.tpServerOutput.Text = "Server Output";
-			this.tpServerOutput.UseVisualStyleBackColor = true;
-			// 
-			// rtbServerOutput
-			// 
-			this.rtbServerOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.rtbServerOutput.Location = new System.Drawing.Point(0, 0);
-			this.rtbServerOutput.Margin = new System.Windows.Forms.Padding(2);
-			this.rtbServerOutput.Name = "rtbServerOutput";
-			this.rtbServerOutput.Size = new System.Drawing.Size(434, 135);
-			this.rtbServerOutput.TabIndex = 3;
-			this.rtbServerOutput.Text = "";
-			// 
 			// tpStat
 			// 
 			this.tpStat.Controls.Add(this.dgvStat);
 			this.tpStat.Location = new System.Drawing.Point(4, 25);
 			this.tpStat.Margin = new System.Windows.Forms.Padding(2);
 			this.tpStat.Name = "tpStat";
-			this.tpStat.Size = new System.Drawing.Size(434, 135);
+			this.tpStat.Size = new System.Drawing.Size(635, 135);
 			this.tpStat.TabIndex = 3;
 			this.tpStat.Text = "Statistics";
 			this.tpStat.UseVisualStyleBackColor = true;
@@ -389,7 +370,7 @@
 			this.dgvStat.Margin = new System.Windows.Forms.Padding(2);
 			this.dgvStat.Name = "dgvStat";
 			this.dgvStat.RowTemplate.Height = 30;
-			this.dgvStat.Size = new System.Drawing.Size(434, 135);
+			this.dgvStat.Size = new System.Drawing.Size(635, 135);
 			this.dgvStat.TabIndex = 6;
 			// 
 			// btnOpt
@@ -511,6 +492,76 @@
 			this.flowLayoutPanel.Size = new System.Drawing.Size(68, 720);
 			this.flowLayoutPanel.TabIndex = 4;
 			// 
+			// tbServerOutput
+			// 
+			this.tbServerOutput.AutoCompleteBracketsList = new char[] {
+        '(',
+        ')',
+        '{',
+        '}',
+        '[',
+        ']',
+        '\"',
+        '\"',
+        '\'',
+        '\''};
+			this.tbServerOutput.AutoIndentCharsPatterns = "";
+			this.tbServerOutput.AutoScrollMinSize = new System.Drawing.Size(31, 18);
+			this.tbServerOutput.BackBrush = null;
+			this.tbServerOutput.CharHeight = 18;
+			this.tbServerOutput.CharWidth = 10;
+			this.tbServerOutput.CommentPrefix = "--";
+			this.tbServerOutput.Cursor = System.Windows.Forms.Cursors.IBeam;
+			this.tbServerOutput.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+			this.tbServerOutput.IsReplaceMode = false;
+			this.tbServerOutput.Language = FastColoredTextBoxNS.Language.SQL;
+			this.tbServerOutput.LeftBracket = '(';
+			this.tbServerOutput.Location = new System.Drawing.Point(192, 35);
+			this.tbServerOutput.Margin = new System.Windows.Forms.Padding(2);
+			this.tbServerOutput.Name = "tbServerOutput";
+			this.tbServerOutput.Paddings = new System.Windows.Forms.Padding(0);
+			this.tbServerOutput.RightBracket = ')';
+			this.tbServerOutput.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
+			this.tbServerOutput.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("tbServerOutput.ServiceColors")));
+			this.tbServerOutput.Size = new System.Drawing.Size(250, 65);
+			this.tbServerOutput.TabIndex = 5;
+			this.tbServerOutput.Zoom = 100;
+			// 
+			// tbTextOutput
+			// 
+			this.tbTextOutput.AutoCompleteBracketsList = new char[] {
+        '(',
+        ')',
+        '{',
+        '}',
+        '[',
+        ']',
+        '\"',
+        '\"',
+        '\'',
+        '\''};
+			this.tbTextOutput.AutoIndentCharsPatterns = "";
+			this.tbTextOutput.AutoScrollMinSize = new System.Drawing.Size(31, 18);
+			this.tbTextOutput.BackBrush = null;
+			this.tbTextOutput.CharHeight = 18;
+			this.tbTextOutput.CharWidth = 10;
+			this.tbTextOutput.CommentPrefix = "--";
+			this.tbTextOutput.Cursor = System.Windows.Forms.Cursors.IBeam;
+			this.tbTextOutput.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+			this.tbTextOutput.IsReplaceMode = false;
+			this.tbTextOutput.Language = FastColoredTextBoxNS.Language.SQL;
+			this.tbTextOutput.LeftBracket = '(';
+			this.tbTextOutput.Location = new System.Drawing.Point(192, 35);
+			this.tbTextOutput.Margin = new System.Windows.Forms.Padding(2);
+			this.tbTextOutput.Name = "tbTextOutput";
+			this.tbTextOutput.Paddings = new System.Windows.Forms.Padding(0);
+			this.tbTextOutput.RightBracket = ')';
+			this.tbTextOutput.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
+			this.tbTextOutput.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("tbTextOutput.ServiceColors")));
+			this.tbTextOutput.Size = new System.Drawing.Size(250, 65);
+			this.tbTextOutput.TabIndex = 6;
+			this.tbTextOutput.Zoom = 100;
+			// 
 			// SQLToolControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -537,11 +588,13 @@
 			((System.ComponentModel.ISupportInitialize)(this.tbPlan)).EndInit();
 			this.tpResult.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
-			this.tpOutput.ResumeLayout(false);
 			this.tpServerOutput.ResumeLayout(false);
+			this.tpOutput.ResumeLayout(false);
 			this.tpStat.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.dgvStat)).EndInit();
 			this.flowLayoutPanel.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.tbServerOutput)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.tbTextOutput)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -561,9 +614,7 @@
         private System.Windows.Forms.TabPage tpResult;
         private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.TabPage tpOutput;
-        private System.Windows.Forms.RichTextBox rtbOutput;
         private System.Windows.Forms.TabPage tpServerOutput;
-        private System.Windows.Forms.RichTextBox rtbServerOutput;
         private System.Windows.Forms.TabPage tpStat;
         private System.Windows.Forms.DataGridView dgvStat;
         private System.Windows.Forms.TabPage tpPlanText;
@@ -582,5 +633,7 @@
 		private FastColoredTextBoxNS.FastColoredTextBox tbPlan;
 		private System.Windows.Forms.DataGridView dgvBind;
 		private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
+		private FastColoredTextBoxNS.FastColoredTextBox tbServerOutput;
+		private FastColoredTextBoxNS.FastColoredTextBox tbTextOutput;
 	}
 }

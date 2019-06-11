@@ -210,11 +210,14 @@ namespace XLog
 					if (control is SQLToolControl it)
 					{
 						//if (it.Name == "tb")
-						sqlTool.SetTextBox(it.GetTextBox());
+						sqlTool.GetTextBox().Text = it.GetTextBox().Text;
 						break;
 					}
 				}
 			}
+
+			this.ActiveControl = sqlTool.GetTextBox();
+			//sqlTool.GetTextBox().Focus(); // 이런식으로는 안됨
 		}
 
 		private void tab_SelectedIndexChanged(object sender, EventArgs e)
