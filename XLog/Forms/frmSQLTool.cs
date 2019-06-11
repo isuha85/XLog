@@ -17,6 +17,8 @@ using System.Windows.Forms.Design;
 using Microsoft.Win32;
 using Timer = System.Windows.Forms.Timer;
 
+using FastColoredTextBoxNS;
+
 using System.Collections;
 using System.Collections.Concurrent;
 
@@ -30,17 +32,22 @@ namespace XLog
 {
     public partial class frmSQLTool : Form
     {
-        private int nTabSeq = 0;
 		//private ConcurrentStack<int> SelectedIndexStack = null;
-
 		private struct Configure
 		{
 			public FormWindowState WindowState;
 			public Point Location;
 			public FormBorderStyle FormBorderStyle;
-			public bool bMaximized;
+			public bool isMaximized;
+
+			public int TabSeq;
 		};
-		Configure configure;
+		static Configure configure;
+
+		static frmSQLTool()
+		{
+			configure.TabSeq = 0;
+		}
 
 		public frmSQLTool()
         {
@@ -73,10 +80,11 @@ namespace XLog
 			// Configure
 			{
 				this.StartPosition = FormStartPosition.Manual; // 듀얼모니터 에서 필수라고 함 - https://outshine90.tistory.com/m/4
+
 				configure.FormBorderStyle = FormBorderStyle;
 				configure.WindowState = FormWindowState.Normal;
 				configure.Location = this.Location;
-				configure.bMaximized = false;
+				configure.isMaximized = false;
 			}
 		}
 
@@ -96,14 +104,14 @@ namespace XLog
 						this.Opacity = 0.1; // 거의투명
 
 						// this.StartPosition = FormStartPosition.Manual; // 듀얼모니터 에서 필수라고 함 - https://outshine90.tistory.com/m/4
-						if (configure.bMaximized)
+						if (configure.isMaximized)
 						{
 							this.WindowState = configure.WindowState;
 							this.Visible = false; // [TIP] WindowState 라인하고 위치가 바뀌면, 오동작한다 - 그러나 이 코드가 별 도움은 안된다 
 
 							this.Location = configure.Location;
 							this.FormBorderStyle = configure.FormBorderStyle;
-							configure.bMaximized = false;
+							configure.isMaximized = false;
 						}
 						else
 						{
@@ -112,7 +120,7 @@ namespace XLog
 							configure.WindowState = this.WindowState;
 							configure.Location = this.Location; // 최대화전 위치 백업
 							configure.FormBorderStyle = this.FormBorderStyle;
-							configure.bMaximized = true;
+							configure.isMaximized = true;
 
 							this.Location = new Point(0, 0); // 눈피로 - 크롬처럼, 전체화면시에 (0.0) 으로 이동후 확장
 							this.Refresh();
@@ -127,10 +135,16 @@ namespace XLog
 					}
 					//break;
 				case Keys.T:
-					if (((keyData & Keys.Alt) != 0) || ((keyData & Keys.Shift) != 0)) break;
+					if ((keyData & Keys.Alt) != 0) break;
 					if ((keyData & Keys.Control) != 0)
 					{
-						CreateTab();
+						bool isCopy = false;
+						if ((keyData & Keys.Shift) != 0)
+						{
+							isCopy = true;
+						}
+
+						CreateTab(isCopy);
 						return true;
 					}
 					break;
@@ -168,13 +182,13 @@ namespace XLog
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-		private void CreateTab()
+		private void CreateTab(bool isCopy = false)
 		{
-			nTabSeq++;
-			//string sTmp = "SQL" + nTabSeq + "    ";
-			string sTmp = "SQL" + nTabSeq;
+			configure.TabSeq++;
+			string sTmp = "SQL" + configure.TabSeq;
 			var tabPage = new TabPage(sTmp);
 			var sqlTool = new SQLToolControl();
+			var selectedIndexPre = tab.SelectedIndex;
 
 			{
 				tabPage.Visible = false;
@@ -183,9 +197,23 @@ namespace XLog
 				sqlTool.Dock = DockStyle.Fill;
 				tabPage.Controls.Add(sqlTool);
 				//tab.Controls.Add(tabPage);
+
 				tab.TabPages.Insert(tab.TabCount, tabPage);
 				tab.SelectedIndex = tab.TabCount - 1;
 				tab.Refresh();
+			}
+
+			if (isCopy)
+			{
+				foreach (Control control in tab.TabPages[selectedIndexPre].Controls) // [NOTE] 임의의 Control 찾기
+				{
+					if (control is SQLToolControl it)
+					{
+						//if (it.Name == "tb")
+						sqlTool.SetTextBox(it.GetTextBox());
+						break;
+					}
+				}
 			}
 		}
 
