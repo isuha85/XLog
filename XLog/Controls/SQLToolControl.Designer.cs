@@ -49,7 +49,7 @@
 			this.dataGridView = new System.Windows.Forms.DataGridView();
 			this.tpOutput = new System.Windows.Forms.TabPage();
 			this.rtbOutput = new System.Windows.Forms.RichTextBox();
-			this.tpDbmsOutput = new System.Windows.Forms.TabPage();
+			this.tpServerOutput = new System.Windows.Forms.TabPage();
 			this.rtbServerOutput = new System.Windows.Forms.RichTextBox();
 			this.tpStat = new System.Windows.Forms.TabPage();
 			this.dgvStat = new System.Windows.Forms.DataGridView();
@@ -77,7 +77,7 @@
 			this.tpResult.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
 			this.tpOutput.SuspendLayout();
-			this.tpDbmsOutput.SuspendLayout();
+			this.tpServerOutput.SuspendLayout();
 			this.tpStat.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dgvStat)).BeginInit();
 			this.flowLayoutPanel.SuspendLayout();
@@ -213,7 +213,6 @@
 			this.tb.CommentPrefix = "--";
 			this.tb.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.tb.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-			this.tb.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.tb.IsReplaceMode = false;
 			this.tb.Language = FastColoredTextBoxNS.Language.SQL;
 			this.tb.LeftBracket = '(';
@@ -236,14 +235,14 @@
 			this.tabControl.Controls.Add(this.tpPlanText);
 			this.tabControl.Controls.Add(this.tpPlan);
 			this.tabControl.Controls.Add(this.tpResult);
+			this.tabControl.Controls.Add(this.tpServerOutput);
 			this.tabControl.Controls.Add(this.tpOutput);
-			this.tabControl.Controls.Add(this.tpDbmsOutput);
 			this.tabControl.Controls.Add(this.tpStat);
 			this.tabControl.Location = new System.Drawing.Point(2, 2);
 			this.tabControl.Margin = new System.Windows.Forms.Padding(2);
 			this.tabControl.Name = "tabControl";
 			this.tabControl.SelectedIndex = 0;
-			this.tabControl.Size = new System.Drawing.Size(442, 164);
+			this.tabControl.Size = new System.Drawing.Size(643, 164);
 			this.tabControl.TabIndex = 5;
 			// 
 			// tpPlanText
@@ -252,7 +251,7 @@
 			this.tpPlanText.Location = new System.Drawing.Point(4, 25);
 			this.tpPlanText.Margin = new System.Windows.Forms.Padding(2);
 			this.tpPlanText.Name = "tpPlanText";
-			this.tpPlanText.Size = new System.Drawing.Size(434, 135);
+			this.tpPlanText.Size = new System.Drawing.Size(635, 135);
 			this.tpPlanText.TabIndex = 4;
 			this.tpPlanText.Text = "Plan (Text)";
 			this.tpPlanText.UseVisualStyleBackColor = true;
@@ -278,6 +277,7 @@
 			this.tbPlan.CommentPrefix = "--";
 			this.tbPlan.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.tbPlan.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+			this.tbPlan.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.tbPlan.IsReplaceMode = false;
 			this.tbPlan.Language = FastColoredTextBoxNS.Language.SQL;
 			this.tbPlan.LeftBracket = '(';
@@ -334,9 +334,9 @@
 			this.tpOutput.Margin = new System.Windows.Forms.Padding(2);
 			this.tpOutput.Name = "tpOutput";
 			this.tpOutput.Padding = new System.Windows.Forms.Padding(2);
-			this.tpOutput.Size = new System.Drawing.Size(434, 135);
+			this.tpOutput.Size = new System.Drawing.Size(635, 135);
 			this.tpOutput.TabIndex = 1;
-			this.tpOutput.Text = "Output";
+			this.tpOutput.Text = "Text Output";
 			this.tpOutput.UseVisualStyleBackColor = true;
 			// 
 			// rtbOutput
@@ -345,20 +345,20 @@
 			this.rtbOutput.Location = new System.Drawing.Point(2, 2);
 			this.rtbOutput.Margin = new System.Windows.Forms.Padding(2);
 			this.rtbOutput.Name = "rtbOutput";
-			this.rtbOutput.Size = new System.Drawing.Size(430, 131);
+			this.rtbOutput.Size = new System.Drawing.Size(631, 131);
 			this.rtbOutput.TabIndex = 2;
 			this.rtbOutput.Text = "";
 			// 
-			// tpDbmsOutput
+			// tpServerOutput
 			// 
-			this.tpDbmsOutput.Controls.Add(this.rtbServerOutput);
-			this.tpDbmsOutput.Location = new System.Drawing.Point(4, 25);
-			this.tpDbmsOutput.Margin = new System.Windows.Forms.Padding(2);
-			this.tpDbmsOutput.Name = "tpDbmsOutput";
-			this.tpDbmsOutput.Size = new System.Drawing.Size(434, 135);
-			this.tpDbmsOutput.TabIndex = 2;
-			this.tpDbmsOutput.Text = "DBMS Output";
-			this.tpDbmsOutput.UseVisualStyleBackColor = true;
+			this.tpServerOutput.Controls.Add(this.rtbServerOutput);
+			this.tpServerOutput.Location = new System.Drawing.Point(4, 25);
+			this.tpServerOutput.Margin = new System.Windows.Forms.Padding(2);
+			this.tpServerOutput.Name = "tpServerOutput";
+			this.tpServerOutput.Size = new System.Drawing.Size(434, 135);
+			this.tpServerOutput.TabIndex = 2;
+			this.tpServerOutput.Text = "Server Output";
+			this.tpServerOutput.UseVisualStyleBackColor = true;
 			// 
 			// rtbServerOutput
 			// 
@@ -538,7 +538,7 @@
 			this.tpResult.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
 			this.tpOutput.ResumeLayout(false);
-			this.tpDbmsOutput.ResumeLayout(false);
+			this.tpServerOutput.ResumeLayout(false);
 			this.tpStat.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.dgvStat)).EndInit();
 			this.flowLayoutPanel.ResumeLayout(false);
@@ -562,7 +562,7 @@
         private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.TabPage tpOutput;
         private System.Windows.Forms.RichTextBox rtbOutput;
-        private System.Windows.Forms.TabPage tpDbmsOutput;
+        private System.Windows.Forms.TabPage tpServerOutput;
         private System.Windows.Forms.RichTextBox rtbServerOutput;
         private System.Windows.Forms.TabPage tpStat;
         private System.Windows.Forms.DataGridView dgvStat;
