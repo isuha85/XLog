@@ -38,12 +38,12 @@
 			this.cbShowPK = new System.Windows.Forms.CheckBox();
 			this.cbShowComment = new System.Windows.Forms.CheckBox();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.dataGrdiView = new System.Windows.Forms.DataGridView();
+			this.dataGridView = new System.Windows.Forms.DataGridView();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.flowLayoutPanel1T.SuspendLayout();
 			this.flowLayoutPanel1B.SuspendLayout();
 			this.panel1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.dataGrdiView)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// flowLayoutPanel1
@@ -145,7 +145,7 @@
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.dataGrdiView);
+			this.panel1.Controls.Add(this.dataGridView);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(0, 76);
 			this.panel1.Name = "panel1";
@@ -154,13 +154,13 @@
 			// 
 			// dataGrdiView
 			// 
-			this.dataGrdiView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dataGrdiView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.dataGrdiView.Location = new System.Drawing.Point(0, 0);
-			this.dataGrdiView.Name = "dataGrdiView";
-			this.dataGrdiView.RowTemplate.Height = 30;
-			this.dataGrdiView.Size = new System.Drawing.Size(800, 374);
-			this.dataGrdiView.TabIndex = 6;
+			this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.dataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dataGridView.Location = new System.Drawing.Point(0, 0);
+			this.dataGridView.Name = "dataGrdiView";
+			this.dataGridView.RowTemplate.Height = 30;
+			this.dataGridView.Size = new System.Drawing.Size(800, 374);
+			this.dataGridView.TabIndex = 6;
 			// 
 			// frmColumnInfo
 			// 
@@ -179,7 +179,7 @@
 			this.flowLayoutPanel1B.ResumeLayout(false);
 			this.flowLayoutPanel1B.PerformLayout();
 			this.panel1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.dataGrdiView)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -196,6 +196,6 @@
 		private System.Windows.Forms.CheckBox cbShowPK;
 		private System.Windows.Forms.CheckBox cbShowComment;
 		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.DataGridView dataGrdiView;
+		private System.Windows.Forms.DataGridView dataGridView;
 	}
 }

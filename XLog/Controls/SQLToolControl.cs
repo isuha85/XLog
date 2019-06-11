@@ -1115,7 +1115,20 @@ namespace XLog
 
         private void btnOpt_Click(object sender, EventArgs e)
         {
-        }
+			if (conn is OracleConnection oc)
+			{
+				OracleCommand cmd = new OracleCommand("SP1", oc);
+				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.Add("I_EMP_ID", OracleDbType.Varchar2).Value = "asdf";
+				cmd.Parameters.Add("OUT_DATA", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+				cmd.ExecuteNonQuery();
+				OracleDataReader reader = ((OracleRefCursor)cmd.Parameters["OUT_DATA"].Value).GetDataReader();
+
+				DataTable dataTable = new DataTable();
+				dataTable.Load(reader);
+				dataGridView.DataSource = dataTable; // 화면에 연결
+			}			
+		}
 
 		private void dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
 		{

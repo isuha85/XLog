@@ -72,7 +72,7 @@ namespace XLog
 			//cbShowComment.Visible = false;
 			cbShowPK.Visible = false;
 
-			dataGrdiView.BackgroundColor = Color.White;
+			dataGridView.BackgroundColor = Color.White;
 
 			cbInsertComma.Checked = configure.checked_insertComma;
 			cbLowerCase.Checked = configure.checked_lowerCase;
@@ -105,7 +105,7 @@ namespace XLog
 			if ( conn != null )
 			{
 				SetDataTable(selectedText, conn);
-				if ( dataGrdiView.RowCount > 0 )
+				if ( dataGridView.RowCount > 0 )
 				{
 					Show();
 				}
@@ -342,7 +342,7 @@ RETRY_CASE_1: // [재귀호출] U1.SYNONYM 인 경우가 중첩될 수 있다.
 
 					DataTable dataTable = new DataTable();
 					adapter.Fill(dataTable);
-					dataGrdiView.DataSource = dataTable; // 화면에 연결
+					dataGridView.DataSource = dataTable; // 화면에 연결
 					this.Text = user + "." + tname;
 				}
 			}
