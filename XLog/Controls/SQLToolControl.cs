@@ -81,7 +81,7 @@ namespace XLog
 		Configure configure;
 
 		DockContent doc1 = null; // WeifenLuo.WinFormsUI.Docking.DockContent
-		DockContent doc2 = null;
+		DockContent doc2 = null;		
 
 		Style sameWordsStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Gray)));
 		Style runSqlStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Blue)));
@@ -111,6 +111,16 @@ namespace XLog
 
 			//AutoScaleMode = AutoScaleMode.Inherit;
 			AutoScaleMode = AutoScaleMode.Dpi;
+		}
+
+		public void SetTextBox(string text)
+		{
+			tb.Text = text;
+		}
+
+		public string GetTextBox()
+		{
+			return tb.Text;
 		}
 
 		private void SQLToolUserControl_Load(object sender, EventArgs e)
@@ -433,7 +443,8 @@ namespace XLog
 						var line = tb.YtoLineIndex(point.Y);
 
 						char[] tirmChars = { '\r', '\n', '\t', ' ' };
-						var sql = GetSqlFromLine(tb.Text, line).Trim(tirmChars);
+						var sql = GetSqlFromLine(tb.Text, line).Trim(tirmChars); // 커서위치에 적절한 SQL을 선택한다.
+
 						ShowResult(sql);
 
 						// highlight
@@ -455,7 +466,7 @@ namespace XLog
 						return true;
 					}
 					break;
-				case Keys.C:
+				case Keys.C: // 컬럼정보 Popup
 					if (((keyData & Keys.Shift) != 0) || ((keyData & Keys.Control) != 0)) break;
 					if ((keyData & Keys.Alt) != 0)
 					{
@@ -627,6 +638,8 @@ namespace XLog
 				bindTypes.Add(new BindType("VARCHAR"));
 				bindTypes.Add(new BindType("NUMBER"));
 				bindTypes.Add(new BindType("CHAR"));
+				bindTypes.Add(new BindType("RefCursor"));
+				
 #if DEBUG
 				bindTypes.Add(new BindType("NCHAR")); // 미구현
 				bindTypes.Add(new BindType("NVARCHAR"));
@@ -688,25 +701,34 @@ namespace XLog
 
 		private void ShowResult(string sql_)
 		{
+			List<string> prefix4SPs = new List<string>();
+			prefix4SPs.Add("EXEC ");
+			prefix4SPs.Add("EXECUTE ");
+			prefix4SPs.Add("CALL ");
+
+			foreach(string prefix4SP in prefix4SPs)
+			{
+				if (sql_.IndexOf(prefix4SP, StringComparison.OrdinalIgnoreCase) == 0) // [USAGE] exec SP1();
+				{
+					ShowResult4SP(sql_.Substring(prefix4SP.Length, sql_.Length - prefix4SP.Length));
+					return;
+				}
+			}
+
 			PUBLIC.TIME_CHECK(System.DateTime.Now.Ticks); // 기준시간 등록
 
 			lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
-			//eTick = System.DateTime.Now.Ticks;
-			//dTickSec = (double)(eTick - sTick) / 10000000.0F;
-			//lbTime.Text = dTickSec + " sec";
 
-			//this.Cursor = Cursors.WaitCursor;
 			toolStripStatusLabel4.Text = "Running ..";
 			lbRow.Text = "0 rows";
 
 			// 출처: https://and0329.tistory.com/entry/C-과-오라클-데이터베이스-연동-방법 
 			try
 			{
-				dataGridView.DataSource = null;		// (1) 결과창을 비워준다.
-				tabControl.SelectedIndex = 2;		// (2) 결과탭을 보여준디.
+				dataGridView.DataSource = null;     // (1) 결과창을 비워준다.
+				tabControl.SelectedIndex = 2;       // (2) 결과탭을 보여준디.
 				Application.DoEvents();
 
-				//adapter.SelectCommand = new OracleCommand(rtbSqlEdit.Text, (OracleConnection)conn);
 				adapter.SelectCommand = xDb.XDbCommand(sql_, conn);
 
 				do
@@ -730,7 +752,7 @@ namespace XLog
 					{
 						ShowBindList();
 						var now = DateTime.Now;
-						if (configure.bindRowsLastAddTime.AddSeconds(1) >= now )
+						if (configure.bindRowsLastAddTime.AddSeconds(1) >= now)
 						{
 							// dgvBind 에 새로운 변수가 등록되었다						
 							toolStripStatusLabel4.Text = "Bind variable not declared"; // SP2-0552: Bind variable "V1" not declared.
@@ -751,6 +773,7 @@ namespace XLog
 						if (adapter.SelectCommand is OracleCommand cmd)
 						{
 							OracleDbType dbType = OracleDbType.Varchar2;
+
 							if (m.Type.Name == "NUMBER")
 							{
 								dbType = OracleDbType.Decimal;
@@ -759,6 +782,10 @@ namespace XLog
 							{
 								dbType = OracleDbType.Char;
 							}
+							//else if (m.Type.Name == "RefCursor")
+							//{
+							//	dbType = OracleDbType.RefCursor;
+							//}
 							else if (m.Type.Name == "NCHAR")
 							{
 								dbType = OracleDbType.NChar;
@@ -777,26 +804,19 @@ namespace XLog
 				DataTable dt = new DataTable();     // TODO: (BUGBUG) DataTable을 재사용하면, 컬럼명이 추가된다.
 				DataTable dt2 = new DataTable();    // 처음 결과 셋을 일부만 저장하여 보여주는 Fake 코드 (출력성능이슈)
 
-				//adapter.Fill(dt);
-				//adapter.Fill(0, 10, dt);
 				int sPos = 0;
 				int rc;
 
 				lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
 
-				//adapter.MissingMappingAction = MissingMappingAction.Error;		// {"TableMapping.DataSetTable=''인 TableMapping이 없습니다."}
-				//adapter.MissingSchemaAction = MissingSchemaAction.AddWithKey;
 				while ((rc = adapter.Fill(sPos, FETCH_SIZE, dt)) > 0)
 				{
-					//sPos += FETCH_SIZE;
 					sPos += rc;
 
 					if (toolStripProgressBar1.Value <= toolStripProgressBar1.Maximum * 0.9)
 					{
 						toolStripProgressBar1.PerformStep();
 					}
-
-					//System.Threading.Thread.Sleep(100);
 
 					//if ( (FETCH_SIZE > 1 && sPos == FETCH_SIZE) || (sPos == 100) )
 					if (sPos == FETCH_SIZE)
@@ -820,8 +840,7 @@ namespace XLog
 				lbTime.Text = PUBLIC.TIME_CHECK() + " sec";
 				lbRow.Text = sPos + " rows";
 
-				// TODO: RAW 타입에 대해서 DataGridView 에서 Error
-				dataGridView.DataSource = XDb.ConvertDataTable(dt);
+				dataGridView.DataSource = XDb.ConvertDataTable(dt); // RAW 타입에 대해서 DataGridView 에서 Error
 			}
 			catch (Exception ex)
 			{
@@ -842,7 +861,183 @@ namespace XLog
 					toolStripStatusLabel4.Text = "Done";
 				}
 			}
-		} // doGo
+		} // ShowResult
+
+
+		static bool isServerOutputOn = true;
+		private void ShowResult4SP(string sql_)
+		{
+			if (!(conn is OracleConnection oc))
+			{
+				// TODO: 미구현
+				toolStripStatusLabel4.Text = "Not Supported DBMS";
+				return;
+			}
+
+			//sql_ = "SP1"; //_OKT_TRY
+			PUBLIC.TIME_CHECK(System.DateTime.Now.Ticks); // 기준시간 등록
+
+			lbTime.Text = PUBLIC.TIME_CHECK() + " sec (" + PUBLIC.TIME_DELTA + ")";
+			toolStripStatusLabel4.Text = "Running ..";
+			lbRow.Text = "0 rows";
+
+			//DbDataAdapter l_adapter = null;
+			string refCursorName = null;
+
+			try
+			{
+				dataGridView.DataSource = null;     // (1) 결과창을 비워준다.
+				tabControl.SelectedIndex = 2;       // (2) 결과탭을 보여준디.
+				Application.DoEvents();
+
+				//var cmd = xDb.XDbCommand(sql_, conn);
+				OracleCommand cmd = new OracleCommand();
+				cmd.Connection = (OracleConnection)conn;				
+				cmd.BindByName = true;
+				//cmd.CommandType = CommandType.StoredProcedure; // [NOTE] 이 방식은 ProcedureName만 전달하고, Bind 변수 이름을 DB Meta에서 조회 필요
+				//cmd.CommandType = CommandType.Text; // default
+
+				if (isServerOutputOn)
+				{
+					// FROM: https://stackoverflow.com/questions/27837853/how-to-get-oracle-stored-procedure-standard-output-in-c-sharp ( Thx !! )
+					cmd.CommandText = "BEGIN DBMS_OUTPUT.ENABLE (32767); END;"; // set serveroutput on;
+					cmd.ExecuteNonQuery();
+				}
+
+				cmd.CommandText = "BEGIN " + sql_ + " END;";
+				cmd.Parameters.Clear();
+
+				do
+				{
+					// TODO: 전체 BindVar 얻는 부분과 유사한 코드, 정리요
+					var text = sql_;
+					var regexPattern = ":[a-zA-Z][a-zA-Z0-9_]*";
+
+					text = text + "\n";
+					text = Regex.Replace(text, "--.*\n", "");
+					text = Regex.Replace(text, "--.*\r", ""); // WHEN MACOS
+					text = Regex.Replace(text, "/\\*(.|\r|\n)*?\\*/", ""); // [NOTE] .+ is greedy , Change it to .+? ( Not Greedy )
+					text = Regex.Replace(text, "'(.|\r|\n)*?'", "");
+
+					var mc = Regex.Matches(text, regexPattern);
+					if (mc.Count == 0)
+					{
+						break;
+					}
+					else
+					{
+						ShowBindList();
+						var now = DateTime.Now;
+						if (configure.bindRowsLastAddTime.AddSeconds(1) >= now)
+						{
+							// dgvBind 에 새로운 변수가 등록되었다						
+							toolStripStatusLabel4.Text = "Bind variable not declared"; // SP2-0552: Bind variable "V1" not declared.
+							return;
+						}
+					}
+
+					var set = new HashSet<string>();
+					foreach (Match m in mc)
+					{
+						set.Add(m.Value); // 중복제거
+					} // foreach
+
+					foreach (BindRow m in bindRows)
+					{
+						if (!set.Contains(m.Name)) continue;
+
+						//if (cmd_ is OracleCommand cmd)
+						{
+							OracleDbType dbType = OracleDbType.Varchar2;
+
+							if (m.Type.Name == "RefCursor")
+							{
+								refCursorName = m.Name;
+							}
+							else
+							{
+								if (m.Type.Name == "NUMBER")
+								{
+									dbType = OracleDbType.Decimal;
+								}
+								else if (m.Type.Name == "CHAR")
+								{
+									dbType = OracleDbType.Char;
+								}
+								cmd.Parameters.Add(new OracleParameter(m.Name, dbType, 32) { Value = m.Value });
+							}
+						}
+					}
+
+					break;
+				} while (true);
+
+				if (refCursorName != null)
+				{
+					((OracleCommand)cmd).Parameters.Add(refCursorName, OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+					//((OracleCommand)cmd).Parameters.Add("I_EMP_ID", OracleDbType.Varchar2).Value = "asdf";
+					//((OracleCommand)cmd).Parameters.Add("OUT_DATA", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+
+					cmd.ExecuteNonQuery();
+
+					OracleDataReader reader = ((OracleRefCursor)cmd.Parameters[refCursorName].Value).GetDataReader();
+					//OracleDataReader reader = ((OracleRefCursor)cmd.Parameters["OUT_DATA"].Value).GetDataReader();
+					DataTable dataTable = new DataTable();
+					dataTable.Load(reader);
+					dataGridView.DataSource = XDb.ConvertDataTable(dataTable); // RAW 타입에 대해서 DataGridView 에서 Error
+					
+					lbRow.Text = dataTable.Rows.Count + " rows";
+				}
+				else
+				{
+					cmd.ExecuteNonQuery();
+
+					lbRow.Text = "- rows";
+				}
+
+				// Get ServerOutput
+				if (isServerOutputOn)
+				{
+					cmd.CommandText = "BEGIN DBMS_OUTPUT.GET_LINE (:buffer, :status); END;";
+					cmd.Parameters.Clear();
+					cmd.Parameters.Add("buffer", OracleDbType.Varchar2, 32767).Direction = System.Data.ParameterDirection.Output;
+					cmd.Parameters.Add("status", OracleDbType.Int32).Direction = System.Data.ParameterDirection.Output;
+
+					List<string> buffers = new List<string>();
+					string buffer = null;
+					int status = 0;
+					while (status == 0)
+					{
+						cmd.ExecuteNonQuery();
+
+						buffer = cmd.Parameters[0].Value.ToString();
+						status = int.Parse(cmd.Parameters[1].Value.ToString());
+						buffers.Add(buffer);
+					}
+				}
+
+				lbTime.Text = PUBLIC.TIME_CHECK() + " sec";
+			}
+			catch (Exception ex)
+			{
+				MessageBoxEx.Show(this.ParentForm, ex.Message);
+			}
+
+			//finally
+			{
+				toolStripProgressBar1.Value = 0;
+
+				if (bStop)
+				{
+					bStop = false;
+					toolStripStatusLabel4.Text = "Stop";
+				}
+				else
+				{
+					toolStripStatusLabel4.Text = "Done";
+				}
+			}
+		} // ShowResult4SP
 
 
 		#region Common Function for SQLTool
@@ -1114,20 +1309,7 @@ namespace XLog
         }
 
         private void btnOpt_Click(object sender, EventArgs e)
-        {
-			if (conn is OracleConnection oc)
-			{
-				OracleCommand cmd = new OracleCommand("SP1", oc);
-				cmd.CommandType = CommandType.StoredProcedure;
-				cmd.Parameters.Add("I_EMP_ID", OracleDbType.Varchar2).Value = "asdf";
-				cmd.Parameters.Add("OUT_DATA", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-				cmd.ExecuteNonQuery();
-				OracleDataReader reader = ((OracleRefCursor)cmd.Parameters["OUT_DATA"].Value).GetDataReader();
-
-				DataTable dataTable = new DataTable();
-				dataTable.Load(reader);
-				dataGridView.DataSource = dataTable; // 화면에 연결
-			}			
+        {	
 		}
 
 		private void dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
